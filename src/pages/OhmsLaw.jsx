@@ -155,8 +155,8 @@ const OhmsLaw = () => {
                         </div>
 
                         {/* Dividers */}
-                        {/* Horizontal divider - FULL WIDTH from edge to edge */}
-                        <div className="absolute top-[190px] left-0 w-full h-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
+                        {/* Horizontal divider - Corrected width (220px) to fit inside triangle at 50% height */}
+                        <div className="absolute top-[190px] left-1/2 -translate-x-1/2 w-[220px] h-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
                         {/* Vertical divider - shorter height to stay within triangle bounds */}
                         <div className="absolute top-[190px] left-1/2 w-1 h-[150px] bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
 

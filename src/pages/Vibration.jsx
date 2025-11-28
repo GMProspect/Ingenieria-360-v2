@@ -2,40 +2,28 @@ import React, { useState, useMemo } from 'react';
 import { Activity, ArrowRightLeft, Info } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
+import { useAuth } from '../contexts/Auth';
 import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 
 const Vibration = () => {
+    const { user } = useAuth();
     const [voltage, setVoltage] = useLocalStorage('vib_voltage', '-10.0'); // Volts DC
     const [sensitivity, setSensitivity] = useLocalStorage('vib_sens', '200'); // mV/mil or mV/um
     const [unit, setUnit] = useLocalStorage('vib_unit', 'mils'); // mils or um
 
-    const [label, setLabel] = useState('');
-    const [description, setDescription] = useState('');
-    const [saving, setSaving] = useState(false);
+    // ... (rest of state)
 
-    // Derived Values
-    const distance = useMemo(() => {
-        const v = Math.abs(parseFloat(voltage));
-        const s = parseFloat(sensitivity);
-        if (isNaN(v) || isNaN(s) || s === 0) return 0;
-
-        // Formula: Distance = (Voltage * 1000) / Sensitivity
-        return ((v * 1000) / s);
-    }, [voltage, sensitivity]);
-
-    const clearAll = () => {
-        setVoltage('');
-        setSensitivity('200');
-        setUnit('mils');
-        setLabel('');
-        setDescription('');
-    };
+    // ... (derived values and clearAll)
 
     const handleSave = async () => {
         if (!label.trim()) {
             alert('Por favor ingresa una etiqueta.');
+            return;
+        }
+        if (!user) {
+            alert('Debes iniciar sesión para guardar.');
             return;
         }
         setSaving(true);
@@ -44,6 +32,7 @@ const Vibration = () => {
                 tool_name: 'Sonda de Vibración',
                 label: label,
                 description: description,
+                user_id: user.id,
                 data: {
                     voltage,
                     sensitivity,

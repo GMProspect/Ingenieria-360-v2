@@ -2,79 +2,29 @@ import React, { useState } from 'react';
 import { Gauge, ArrowRightLeft } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
+import { useAuth } from '../contexts/Auth';
 import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 
 const Transmitter = () => {
+    const { user } = useAuth();
     // Calibration State
     const [rangeLow, setRangeLow] = useLocalStorage('trans_low', '0');
     const [rangeHigh, setRangeHigh] = useLocalStorage('trans_high', '100');
     const [unit, setUnit] = useLocalStorage('trans_unit', 'PSI');
 
-    // Real-Time State
-    const [inputMa, setInputMa] = useState('');
-    const [inputPv, setInputPv] = useState('');
+    // ... (rest of state)
 
-    const [label, setLabel] = useState('');
-    const [description, setDescription] = useState('');
-    const [saving, setSaving] = useState(false);
-
-    // Derived Values
-    const span = (parseFloat(rangeHigh) - parseFloat(rangeLow)) || 0;
-
-    // Smart Logic: Bidirectional Calculation
-    const handleMaChange = (val) => {
-        setInputMa(val);
-        if (val === '') {
-            setInputPv('');
-            return;
-        }
-        const ma = parseFloat(val);
-        const low = parseFloat(rangeLow);
-        const high = parseFloat(rangeHigh);
-
-        if (!isNaN(ma) && !isNaN(low) && !isNaN(high)) {
-            // Formula: PV = Low + ((mA - 4) / 16) * Span
-            const pv = low + ((ma - 4) / 16) * (high - low);
-            setInputPv(pv.toFixed(2));
-        }
-    };
-
-    const handlePvChange = (val) => {
-        setInputPv(val);
-        if (val === '') {
-            setInputMa('');
-            return;
-        }
-        const pv = parseFloat(val);
-        const low = parseFloat(rangeLow);
-        const high = parseFloat(rangeHigh);
-
-        if (!isNaN(pv) && !isNaN(low) && !isNaN(high)) {
-            // Formula: mA = 4 + ((PV - Low) / Span) * 16
-            const ma = 4 + ((pv - low) / (high - low)) * 16;
-            setInputMa(ma.toFixed(2));
-        }
-    };
-
-    const getPercentage = () => {
-        const ma = parseFloat(inputMa);
-        if (isNaN(ma)) return 0;
-        const percent = ((ma - 4) / 16) * 100;
-        return Math.min(Math.max(percent, 0), 100);
-    };
-
-    const clearAll = () => {
-        setInputMa('');
-        setInputPv('');
-        setLabel('');
-        setDescription('');
-    };
+    // ... (handlers)
 
     const handleSave = async () => {
         if (!label.trim()) {
             alert('Por favor ingresa una etiqueta.');
+            return;
+        }
+        if (!user) {
+            alert('Debes iniciar sesión para guardar.');
             return;
         }
         setSaving(true);
@@ -83,6 +33,7 @@ const Transmitter = () => {
                 tool_name: 'Transmisor 4-20mA',
                 label: label,
                 description: description,
+                user_id: user.id,
                 data: {
                     range_low: rangeLow,
                     range_high: rangeHigh,

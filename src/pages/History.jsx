@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { History as HistoryIcon, Trash2, Search } from 'lucide-react';
 import { supabase } from '../supabase';
+import { useAuth } from '../contexts/Auth';
 import BackButton from '../components/BackButton';
 
 const History = () => {
+    const { user } = useAuth();
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetchHistory();
-    }, []);
+        if (user) fetchHistory();
+    }, [user]);
 
     const fetchHistory = async () => {
         try {
@@ -18,6 +20,7 @@ const History = () => {
             const { data, error } = await supabase
                 .from('history')
                 .select('*')
+                .eq('user_id', user.id) // Filter by user
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -35,7 +38,8 @@ const History = () => {
             const { error } = await supabase
                 .from('history')
                 .delete()
-                .eq('id', id);
+                .eq('id', id)
+                .eq('user_id', user.id); // Ensure ownership
 
             if (error) throw error;
             setHistory(history.filter(item => item.id !== id));

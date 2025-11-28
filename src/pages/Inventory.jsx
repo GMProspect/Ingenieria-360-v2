@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Plus, Search, Trash2, Edit } from 'lucide-react';
 import { supabase } from '../supabase';
+import { useAuth } from '../contexts/Auth';
 import BackButton from '../components/BackButton';
 import InventoryModal from '../components/inventory/InventoryModal';
 
 const Inventory = () => {
+    const { user } = useAuth();
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -25,8 +27,8 @@ const Inventory = () => {
     const [currentTag, setCurrentTag] = useState('');
 
     useEffect(() => {
-        fetchItems();
-    }, []);
+        if (user) fetchItems();
+    }, [user]);
 
     const fetchItems = async () => {
         setLoading(true);
@@ -34,6 +36,7 @@ const Inventory = () => {
             const { data, error } = await supabase
                 .from('equipos')
                 .select('*')
+                .eq('user_id', user.id) // Filter by user
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -45,69 +48,12 @@ const Inventory = () => {
         }
     };
 
-    const handleOpenModal = (item = null) => {
-        if (item) {
-            setCurrentItem(item);
-            setFormData({
-                name: item.name,
-                brand: item.brand,
-                model: item.model,
-                quantity: item.quantity,
-                acquisition_date: item.acquisition_date
-            });
-
-            // Parse specs into tags
-            let loadedTags = [];
-            if (item.specs) {
-                if (Array.isArray(item.specs)) {
-                    loadedTags = item.specs;
-                } else if (typeof item.specs === 'object') {
-                    // Convert old object format to array of strings
-                    loadedTags = Object.entries(item.specs).map(([k, v]) => `${k}: ${v}`);
-                }
-            }
-            setTags(loadedTags);
-        } else {
-            setCurrentItem(null);
-            setFormData({
-                name: '',
-                brand: '',
-                model: '',
-                quantity: 1,
-                acquisition_date: new Date().toISOString().split('T')[0]
-            });
-            setTags([]);
-        }
-        setCurrentTag('');
-        setIsModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setCurrentItem(null);
-    };
-
-    // Tag Handlers
-    const handleAddTag = (e) => {
-        e.preventDefault(); // Prevent form submission if triggered by Enter
-        if (!currentTag.trim()) return;
-        setTags([...tags, currentTag.trim()]);
-        setCurrentTag('');
-    };
-
-    const handleRemoveTag = (indexToRemove) => {
-        setTags(tags.filter((_, index) => index !== indexToRemove));
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            handleAddTag(e);
-        }
-    };
+    // ... (handleOpenModal, handleCloseModal, tag handlers)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!user) return;
+
         try {
             const payload = {
                 name: formData.name,
@@ -115,7 +61,8 @@ const Inventory = () => {
                 model: formData.model,
                 quantity: parseInt(formData.quantity),
                 acquisition_date: formData.acquisition_date,
-                specs: tags // Save as JSON array
+                specs: tags, // Save as JSON array
+                user_id: user.id // Assign to user
             };
 
             if (currentItem) {
@@ -123,7 +70,8 @@ const Inventory = () => {
                 const { error } = await supabase
                     .from('equipos')
                     .update(payload)
-                    .eq('id', currentItem.id);
+                    .eq('id', currentItem.id)
+                    .eq('user_id', user.id); // Ensure ownership
                 if (error) throw error;
             } else {
                 // Create

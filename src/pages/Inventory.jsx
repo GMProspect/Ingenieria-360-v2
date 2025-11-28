@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Database, Plus, Search, Trash2, Edit, X, Save } from 'lucide-react';
+import { Database, Plus, Search, Trash2, Edit, X, Save, Tag } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 
@@ -16,9 +16,12 @@ const Inventory = () => {
         brand: '',
         model: '',
         quantity: 1,
-        acquisition_date: '',
-        specs: '' // JSON string
+        acquisition_date: ''
     });
+
+    // Tags State
+    const [tags, setTags] = useState([]);
+    const [currentTag, setCurrentTag] = useState('');
 
     useEffect(() => {
         fetchItems();
@@ -49,9 +52,20 @@ const Inventory = () => {
                 brand: item.brand,
                 model: item.model,
                 quantity: item.quantity,
-                acquisition_date: item.acquisition_date,
-                specs: JSON.stringify(item.specs, null, 2)
+                acquisition_date: item.acquisition_date
             });
+
+            // Parse specs into tags
+            let loadedTags = [];
+            if (item.specs) {
+                if (Array.isArray(item.specs)) {
+                    loadedTags = item.specs;
+                } else if (typeof item.specs === 'object') {
+                    // Convert old object format to array of strings
+                    loadedTags = Object.entries(item.specs).map(([k, v]) => `${k}: ${v}`);
+                }
+            }
+            setTags(loadedTags);
         } else {
             setCurrentItem(null);
             setFormData({
@@ -59,10 +73,11 @@ const Inventory = () => {
                 brand: '',
                 model: '',
                 quantity: 1,
-                acquisition_date: new Date().toISOString().split('T')[0],
-                specs: '{}'
+                acquisition_date: new Date().toISOString().split('T')[0]
             });
+            setTags([]);
         }
+        setCurrentTag('');
         setIsModalOpen(true);
     };
 
@@ -71,24 +86,35 @@ const Inventory = () => {
         setCurrentItem(null);
     };
 
+    // Tag Handlers
+    const handleAddTag = (e) => {
+        e.preventDefault(); // Prevent form submission if triggered by Enter
+        if (!currentTag.trim()) return;
+        setTags([...tags, currentTag.trim()]);
+        setCurrentTag('');
+    };
+
+    const handleRemoveTag = (indexToRemove) => {
+        setTags(tags.filter((_, index) => index !== indexToRemove));
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleAddTag(e);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            let specsJson = {};
-            try {
-                specsJson = JSON.parse(formData.specs);
-            } catch (e) {
-                alert('El campo Specs debe ser un JSON válido');
-                return;
-            }
-
             const payload = {
                 name: formData.name,
                 brand: formData.brand,
                 model: formData.model,
                 quantity: parseInt(formData.quantity),
                 acquisition_date: formData.acquisition_date,
-                specs: specsJson
+                specs: tags // Save as JSON array
             };
 
             if (currentItem) {
@@ -150,7 +176,7 @@ const Inventory = () => {
                 </div>
                 <button
                     onClick={() => handleOpenModal()}
-                    className="flex items-center gap-2 px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all shadow-lg shadow-cyan-900/20"
+                    className="flex items-center gap-2 px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all shadow-lg shadow-cyan-900/20 active:scale-95"
                 >
                     <Plus size={20} />
                     Nuevo Equipo
@@ -196,8 +222,34 @@ const Inventory = () => {
                                     <tr key={item.id} className="hover:bg-white/5 transition-colors group">
                                         <td className="p-4">
                                             <div className="font-bold text-white">{item.name}</div>
-                                            <div className="text-xs text-slate-500 font-mono mt-1 max-w-[200px] truncate">
-                                                {JSON.stringify(item.specs)}
+                                            <div className="flex flex-wrap gap-1 mt-2">
+                                                {(() => {
+                                                    const tags = Array.isArray(item.specs)
+                                                        ? item.specs
+                                                        : Object.entries(item.specs || {}).map(([k, v]) => `${k}: ${v}`);
+
+                                                    const visibleTags = tags.slice(0, 3);
+                                                    const remainingCount = tags.length - 3;
+
+                                                    return (
+                                                        <>
+                                                            {visibleTags.map((tag, idx) => (
+                                                                <span
+                                                                    key={idx}
+                                                                    className="px-2 py-0.5 bg-slate-800 text-slate-300 text-[10px] rounded-full border border-slate-700"
+                                                                    title={tag}
+                                                                >
+                                                                    {tag.length > 20 ? tag.substring(0, 20) + '...' : tag}
+                                                                </span>
+                                                            ))}
+                                                            {remainingCount > 0 && (
+                                                                <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] rounded-full border border-slate-700 font-bold">
+                                                                    +{remainingCount}
+                                                                </span>
+                                                            )}
+                                                        </>
+                                                    );
+                                                })()}
                                             </div>
                                         </td>
                                         <td className="p-4 text-slate-300">
@@ -213,16 +265,18 @@ const Inventory = () => {
                                             {new Date(item.acquisition_date).toLocaleDateString()}
                                         </td>
                                         <td className="p-4 text-right">
-                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => handleOpenModal(item)}
-                                                    className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors"
+                                                    className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors active:scale-95"
+                                                    title="Editar"
                                                 >
                                                     <Edit size={18} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(item.id)}
-                                                    className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors"
+                                                    className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors active:scale-95"
+                                                    title="Eliminar"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
@@ -244,7 +298,7 @@ const Inventory = () => {
                             <h2 className="text-xl font-bold text-white">
                                 {currentItem ? 'Editar Equipo' : 'Nuevo Equipo'}
                             </h2>
-                            <button onClick={handleCloseModal} className="text-slate-400 hover:text-white">
+                            <button onClick={handleCloseModal} className="text-slate-400 hover:text-white transition-colors">
                                 <X size={24} />
                             </button>
                         </div>
@@ -301,28 +355,60 @@ const Inventory = () => {
                                 </div>
                             </div>
 
+                            {/* Tags Input Section */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-1">Especificaciones (JSON)</label>
-                                <textarea
-                                    rows="4"
-                                    value={formData.specs}
-                                    onChange={(e) => setFormData({ ...formData, specs: e.target.value })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-cyan-500 transition-colors"
-                                    placeholder='{"potencia": "100W", "voltaje": "220V"}'
-                                />
+                                <label className="block text-sm font-medium text-slate-300 mb-2">Especificaciones / Etiquetas</label>
+                                <div className="bg-slate-950 border border-slate-800 rounded-lg p-4">
+                                    <div className="flex gap-2 mb-3">
+                                        <input
+                                            type="text"
+                                            value={currentTag}
+                                            onChange={(e) => setCurrentTag(e.target.value)}
+                                            onKeyDown={handleKeyDown}
+                                            placeholder="Escribe algo (ej. Potencia: 100W) y presiona Enter"
+                                            className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleAddTag}
+                                            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors active:scale-95"
+                                        >
+                                            <Plus size={18} />
+                                        </button>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2">
+                                        {tags.length === 0 && (
+                                            <span className="text-slate-600 text-xs italic">No hay etiquetas agregadas.</span>
+                                        )}
+                                        {tags.map((tag, index) => (
+                                            <div key={index} className="flex items-center gap-2 px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-cyan-400 text-sm">
+                                                <Tag size={12} />
+                                                <span>{tag}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveTag(index)}
+                                                    className="hover:text-white transition-colors"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="flex justify-end gap-4 pt-4 border-t border-slate-800">
                                 <button
                                     type="button"
                                     onClick={handleCloseModal}
-                                    className="px-6 py-3 text-slate-400 hover:text-white font-medium transition-colors"
+                                    className="px-6 py-3 text-slate-400 hover:text-white font-medium transition-colors active:scale-95"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all shadow-lg shadow-cyan-900/20 flex items-center gap-2"
+                                    className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all shadow-lg shadow-cyan-900/20 flex items-center gap-2 active:scale-95"
                                 >
                                     <Save size={20} />
                                     Guardar

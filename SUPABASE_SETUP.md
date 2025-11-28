@@ -111,6 +111,9 @@ using (auth.uid() = user_id);
 create policy "Usuarios insertan su propio historial"
 on public.history for insert
 with check (auth.uid() = user_id);
+
+-- 5. Agregar columna de descripción (Para contexto adicional)
+alter table public.history add column if not exists description text;
 ```
 
 ## 4. Ejecutar el Proyecto

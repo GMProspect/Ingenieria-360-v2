@@ -10,6 +10,7 @@ import Vibration from './pages/Vibration';
 import Transmitter from './pages/Transmitter';
 import Converter from './pages/Converter';
 import Login from './pages/Login';
+import History from './pages/History';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                   <Route path="/vibration" element={<Vibration />} />
                   <Route path="/transmitter" element={<Transmitter />} />
                   <Route path="/converter" element={<Converter />} />
+                  <Route path="/history" element={<History />} />
                 </Routes>
               </Layout>
             </AuthGuard>

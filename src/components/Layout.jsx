@@ -17,9 +17,11 @@ const Layout = ({ children }) => {
                     {children}
                 </div>
 
-                {/* Feedback Section at the bottom */}
-                <div id="feedback" className="relative z-1 mt-20 pt-10 border-t border-white/10">
-                    <FeedbackForm />
+                {/* Dedication Footer */}
+                <div className="relative z-1 mt-20 pt-10 border-t border-white/10 text-center pb-8">
+                    <p className="text-slate-500 text-sm italic">
+                        "Dedicado a todos los ingenieros y técnicos que día a día arriesgan su seguridad y esfuerzo para mantener el mundo en movimiento."
+                    </p>
                 </div>
             </main>
         </div>

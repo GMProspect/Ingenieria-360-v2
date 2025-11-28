@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/Auth';
 import useLocalStorage from '../hooks/useLocalStorage';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import ToolHeader from '../components/ToolHeader';
+import AdBanner from '../components/AdBanner';
 
 const OhmsLaw = () => {
     const { user } = useAuth();
@@ -202,6 +203,9 @@ const OhmsLaw = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* AdSense Banner */}
+                <AdBanner dataAdSlot="1234567890" />
 
                 <SaveCalculationSection
                     label={label}

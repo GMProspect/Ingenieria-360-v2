@@ -204,8 +204,8 @@ const Inventory = () => {
                 />
             </div>
 
-            {/* Table */}
-            <div className="bg-slate-900/50 rounded-2xl border border-white/5 overflow-hidden backdrop-blur-sm">
+            {/* Desktop Table View (hidden on mobile) */}
+            <div className="hidden md:block bg-slate-900/50 rounded-2xl border border-white/5 overflow-hidden backdrop-blur-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -297,6 +297,96 @@ const Inventory = () => {
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {/* Mobile Card View (hidden on desktop) */}
+            <div className="md:hidden space-y-4">
+                {loading ? (
+                    <div className="bg-slate-900/50 rounded-2xl border border-white/5 p-8 text-center text-slate-500 backdrop-blur-sm">
+                        Cargando inventario...
+                    </div>
+                ) : filteredItems.length === 0 ? (
+                    <div className="bg-slate-900/50 rounded-2xl border border-white/5 p-8 text-center text-slate-500 backdrop-blur-sm">
+                        No se encontraron equipos
+                    </div>
+                ) : (
+                    filteredItems.map((item) => (
+                        <div key={item.id} className="bg-slate-900/50 rounded-2xl border border-white/5 p-6 backdrop-blur-sm">
+                            {/* Header: Name and Actions */}
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex-1">
+                                    <h3 className="font-bold text-white text-lg">{item.name}</h3>
+                                    <div className="flex flex-wrap gap-1 mt-2">
+                                        {(() => {
+                                            const tags = Array.isArray(item.specs)
+                                                ? item.specs
+                                                : Object.entries(item.specs || {}).map(([k, v]) => `${k}: ${v}`);
+                                            const visibleTags = tags.slice(0, 3);
+                                            const remainingCount = tags.length - 3;
+                                            return (
+                                                <>
+                                                    {visibleTags.map((tag, idx) => (
+                                                        <span
+                                                            key={idx}
+                                                            className="px-2 py-0.5 bg-slate-800 text-slate-300 text-[10px] rounded-full border border-slate-700"
+                                                            title={tag}
+                                                        >
+                                                            {tag.length > 20 ? tag.substring(0, 20) + '...' : tag}
+                                                        </span>
+                                                    ))}
+                                                    {remainingCount > 0 && (
+                                                        <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] rounded-full border border-slate-700 font-bold">
+                                                            +{remainingCount}
+                                                        </span>
+                                                    )}
+                                                </>
+                                            );
+                                        })()}
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2 ml-4">
+                                    <button
+                                        onClick={() => handleOpenModal(item)}
+                                        className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors active:scale-95"
+                                        title="Editar"
+                                    >
+                                        <Edit size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(item.id)}
+                                        className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors active:scale-95"
+                                        title="Eliminar"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Details Grid */}
+                            <div className="space-y-3">
+                                <div>
+                                    <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Marca / Modelo</div>
+                                    <div className="text-white font-medium">{item.brand}</div>
+                                    <div className="text-sm text-slate-400">{item.model}</div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Cantidad</div>
+                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${item.quantity > 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                            {item.quantity} Unidades
+                                        </span>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Adquisición</div>
+                                        <div className="text-slate-400 text-sm">
+                                            {item.acquisition_date ? new Date(item.acquisition_date + 'T00:00:00').toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-'}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
 
             <InventoryModal

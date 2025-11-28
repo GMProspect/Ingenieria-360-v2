@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Database, Zap, Activity, Gauge, RefreshCw } from 'lucide-react';
 import HomeCraneIcon from '../components/HomeCraneIcon';
+import FeedbackForm from '../components/FeedbackForm';
 
 const Home = () => {
     const tools = [
@@ -50,6 +51,11 @@ const Home = () => {
                         </Link>
                     );
                 })}
+            </div>
+
+            {/* Feedback Section */}
+            <div className="w-full max-w-2xl px-4 mb-16 animate-fade-in-up delay-200">
+                <FeedbackForm />
             </div>
 
             {/* Footer */}

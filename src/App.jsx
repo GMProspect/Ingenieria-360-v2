@@ -11,6 +11,8 @@ import Transmitter from './pages/Transmitter';
 import Converter from './pages/Converter';
 import Login from './pages/Login';
 import History from './pages/History';
+import FeedbackList from './pages/FeedbackList';
+import AdminGuard from './components/AdminGuard';
 
 function App() {
   return (
@@ -30,6 +32,11 @@ function App() {
                   <Route path="/transmitter" element={<Transmitter />} />
                   <Route path="/converter" element={<Converter />} />
                   <Route path="/history" element={<History />} />
+                  <Route path="/feedback" element={
+                    <AdminGuard>
+                      <FeedbackList />
+                    </AdminGuard>
+                  } />
                 </Routes>
               </Layout>
             </AuthGuard>

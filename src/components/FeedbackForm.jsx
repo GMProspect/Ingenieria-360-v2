@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { supabase } from '../supabase';
+import { useAuth } from '../contexts/Auth';
 
 const FeedbackForm = () => {
+    const { user } = useAuth();
     const [message, setMessage] = useState('');
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(null); // 'success', 'error', null
+
+    useEffect(() => {
+        if (user?.email) {
+            setEmail(user.email);
+        }
+    }, [user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,13 +26,18 @@ const FeedbackForm = () => {
         try {
             const { error } = await supabase
                 .from('feedback')
-                .insert([{ message, email, created_at: new Date() }]);
+                .insert([{
+                    message,
+                    email: user?.email || email, // Prefer auth email
+                    user_id: user?.id, // Optional: link to user ID if table supports it
+                    created_at: new Date()
+                }]);
 
             if (error) throw error;
 
             setStatus('success');
             setMessage('');
-            setEmail('');
+            if (!user) setEmail(''); // Only clear email if not logged in
         } catch (error) {
             console.error('Error sending feedback:', error);
             setStatus('error');
@@ -39,16 +52,18 @@ const FeedbackForm = () => {
             <p className="text-slate-400 mb-6">Ayúdanos a mejorar Ingeniería 360. Tus comentarios son valiosos.</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">Tu Email (Opcional)</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                        placeholder="ingeniero@ejemplo.com"
-                    />
-                </div>
+                {!user && (
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Tu Email (Opcional)</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                            placeholder="ingeniero@ejemplo.com"
+                        />
+                    </div>
+                )}
 
                 <div>
                     <label className="block text-sm font-medium text-slate-300 mb-1">Mensaje</label>

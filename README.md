@@ -1,16 +1,70 @@
-# React + Vite
+# 🏗️ Ingeniería 360 v2
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Entorno Técnico Inteligente para Ingenieros de Campo**
 
-Currently, two official plugins are available:
+> *Una suite de herramientas de ingeniería moderna, rápida y segura.*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Ingeniería 360 Banner](https://via.placeholder.com/1200x400?text=Ingenieria+360+v2)
 
-## React Compiler
+## 📋 Descripción
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Ingeniería 360 v2** es una aplicación web progresiva (PWA) diseñada para asistir a ingenieros y técnicos en sus tareas diarias. Combina calculadoras técnicas precisas con una gestión de inventario robusta, todo bajo una interfaz moderna estilo *Cyberpunk* que prioriza la usabilidad y la estética.
 
-## Expanding the ESLint configuration
+Esta versión **v2** ha sido reescrita desde cero utilizando tecnologías web modernas para garantizar escalabilidad, rendimiento y una experiencia de usuario premium.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Características Principales
+
+*   **🔐 Autenticación Segura**: Inicio de sesión exclusivo con **Google OAuth** (vía Supabase).
+*   **📦 Gestión de Inventario**: Base de datos de equipos con especificaciones técnicas y fotos.
+*   **⚡ Ley de Ohm Interactiva**: Calculadora visual triangular para voltaje, corriente y resistencia.
+*   **📡 Transmisor 4-20mA**: Conversión y escalado de señales de instrumentación (PV ↔ mA).
+*   **〰️ Análisis de Vibración**: Conversión de voltaje de GAP a distancia (Mils/Micras) según norma API 670.
+*   **🔄 Conversor Universal**: Herramienta todo en uno para presión, temperatura, longitud y peso.
+*   **💾 Historial en la Nube**: Todos los cálculos se guardan automáticamente en la nube, aislados por usuario.
+
+## 🛠️ Stack Tecnológico
+
+Este proyecto ha sido construido con las mejores herramientas del ecosistema React:
+
+*   **Frontend**: [React](https://react.dev/) + [Vite](https://vitejs.dev/)
+*   **Estilos**: [Tailwind CSS](https://tailwindcss.com/) (Diseño responsivo y tema oscuro)
+*   **Iconos**: [Lucide React](https://lucide.dev/) + SVG Customizados
+*   **Backend & Auth**: [Supabase](https://supabase.com/) (PostgreSQL + Auth + Storage)
+*   **Navegación**: React Router v6
+
+## 🚀 Instalación y Despliegue
+
+### Requisitos Previos
+*   Node.js (v18+)
+*   Cuenta en Supabase (para las variables de entorno)
+
+### Pasos
+1.  Clonar el repositorio:
+    ```bash
+    git clone https://github.com/GMProspect/Ingenieria-360-v2.git
+    cd Ingenieria-360-v2
+    ```
+
+2.  Instalar dependencias:
+    ```bash
+    npm install
+    ```
+
+3.  Configurar variables de entorno (`.env`):
+    ```env
+    VITE_SUPABASE_URL=tu_url_de_supabase
+    VITE_SUPABASE_ANON_KEY=tu_clave_anonima
+    ```
+
+4.  Iniciar servidor de desarrollo:
+    ```bash
+    npm run dev
+    ```
+
+## 👤 Autor
+
+**Gustavo Matheus**
+*   Ingeniero de Proyecto & Desarrollador Full Stack
+
+---
+© 2025 Ingeniería 360. Todos los derechos reservados.

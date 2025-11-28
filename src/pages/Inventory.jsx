@@ -271,7 +271,7 @@ const Inventory = () => {
                                             </span>
                                         </td>
                                         <td className="p-4 text-slate-400 text-sm">
-                                            {new Date(item.acquisition_date).toLocaleDateString()}
+                                            {item.acquisition_date ? new Date(item.acquisition_date + 'T00:00:00').toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-'}
                                         </td>
                                         <td className="p-4 text-right">
                                             <div className="flex items-center justify-end gap-2">

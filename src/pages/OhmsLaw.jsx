@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Zap, Save, Trash2, Activity, Gauge, RotateCcw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Zap, Gauge, Activity } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import useLocalStorage from '../hooks/useLocalStorage';
+import SaveCalculationSection from '../components/SaveCalculationSection';
+import ToolHeader from '../components/ToolHeader';
 
 const OhmsLaw = () => {
     // Use local storage for persistence
@@ -13,6 +15,7 @@ const OhmsLaw = () => {
     // Track which field is being edited to avoid overwriting it
     const [activeField, setActiveField] = useState(null);
     const [label, setLabel] = useState('');
+    const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
 
     const handleInputChange = (e, field) => {
@@ -25,12 +28,8 @@ const OhmsLaw = () => {
         if (field === 'resistance') setResistance(val);
 
         // SMART CLEARING LOGIC:
-        // If the user clears a field, we must clear the dependent field to avoid "ghost" values.
-        // We assume that if you clear a value, you are breaking the current calculation.
         if (val === '') {
             if (field === 'voltage') {
-                // If V is cleared, and we have R, clear I (because I depended on V/R)
-                // Or if we have I, clear R.
                 if (resistance) setCurrent('');
                 else if (current) setResistance('');
             }
@@ -49,7 +48,6 @@ const OhmsLaw = () => {
         if (isNaN(numVal)) return;
 
         // CALCULATION LOGIC:
-
         if (field === 'voltage') {
             const r = parseFloat(resistance);
             const i = parseFloat(current);
@@ -86,6 +84,7 @@ const OhmsLaw = () => {
         setCurrent('');
         setResistance('');
         setLabel('');
+        setDescription('');
         setActiveField(null);
     };
 
@@ -99,6 +98,7 @@ const OhmsLaw = () => {
             const { error } = await supabase.from('history').insert([{
                 tool_name: 'Ley de Ohm',
                 label: label,
+                description: description,
                 data: {
                     voltage, current, resistance
                 }
@@ -106,6 +106,7 @@ const OhmsLaw = () => {
             if (error) throw error;
             alert('Cálculo guardado correctamente.');
             setLabel('');
+            setDescription('');
         } catch (error) {
             console.error('Error saving:', error);
             alert('Error al guardar.');
@@ -118,26 +119,14 @@ const OhmsLaw = () => {
         <div className="max-w-4xl mx-auto p-6">
             <BackButton />
 
-            <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-yellow-500/20 rounded-xl text-yellow-400">
-                        <Zap size={32} />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold text-white">Ley de Ohm</h1>
-                        <p className="text-slate-400">Calculadora Automática (Triángulo)</p>
-                    </div>
-                </div>
-
-                {/* Visible Reset Button */}
-                <button
-                    onClick={clearAll}
-                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-lg transition-all border border-slate-700 hover:border-red-500/50"
-                >
-                    <RotateCcw size={18} />
-                    <span className="font-bold text-sm">Reiniciar</span>
-                </button>
-            </div>
+            <ToolHeader
+                title="Ley de Ohm"
+                subtitle="Calculadora Automática (Triángulo)"
+                icon={Zap}
+                iconColorClass="text-yellow-400"
+                iconBgClass="bg-yellow-500/20"
+                onReset={clearAll}
+            />
 
             <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
 
@@ -154,10 +143,8 @@ const OhmsLaw = () => {
                         </div>
                     </div>
 
-                    {/* Dividers - Adjusted Widths */}
-                    {/* Horizontal Divider: At 50% height, width is 50% of base (250px) */}
+                    {/* Dividers */}
                     <div className="absolute top-[216px] w-[220px] h-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
-                    {/* Vertical Divider */}
                     <div className="absolute top-[216px] bottom-[17px] w-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
 
                     {/* TOP SECTION: VOLTAGE */}
@@ -203,34 +190,15 @@ const OhmsLaw = () => {
                     </div>
                 </div>
 
-                {/* Save Section */}
-                <div className="mt-8 bg-slate-950 rounded-xl border border-slate-800 p-6">
-                    <div className="flex items-center gap-2 mb-4 text-slate-400 border-b border-slate-800 pb-2">
-                        <Save size={18} />
-                        <h3 className="font-bold uppercase tracking-wider text-xs">Guardar en Historial</h3>
-                    </div>
-
-                    <div className="flex flex-col md:flex-row gap-4 items-end">
-                        <div className="flex-1 w-full">
-                            <label className="block text-xs font-medium text-slate-500 mb-1">Etiqueta (Ej: Motor Principal)</label>
-                            <input
-                                type="text"
-                                value={label}
-                                onChange={(e) => setLabel(e.target.value)}
-                                placeholder="Nombre para identificar este cálculo..."
-                                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors"
-                            />
-                        </div>
-                        <button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="w-full md:w-auto px-6 py-2.5 bg-slate-800 hover:bg-purple-600 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 border border-slate-700 hover:border-purple-500"
-                        >
-                            <Save size={18} />
-                            {saving ? 'Guardando...' : 'Guardar'}
-                        </button>
-                    </div>
-                </div>
+                <SaveCalculationSection
+                    label={label}
+                    setLabel={setLabel}
+                    description={description}
+                    setDescription={setDescription}
+                    onSave={handleSave}
+                    onClear={clearAll}
+                    saving={saving}
+                />
 
             </div>
         </div>

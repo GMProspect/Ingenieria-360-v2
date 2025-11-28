@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Database, Plus, Search, Trash2, Edit, X, Save, Tag } from 'lucide-react';
+import { Database, Plus, Search, Trash2, Edit } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
+import InventoryModal from '../components/inventory/InventoryModal';
 
 const Inventory = () => {
     const [items, setItems] = useState([]);
@@ -290,134 +291,20 @@ const Inventory = () => {
                 </div>
             </div>
 
-            {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                    <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-                        <div className="p-6 border-b border-slate-800 flex justify-between items-center sticky top-0 bg-slate-900 z-10">
-                            <h2 className="text-xl font-bold text-white">
-                                {currentItem ? 'Editar Equipo' : 'Nuevo Equipo'}
-                            </h2>
-                            <button onClick={handleCloseModal} className="text-slate-400 hover:text-white transition-colors">
-                                <X size={24} />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-1">Nombre</label>
-                                    <input
-                                        required
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-1">Marca</label>
-                                    <input
-                                        type="text"
-                                        value={formData.brand}
-                                        onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-1">Modelo</label>
-                                    <input
-                                        type="text"
-                                        value={formData.model}
-                                        onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-1">Cantidad</label>
-                                    <input
-                                        required
-                                        type="number"
-                                        min="0"
-                                        value={formData.quantity}
-                                        onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-1">Fecha de Adquisición</label>
-                                    <input
-                                        type="date"
-                                        value={formData.acquisition_date}
-                                        onChange={(e) => setFormData({ ...formData, acquisition_date: e.target.value })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Tags Input Section */}
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Especificaciones / Etiquetas</label>
-                                <div className="bg-slate-950 border border-slate-800 rounded-lg p-4">
-                                    <div className="flex gap-2 mb-3">
-                                        <input
-                                            type="text"
-                                            value={currentTag}
-                                            onChange={(e) => setCurrentTag(e.target.value)}
-                                            onKeyDown={handleKeyDown}
-                                            placeholder="Escribe algo (ej. Potencia: 100W) y presiona Enter"
-                                            className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={handleAddTag}
-                                            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors active:scale-95"
-                                        >
-                                            <Plus size={18} />
-                                        </button>
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-2">
-                                        {tags.length === 0 && (
-                                            <span className="text-slate-600 text-xs italic">No hay etiquetas agregadas.</span>
-                                        )}
-                                        {tags.map((tag, index) => (
-                                            <div key={index} className="flex items-center gap-2 px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-cyan-400 text-sm">
-                                                <Tag size={12} />
-                                                <span>{tag}</span>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleRemoveTag(index)}
-                                                    className="hover:text-white transition-colors"
-                                                >
-                                                    <X size={14} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end gap-4 pt-4 border-t border-slate-800">
-                                <button
-                                    type="button"
-                                    onClick={handleCloseModal}
-                                    className="px-6 py-3 text-slate-400 hover:text-white font-medium transition-colors active:scale-95"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all shadow-lg shadow-cyan-900/20 flex items-center gap-2 active:scale-95"
-                                >
-                                    <Save size={20} />
-                                    Guardar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            <InventoryModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onSubmit={handleSubmit}
+                formData={formData}
+                setFormData={setFormData}
+                isEditing={!!currentItem}
+                tags={tags}
+                currentTag={currentTag}
+                setCurrentTag={setCurrentTag}
+                onAddTag={handleAddTag}
+                onRemoveTag={handleRemoveTag}
+                onKeyDown={handleKeyDown}
+            />
         </div>
     );
 };

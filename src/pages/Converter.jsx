@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Save, ArrowRightLeft, RotateCcw, Gauge, Thermometer, Ruler, Scale, Beaker } from 'lucide-react';
+import { RefreshCw, ArrowRightLeft, Gauge, Thermometer, Ruler, Scale, Beaker } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import useLocalStorage from '../hooks/useLocalStorage';
+import ToolHeader from '../components/ToolHeader';
+import SaveCalculationSection from '../components/SaveCalculationSection';
 
 const Converter = () => {
     const [category, setCategory] = useLocalStorage('conv_cat', 'pressure');
@@ -153,25 +155,14 @@ const Converter = () => {
         <div className="max-w-5xl mx-auto p-6">
             <BackButton />
 
-            <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-blue-500/20 rounded-xl text-blue-400">
-                        <RefreshCw size={32} />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold text-white">Conversor Universal</h1>
-                        <p className="text-slate-400">Transforma unidades de ingeniería en tiempo real</p>
-                    </div>
-                </div>
-
-                <button
-                    onClick={clearAll}
-                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-lg transition-all border border-slate-700 hover:border-red-500/50"
-                >
-                    <RotateCcw size={18} />
-                    <span className="font-bold text-sm">Reiniciar</span>
-                </button>
-            </div>
+            <ToolHeader
+                title="Conversor Universal"
+                subtitle="Transforma unidades de ingeniería en tiempo real"
+                icon={RefreshCw}
+                iconColorClass="text-blue-400"
+                iconBgClass="bg-blue-500/20"
+                onReset={clearAll}
+            />
 
             <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
 
@@ -247,55 +238,15 @@ const Converter = () => {
                     </div>
                 </div>
 
-                {/* Save Section */}
-                <div className="mt-12 bg-slate-950 rounded-xl border border-slate-800 p-6">
-                    <div className="flex items-center gap-2 mb-4 text-slate-400 border-b border-slate-800 pb-2">
-                        <Save size={18} />
-                        <h3 className="font-bold uppercase tracking-wider text-xs">Guardar en Historial</h3>
-                    </div>
-
-                    <div className="flex flex-col gap-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Etiqueta</label>
-                                <input
-                                    type="text"
-                                    value={label}
-                                    onChange={(e) => setLabel(e.target.value)}
-                                    placeholder="Ej. Conversión Válvula"
-                                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none focus:border-purple-500 transition-colors"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Descripción</label>
-                                <textarea
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Notas adicionales..."
-                                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none focus:border-purple-500 h-[50px] resize-none pt-3 transition-colors"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex gap-4">
-                            <button
-                                onClick={clearAll}
-                                className="flex-1 py-3 rounded-xl bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white transition-all font-bold flex items-center justify-center gap-2 border border-slate-800"
-                            >
-                                <RotateCcw size={20} />
-                                Limpiar
-                            </button>
-                            <button
-                                onClick={handleSave}
-                                disabled={saving}
-                                className="flex-[2] py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold shadow-lg shadow-purple-500/20 transition-all flex items-center justify-center gap-2"
-                            >
-                                <Save size={20} />
-                                {saving ? 'Guardando...' : 'Guardar Conversión'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <SaveCalculationSection
+                    label={label}
+                    setLabel={setLabel}
+                    description={description}
+                    setDescription={setDescription}
+                    onSave={handleSave}
+                    onClear={clearAll}
+                    saving={saving}
+                />
 
             </div>
         </div>

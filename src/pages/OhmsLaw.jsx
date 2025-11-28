@@ -160,8 +160,8 @@ const OhmsLaw = () => {
                         {/* Vertical: top 190px, left 220px, height 190px */}
                         <div className="absolute top-[190px] left-[220px] w-1 h-[190px] bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
 
-                        {/* TOP SECTION: VOLTAGE (Top 70px, Left 160px) */}
-                        <div className="absolute top-[70px] left-[160px] w-[120px] flex flex-col items-center z-10">
+                        {/* TOP SECTION: VOLTAGE (Centered horizontally) */}
+                        <div className="absolute top-[70px] left-1/2 -translate-x-1/2 flex flex-col items-center z-10">
                             <label className="text-yellow-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
                                 <Zap size={20} /> V
                             </label>
@@ -174,8 +174,8 @@ const OhmsLaw = () => {
                             />
                         </div>
 
-                        {/* BOTTOM LEFT: RESISTANCE (Top 250px, Left 50px for center alignment) */}
-                        <div className="absolute top-[250px] left-[50px] w-[120px] flex flex-col items-center z-10">
+                        {/* BOTTOM LEFT: RESISTANCE (Centered in left half: ~25% of width) */}
+                        <div className="absolute top-[250px] left-[25%] -translate-x-1/2 flex flex-col items-center z-10">
                             <label className="text-purple-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
                                 <Gauge size={20} /> R
                             </label>
@@ -188,8 +188,8 @@ const OhmsLaw = () => {
                             />
                         </div>
 
-                        {/* BOTTOM RIGHT: CURRENT (Top 250px, Left 270px for center alignment) */}
-                        <div className="absolute top-[250px] left-[270px] w-[120px] flex flex-col items-center z-10">
+                        {/* BOTTOM RIGHT: CURRENT (Centered in right half: ~75% of width) */}
+                        <div className="absolute top-[250px] left-[75%] -translate-x-1/2 flex flex-col items-center z-10">
                             <label className="text-cyan-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
                                 <Activity size={20} /> I
                             </label>

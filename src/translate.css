@@ -1,5 +1,8 @@
-/* Hide Google Translate branding and customize */
-.goog-te-banner-frame.skiptranslate {
+/* Hide ALL Google Translate UI elements */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget,
+#goog-gt-tt,
+.goog-te-balloon-frame {
     display: none !important;
 }
 
@@ -8,29 +11,21 @@ body {
 }
 
 #google_translate_element {
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(34, 211, 238, 0.3);
-    border-radius: 0.5rem;
-    padding: 0.25rem 0.5rem;
+    display: none !important;
 }
 
-#google_translate_element select {
-    background: transparent;
-    color: #22d3ee;
-    border: none;
-    font-size: 14px;
-    outline: none;
-    cursor: pointer;
+/* Hide the annoying top banner */
+body>.skiptranslate {
+    display: none !important;
 }
 
-#google_translate_element select:hover {
-    color: #06b6d4;
+iframe.skiptranslate {
+    display: none !important;
 }
 
 /* Mobile adjustments */
 @media (max-width: 640px) {
-    #google_translate_element {
-        font-size: 12px;
+    .goog-te-banner-frame {
+        display: none !important;
     }
 }

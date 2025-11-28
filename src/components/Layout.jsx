@@ -13,13 +13,16 @@ const Layout = ({ children }) => {
             <main className="w-full min-h-screen relative overflow-hidden transition-all duration-300">
 
                 {/* Top Bar / Header for Mobile Toggle */}
-                <div className="fixed top-0 left-0 right-0 z-30 p-4 flex items-center pointer-events-none">
+                <div className="fixed top-0 left-0 right-0 z-30 p-4 flex items-center justify-between pointer-events-none">
                     <button
                         onClick={() => setIsSidebarOpen(true)}
                         className="pointer-events-auto p-2 bg-slate-900/50 backdrop-blur-md border border-cyan-500/30 rounded-lg text-cyan-400 hover:bg-cyan-500/20 hover:text-cyan-300 transition-all shadow-[0_0_15px_rgba(34,211,238,0.1)]"
                     >
                         <Menu size={24} />
                     </button>
+
+                    {/* Google Translate */}
+                    <div id="google_translate_element" className="pointer-events-auto"></div>
                 </div>
 
                 {/* Background effects */}

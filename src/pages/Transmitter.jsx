@@ -81,6 +81,25 @@ const Transmitter = () => {
         return Math.min(Math.max(percent, 0), 100);
     };
 
+    // Validation: Check for inverted range
+    const isRangeInverted = () => {
+        const low = parseFloat(rangeLow);
+        const high = parseFloat(rangeHigh);
+        return !isNaN(low) && !isNaN(high) && low >= high;
+    };
+
+    // Validation: Check mA diagnostic status
+    const getMaDiagnostic = () => {
+        const ma = parseFloat(inputMa);
+        if (isNaN(ma) || inputMa === '') return null;
+
+        if (ma < 3.8) return { type: 'error', message: '⚠️ Error Crítico: Cortocircuito o falla de alimentación (< 3.8 mA)' };
+        if (ma < 4) return { type: 'warning', message: '⚠️ Underrange: Sensor fuera de rango bajo (3.8 - 4.0 mA)' };
+        if (ma > 23) return { type: 'error', message: '⚠️ Error Crítico: Cable abierto o saturación (> 23 mA)' };
+        if (ma > 20) return { type: 'warning', message: '⚠️ Overrange: Sensor fuera de rango alto (20 - 23 mA)' };
+        return { type: 'ok', message: '✅ Rango normal (4-20 mA)' };
+    };
+
     const clearAll = () => {
         setInputMa('');
         setInputPv('');
@@ -234,6 +253,30 @@ const Transmitter = () => {
                             {getPercentage().toFixed(1)}%
                         </div>
                     </div>
+
+                    {/* Validation Warnings */}
+                    {isRangeInverted() && (
+                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg animate-pulse">
+                            <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
+                                ⚠️ <span>Rango Invertido: El mínimo ({rangeLow}) es mayor o igual al máximo ({rangeHigh})</span>
+                            </p>
+                        </div>
+                    )}
+
+                    {getMaDiagnostic() && getMaDiagnostic().type !== 'ok' && (
+                        <div className={`mt-4 p-3 rounded-lg border flex items-center gap-2 ${getMaDiagnostic().type === 'error'
+                                ? 'bg-red-500/10 border-red-500/30'
+                                : 'bg-yellow-500/10 border-yellow-500/30'
+                            }`}>
+                            <span className="text-lg">⚠️</span>
+                            <p className={`text-sm font-semibold ${getMaDiagnostic().type === 'error'
+                                    ? 'text-red-400'
+                                    : 'text-yellow-400'
+                                }`}>
+                                {getMaDiagnostic().message}
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* 3. Checkpoints Table */}

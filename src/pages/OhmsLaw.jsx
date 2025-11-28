@@ -155,10 +155,10 @@ const OhmsLaw = () => {
                         </div>
 
                         {/* Dividers */}
-                        {/* Horizontal divider - centered, 50% width */}
-                        <div className="absolute top-[190px] left-1/2 -translate-x-1/2 w-1/2 h-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
-                        {/* Vertical divider - full height from top to bottom */}
-                        <div className="absolute top-0 left-1/2 w-1 h-full bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
+                        {/* Horizontal divider - FULL WIDTH from edge to edge */}
+                        <div className="absolute top-[190px] left-0 w-full h-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
+                        {/* Vertical divider - from horizontal line to bottom */}
+                        <div className="absolute top-[190px] left-1/2 w-1 h-[190px] bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
 
                         {/* TOP SECTION: VOLTAGE (Centered horizontally) */}
                         <div className="absolute top-[70px] left-1/2 -translate-x-1/2 flex flex-col items-center z-10">

@@ -13,6 +13,8 @@ import WrenchConverter from './pages/WrenchConverter';
 import Login from './pages/Login';
 import History from './pages/History';
 import FeedbackList from './pages/FeedbackList';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import AdminGuard from './components/AdminGuard';
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
                       <FeedbackList />
                     </AdminGuard>
                   } />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms-of-service" element={<TermsOfService />} />
                 </Routes>
               </Layout>
             </AuthGuard>

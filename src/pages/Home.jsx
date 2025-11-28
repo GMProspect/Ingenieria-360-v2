@@ -60,8 +60,19 @@ const Home = () => {
             </div>
 
             {/* Footer */}
-            <footer className="mt-auto text-xs text-slate-600 font-mono">
-                Creado por <span className="text-cyan-600 font-bold">Gustavo Matheus</span> | Ingeniería 360 © 2025
+            <footer className="mt-auto text-xs text-slate-600 font-mono space-y-2">
+                <div className="flex justify-center gap-4 mb-2">
+                    <Link to="/privacy-policy" className="hover:text-cyan-400 transition-colors">
+                        Privacy Policy
+                    </Link>
+                    <span>•</span>
+                    <Link to="/terms-of-service" className="hover:text-cyan-400 transition-colors">
+                        Terms of Service
+                    </Link>
+                </div>
+                <div>
+                    Creado por <span className="text-cyan-600 font-bold">Gustavo Matheus</span> | Ingeniería 360 © 2025
+                </div>
             </footer>
 
         </div>

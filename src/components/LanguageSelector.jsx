@@ -32,11 +32,11 @@ const LanguageSelector = () => {
     };
 
     return (
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative pointer-events-auto" ref={dropdownRef}>
             {/* Botón principal */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="pointer-events-auto flex items-center gap-2 px-3 py-2 bg-slate-900/50 backdrop-blur-md border border-cyan-500/30 rounded-lg text-cyan-400 hover:bg-cyan-500/20 hover:text-cyan-300 transition-all shadow-[0_0_15px_rgba(34,211,238,0.1)]"
+                className="flex items-center gap-2 px-3 py-2 bg-slate-900/50 backdrop-blur-md border border-cyan-500/30 rounded-lg text-cyan-400 hover:bg-cyan-500/20 hover:text-cyan-300 transition-all shadow-[0_0_15px_rgba(34,211,238,0.1)]"
             >
                 <Globe size={18} />
                 <span className="text-2xl">{currentLang.flag}</span>
@@ -45,14 +45,14 @@ const LanguageSelector = () => {
 
             {/* Dropdown */}
             {isOpen && (
-                <div className="absolute top-full right-0 mt-2 w-48 bg-slate-900/95 backdrop-blur-md border border-cyan-500/30 rounded-lg shadow-xl overflow-hidden">
+                <div className="absolute top-full right-0 mt-2 w-48 bg-slate-900/95 backdrop-blur-md border border-cyan-500/30 rounded-lg shadow-xl overflow-hidden z-50">
                     {languages.map((lang) => (
                         <button
                             key={lang.code}
                             onClick={() => handleLanguageChange(lang.code)}
                             className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${currentLang.code === lang.code
-                                    ? 'bg-cyan-500/20 text-cyan-300'
-                                    : 'text-slate-300 hover:bg-slate-800/50'
+                                ? 'bg-cyan-500/20 text-cyan-300'
+                                : 'text-slate-300 hover:bg-slate-800/50'
                                 }`}
                         >
                             <span className="text-2xl">{lang.flag}</span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Database, Zap, Activity, Gauge, RefreshCw } from 'lucide-react';
+import { Database, Zap, Activity, Gauge, RefreshCw, Wrench } from 'lucide-react';
 import HomeCraneIcon from '../components/HomeCraneIcon';
 import FeedbackForm from '../components/FeedbackForm';
 
@@ -10,6 +10,7 @@ const Home = () => {
         { path: '/ohms-law', name: 'Ley de Ohm', icon: Zap, desc: 'Cálculo de V, I, R con interfaz triangular.' },
         { path: '/transmitter', name: 'Transmisor 4-20mA', icon: Gauge, desc: 'Conversión de señales de instrumentación.' },
         { path: '/vibration', name: 'Sondas de Vibración', icon: Activity, desc: 'API 670: Voltaje de GAP a Mils/Micras.' },
+        { path: '/wrench-converter', name: 'Medidas de Llaves', icon: Wrench, desc: 'Tabla Maestra: Tuercas (M) vs Llaves (mm/pulg).' },
         { path: '/converter', name: 'Conversor Universal', icon: RefreshCw, desc: 'Presión, Temperatura, Longitud y Peso.' },
     ];
 

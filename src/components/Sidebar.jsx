@@ -1,25 +1,23 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Database, Zap, Activity, Gauge, RefreshCw, History as HistoryIcon, LogOut, X, MessageSquare } from 'lucide-react';
+import { Home, Database, Zap, Activity, Gauge, RefreshCw, History as HistoryIcon, LogOut, X, MessageSquare, Wrench } from 'lucide-react';
 import { useAuth } from '../contexts/Auth';
 
 const Sidebar = ({ isOpen, onClose }) => {
     const location = useLocation();
-    const { signOut } = useAuth();
+    const { signOut, user } = useAuth();
+    const ADMIN_EMAIL = 'gustavomatheus2812@gmail.com';
 
     const links = [
         { path: '/', name: 'Inicio', icon: Home },
         { path: '/transmitter', name: 'Transmisor 4-20mA', icon: Gauge },
         { path: '/inventory', name: 'Inventario', icon: Database },
         { path: '/ohms-law', name: 'Ley de Ohm', icon: Zap },
-        { path: '/vibration', name: 'Sonda Vibración', icon: Activity },
+        { path: '/vibration', name: 'Sondas de Vibración', icon: Activity },
+        { path: '/wrench-converter', name: 'Medidas Llaves', icon: Wrench },
         { path: '/converter', name: 'Conversor Universal', icon: RefreshCw },
         { path: '/history', name: 'Historial', icon: HistoryIcon },
     ];
-
-    // Add Feedback link only for Admin
-    const ADMIN_EMAIL = 'gustavomatheus2812@gmail.com';
-    const { user } = useAuth();
 
     if (user?.email === ADMIN_EMAIL) {
         links.push({ path: '/feedback', name: 'Feedback', icon: MessageSquare });

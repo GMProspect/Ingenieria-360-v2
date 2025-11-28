@@ -56,7 +56,14 @@ const Login = () => {
                 </div>
 
                 <div className="mt-8 text-xs text-slate-500">
-                    Al continuar, aceptas nuestros términos y condiciones.
+                    Al continuar, aceptas nuestros{' '}
+                    <a href="/terms-of-service" className="text-cyan-500 hover:text-cyan-400 hover:underline transition-colors">
+                        términos y condiciones
+                    </a>
+                    {' '}y{' '}
+                    <a href="/privacy-policy" className="text-cyan-500 hover:text-cyan-400 hover:underline transition-colors">
+                        política de privacidad
+                    </a>.
                 </div>
             </div>
         </div>

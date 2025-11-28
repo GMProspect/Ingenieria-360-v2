@@ -104,7 +104,7 @@ const Transmitter = () => {
             setDescription('');
         } catch (error) {
             console.error('Error saving:', error);
-            alert('Error al guardar.');
+            alert(`Error al guardar: ${error.message || error.error_description || 'Detalles desconocidos'}`);
         } finally {
             setSaving(false);
         }

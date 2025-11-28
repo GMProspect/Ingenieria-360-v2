@@ -131,17 +131,90 @@ const OhmsLaw = () => {
                 subtitle="Calculadora Automática (Triángulo)"
                 icon={Zap}
                 iconColorClass="text-yellow-400"
-                label={label}
-                setLabel={setLabel}
-                description={description}
-                setDescription={setDescription}
-                onSave={handleSave}
-                onClear={clearAll}
-                saving={saving}
+                iconBgClass="bg-yellow-500/20"
+                onReset={clearAll}
             />
 
+            <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
+
+                {/* Triangle Container - Exact dimensions from original project (440x380) */}
+                <div className="relative w-full max-w-[440px] mx-auto h-[300px] md:h-[380px] mb-12 flex justify-center items-center overflow-hidden">
+
+                    {/* Scaled Wrapper for Mobile */}
+                    <div className="transform scale-[0.65] sm:scale-[0.8] md:scale-100 origin-center w-[440px] h-[380px] relative flex justify-center items-center">
+
+                        {/* The Triangle Shape (Background) */}
+                        <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+                            <div className="w-0 h-0 
+                                border-l-[220px] border-l-transparent 
+                                border-r-[220px] border-r-transparent 
+                                border-b-[380px] border-b-slate-800/50 
+                                filter drop-shadow-[0_0_15px_rgba(0,242,255,0.1)]">
+                            </div>
+                        </div>
+
+                        {/* Dividers */}
+                        {/* Horizontal: top 190px, left 110px, width 220px */}
+                        <div className="absolute top-[190px] left-[110px] w-[220px] h-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
+                        {/* Vertical: top 190px, left 220px, height 190px */}
+                        <div className="absolute top-[190px] left-[220px] w-1 h-[190px] bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
+
+                        {/* TOP SECTION: VOLTAGE (Top 70px, Left 160px) */}
+                        <div className="absolute top-[70px] left-[160px] w-[120px] flex flex-col items-center z-10">
+                            <label className="text-yellow-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
+                                <Zap size={20} /> V
+                            </label>
+                            <input
+                                type="number"
+                                value={voltage}
+                                onChange={(e) => handleInputChange(e, 'voltage')}
+                                placeholder="?"
+                                className="w-[100px] bg-slate-950/80 border-2 border-yellow-500/50 rounded-xl px-2 py-2 text-center text-xl font-bold text-white focus:outline-none focus:border-yellow-400 focus:shadow-[0_0_20px_rgba(250,204,21,0.4)] transition-all placeholder-slate-600"
+                            />
+                        </div>
+
+                        {/* BOTTOM LEFT: RESISTANCE (Top 250px, Left 40px) */}
+                        <div className="absolute top-[250px] left-[40px] w-[120px] flex flex-col items-center z-10">
+                            <label className="text-purple-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
+                                <Gauge size={20} /> R
+                            </label>
+                            <input
+                                type="number"
+                                value={resistance}
+                                onChange={(e) => handleInputChange(e, 'resistance')}
+                                placeholder="?"
+                                className="w-[100px] bg-slate-950/80 border-2 border-purple-500/50 rounded-xl px-2 py-2 text-center text-xl font-bold text-white focus:outline-none focus:border-purple-400 focus:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all placeholder-slate-600"
+                            />
+                        </div>
+
+                        {/* BOTTOM RIGHT: CURRENT (Top 250px, Left 280px) */}
+                        <div className="absolute top-[250px] left-[280px] w-[120px] flex flex-col items-center z-10">
+                            <label className="text-cyan-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
+                                <Activity size={20} /> I
+                            </label>
+                            <input
+                                type="number"
+                                value={current}
+                                onChange={(e) => handleInputChange(e, 'current')}
+                                placeholder="?"
+                                className="w-[100px] bg-slate-950/80 border-2 border-cyan-500/50 rounded-xl px-2 py-2 text-center text-xl font-bold text-white focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all placeholder-slate-600"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <SaveCalculationSection
+                    label={label}
+                    setLabel={setLabel}
+                    description={description}
+                    setDescription={setDescription}
+                    onSave={handleSave}
+                    onClear={clearAll}
+                    saving={saving}
+                />
+
+            </div>
         </div>
-        </div >
     );
 };
 

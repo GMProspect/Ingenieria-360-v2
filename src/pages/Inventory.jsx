@@ -48,7 +48,66 @@ const Inventory = () => {
         }
     };
 
-    // ... (handleOpenModal, handleCloseModal, tag handlers)
+    const handleOpenModal = (item = null) => {
+        if (item) {
+            setCurrentItem(item);
+            setFormData({
+                name: item.name,
+                brand: item.brand,
+                model: item.model,
+                quantity: item.quantity,
+                acquisition_date: item.acquisition_date
+            });
+
+            // Parse specs into tags
+            let loadedTags = [];
+            if (item.specs) {
+                if (Array.isArray(item.specs)) {
+                    loadedTags = item.specs;
+                } else if (typeof item.specs === 'object') {
+                    // Convert old object format to array of strings
+                    loadedTags = Object.entries(item.specs).map(([k, v]) => `${k}: ${v}`);
+                }
+            }
+            setTags(loadedTags);
+        } else {
+            setCurrentItem(null);
+            setFormData({
+                name: '',
+                brand: '',
+                model: '',
+                quantity: 1,
+                acquisition_date: new Date().toISOString().split('T')[0]
+            });
+            setTags([]);
+        }
+        setCurrentTag('');
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setCurrentItem(null);
+    };
+
+    // Tag Handlers
+    const handleAddTag = (e) => {
+        e.preventDefault(); // Prevent form submission if triggered by Enter
+        if (!currentTag.trim()) return;
+        setTags([...tags, currentTag.trim()]);
+        setCurrentTag('');
+    };
+
+    const handleRemoveTag = (indexToRemove) => {
+        setTags(tags.filter((_, index) => index !== indexToRemove));
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleAddTag(e);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -95,7 +154,8 @@ const Inventory = () => {
             const { error } = await supabase
                 .from('equipos')
                 .delete()
-                .eq('id', id);
+                .eq('id', id)
+                .eq('user_id', user.id); // Ensure ownership
             if (error) throw error;
             fetchItems();
         } catch (error) {

@@ -13,9 +13,27 @@ const Vibration = () => {
     const [sensitivity, setSensitivity] = useLocalStorage('vib_sens', '200'); // mV/mil or mV/um
     const [unit, setUnit] = useLocalStorage('vib_unit', 'mils'); // mils or um
 
-    // ... (rest of state)
+    const [label, setLabel] = useState('');
+    const [description, setDescription] = useState('');
+    const [saving, setSaving] = useState(false);
 
-    // ... (derived values and clearAll)
+    // Derived Values
+    const distance = useMemo(() => {
+        const v = Math.abs(parseFloat(voltage));
+        const s = parseFloat(sensitivity);
+        if (isNaN(v) || isNaN(s) || s === 0) return 0;
+
+        // Formula: Distance = (Voltage * 1000) / Sensitivity
+        return ((v * 1000) / s);
+    }, [voltage, sensitivity]);
+
+    const clearAll = () => {
+        setVoltage('');
+        setSensitivity('200');
+        setUnit('mils');
+        setLabel('');
+        setDescription('');
+    };
 
     const handleSave = async () => {
         if (!label.trim()) {
@@ -53,96 +71,81 @@ const Vibration = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-6">
+        <div className="max-w-4xl mx-auto p-6">
             <BackButton />
 
             <ToolHeader
-                title="Sonda de Vibración (API 670)"
-                subtitle="Conversión de Voltaje de GAP a Distancia"
+                title="Sonda de Proximidad (Vibración)"
+                subtitle="Verificación de GAP (Voltaje vs Distancia)"
                 icon={Activity}
-                iconColorClass="text-red-400"
-                iconBgClass="bg-red-500/20"
+                iconColorClass="text-purple-400"
+                iconBgClass="bg-purple-500/20"
                 onReset={clearAll}
             />
 
             <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
 
-                {/* Configuration Section */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1">Sensibilidad (mV/mil)</label>
-                        <input
-                            type="number"
-                            value={sensitivity}
-                            onChange={(e) => setSensitivity(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition-colors"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1">Unidad de Salida</label>
-                        <select
-                            value={unit}
-                            onChange={(e) => setUnit(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500 transition-colors"
-                        >
-                            <option value="mils">Mils (milésimas de pulgada)</option>
-                            <option value="um">Micras (µm)</option>
-                        </select>
+                {/* Info Box */}
+                <div className="mb-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-start gap-3">
+                    <Info className="text-blue-400 shrink-0 mt-0.5" size={20} />
+                    <div className="text-sm text-blue-200">
+                        <p className="font-bold mb-1">API 670 Standard</p>
+                        <p>
+                            Para sondas típicas de 5mm/8mm, la sensibilidad estándar es <strong>200 mV/mil</strong> (7.87 mV/µm).
+                            El rango lineal suele ser de 10 a 90 mils (aprox -2V a -18V).
+                        </p>
                     </div>
                 </div>
 
-                <div className="border-t border-white/5 my-6" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-12">
 
-                {/* Real Time Conversion */}
-                <div className="mb-8">
-                    <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-4">Conversión en Tiempo Real</h3>
-                    <div className="flex flex-col md:flex-row items-end gap-4">
-                        <div className="flex-1">
-                            <label className="block text-xs font-medium text-slate-400 mb-1">Voltaje DC (V)</label>
-                            <input
-                                type="number"
-                                value={voltage}
-                                onChange={(e) => setVoltage(e.target.value)}
-                                placeholder="-10.0"
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-red-500 font-mono text-lg shadow-[0_0_15px_rgba(239,68,68,0.1)]"
-                            />
+                    {/* Inputs */}
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-slate-400 mb-2 font-medium">Voltaje DC (Gap)</label>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    value={voltage}
+                                    onChange={(e) => setVoltage(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-lg focus:border-purple-500 outline-none transition-colors"
+                                    placeholder="-10.0"
+                                    step="0.1"
+                                />
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Vdc</span>
+                            </div>
                         </div>
 
-                        <div className="pb-4 text-slate-600">
-                            <ArrowRightLeft size={24} />
-                        </div>
-
-                        <div className="flex-1">
-                            <label className="block text-xs font-medium text-slate-400 mb-1">GAP ({unit})</label>
-                            <div className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white font-mono text-lg flex items-center shadow-[0_0_15px_rgba(34,211,238,0.1)]">
-                                {distance.toFixed(2)}
+                        <div>
+                            <label className="block text-slate-400 mb-2 font-medium">Sensibilidad de Sonda</label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="number"
+                                    value={sensitivity}
+                                    onChange={(e) => setSensitivity(e.target.value)}
+                                    className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-lg focus:border-purple-500 outline-none transition-colors"
+                                    placeholder="200"
+                                />
+                                <select
+                                    value={unit}
+                                    onChange={(e) => setUnit(e.target.value)}
+                                    className="bg-slate-950 border border-slate-700 rounded-xl px-3 text-slate-300 focus:border-purple-500 outline-none"
+                                >
+                                    <option value="mils">mV/mil</option>
+                                    <option value="um">mV/µm</option>
+                                </select>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Info Box */}
-                <div className="bg-slate-900/80 border-l-4 border-purple-500 rounded-r-xl p-6 mb-8 shadow-lg">
-                    <div className="flex items-start gap-4">
-                        <div className="text-purple-400 shrink-0 mt-1">
-                            <Info size={28} />
+                    {/* Result */}
+                    <div className="flex flex-col items-center justify-center p-8 bg-slate-950/50 rounded-2xl border border-slate-800">
+                        <div className="text-slate-500 font-medium mb-2 uppercase tracking-widest text-sm">Distancia (Gap)</div>
+                        <div className="text-5xl font-bold text-white mb-2 font-mono">
+                            {distance.toFixed(2)}
                         </div>
-                        <div className="space-y-3 text-slate-300">
-                            <h4 className="font-bold text-white text-lg">¿Qué es esto?</h4>
-                            <p className="text-sm leading-relaxed">
-                                Esta herramienta simula la curva de calibración de un sistema de <strong className="text-white">Sonda de Proximidad</strong> (como Bently Nevada 3300 XL).
-                            </p>
-                            <ul className="text-sm space-y-2 list-disc pl-4 text-slate-400">
-                                <li>
-                                    <strong className="text-purple-400">API 670:</strong> Estándar mundial para protección de maquinaria (Turbinas, Compresores).
-                                </li>
-                                <li>
-                                    <strong className="text-purple-400">TK3:</strong> Instrumento físico usado para verificar esta curva en campo.
-                                </li>
-                                <li>
-                                    <strong className="text-purple-400">Objetivo:</strong> Verificar que la sonda mida la distancia correcta (GAP) al eje basándose en el voltaje DC.
-                                </li>
-                            </ul>
+                        <div className="text-purple-400 font-bold text-xl">
+                            {unit === 'mils' ? 'mils' : 'µm'}
                         </div>
                     </div>
                 </div>

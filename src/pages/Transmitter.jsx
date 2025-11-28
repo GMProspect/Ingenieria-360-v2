@@ -14,9 +14,65 @@ const Transmitter = () => {
     const [rangeHigh, setRangeHigh] = useLocalStorage('trans_high', '100');
     const [unit, setUnit] = useLocalStorage('trans_unit', 'PSI');
 
-    // ... (rest of state)
+    // Real-Time State
+    const [inputMa, setInputMa] = useState('');
+    const [inputPv, setInputPv] = useState('');
 
-    // ... (handlers)
+    const [label, setLabel] = useState('');
+    const [description, setDescription] = useState('');
+    const [saving, setSaving] = useState(false);
+
+    // Derived Values
+    const span = (parseFloat(rangeHigh) - parseFloat(rangeLow)) || 0;
+
+    // Smart Logic: Bidirectional Calculation
+    const handleMaChange = (val) => {
+        setInputMa(val);
+        if (val === '') {
+            setInputPv('');
+            return;
+        }
+        const ma = parseFloat(val);
+        const low = parseFloat(rangeLow);
+        const high = parseFloat(rangeHigh);
+
+        if (!isNaN(ma) && !isNaN(low) && !isNaN(high)) {
+            // Formula: PV = Low + ((mA - 4) / 16) * Span
+            const pv = low + ((ma - 4) / 16) * (high - low);
+            setInputPv(pv.toFixed(2));
+        }
+    };
+
+    const handlePvChange = (val) => {
+        setInputPv(val);
+        if (val === '') {
+            setInputMa('');
+            return;
+        }
+        const pv = parseFloat(val);
+        const low = parseFloat(rangeLow);
+        const high = parseFloat(rangeHigh);
+
+        if (!isNaN(pv) && !isNaN(low) && !isNaN(high)) {
+            // Formula: mA = 4 + ((PV - Low) / Span) * 16
+            const ma = 4 + ((pv - low) / (high - low)) * 16;
+            setInputMa(ma.toFixed(2));
+        }
+    };
+
+    const getPercentage = () => {
+        const ma = parseFloat(inputMa);
+        if (isNaN(ma)) return 0;
+        const percent = ((ma - 4) / 16) * 100;
+        return Math.min(Math.max(percent, 0), 100);
+    };
+
+    const clearAll = () => {
+        setInputMa('');
+        setInputPv('');
+        setLabel('');
+        setDescription('');
+    };
 
     const handleSave = async () => {
         if (!label.trim()) {

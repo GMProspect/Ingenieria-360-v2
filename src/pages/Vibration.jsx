@@ -9,9 +9,9 @@ import SaveCalculationSection from '../components/SaveCalculationSection';
 
 const Vibration = () => {
     const { user } = useAuth();
-    const [voltage, setVoltage] = useLocalStorage('vib_voltage', '-10.0'); // Volts DC
-    const [sensitivity, setSensitivity] = useLocalStorage('vib_sens', '200'); // mV/mil or mV/um
-    const [unit, setUnit] = useLocalStorage('vib_unit', 'mils'); // mils or um
+    const [voltage, setVoltage] = useLocalStorage('vib_voltage', '-10.0', user?.id); // Volts DC
+    const [sensitivity, setSensitivity] = useLocalStorage('vib_sens', '200', user?.id); // mV/mil or mV/um
+    const [unit, setUnit] = useLocalStorage('vib_unit', 'mils', user?.id); // mils or um
 
     const [label, setLabel] = useState('');
     const [description, setDescription] = useState('');

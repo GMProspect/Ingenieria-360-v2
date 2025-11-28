@@ -10,9 +10,9 @@ import ToolHeader from '../components/ToolHeader';
 const OhmsLaw = () => {
     const { user } = useAuth();
     // Use local storage for persistence
-    const [voltage, setVoltage] = useLocalStorage('ohms_voltage', '');
-    const [current, setCurrent] = useLocalStorage('ohms_current', '');
-    const [resistance, setResistance] = useLocalStorage('ohms_resistance', '');
+    const [voltage, setVoltage] = useLocalStorage('ohms_voltage', '', user?.id);
+    const [current, setCurrent] = useLocalStorage('ohms_current', '', user?.id);
+    const [resistance, setResistance] = useLocalStorage('ohms_resistance', '', user?.id);
 
     // Track which field is being edited to avoid overwriting it
     const [activeField, setActiveField] = useState(null);

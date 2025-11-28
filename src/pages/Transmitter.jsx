@@ -10,9 +10,9 @@ import SaveCalculationSection from '../components/SaveCalculationSection';
 const Transmitter = () => {
     const { user } = useAuth();
     // Calibration State
-    const [rangeLow, setRangeLow] = useLocalStorage('trans_low', '0');
-    const [rangeHigh, setRangeHigh] = useLocalStorage('trans_high', '100');
-    const [unit, setUnit] = useLocalStorage('trans_unit', 'PSI');
+    const [rangeLow, setRangeLow] = useLocalStorage('trans_low', '0', user?.id);
+    const [rangeHigh, setRangeHigh] = useLocalStorage('trans_high', '100', user?.id);
+    const [unit, setUnit] = useLocalStorage('trans_unit', 'PSI', user?.id);
 
     // Real-Time State
     const [inputMa, setInputMa] = useState('');

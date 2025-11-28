@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 
-function useLocalStorage(key, initialValue) {
+function useLocalStorage(key, initialValue, userId = null) {
+    // Create a user-specific key if userId is provided
+    const storageKey = userId ? `${userId}_${key}` : key;
+
     // Get from local storage then
     // parse stored json or if none return initialValue
     const [storedValue, setStoredValue] = useState(() => {
@@ -8,13 +11,27 @@ function useLocalStorage(key, initialValue) {
             return initialValue;
         }
         try {
-            const item = window.localStorage.getItem(key);
+            const item = window.localStorage.getItem(storageKey);
             return item ? JSON.parse(item) : initialValue;
         } catch (error) {
             console.log(error);
             return initialValue;
         }
     });
+
+    // Update storedValue when userId changes (user logs in/out)
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        try {
+            const item = window.localStorage.getItem(storageKey);
+            const newValue = item ? JSON.parse(item) : initialValue;
+            setStoredValue(newValue);
+        } catch (error) {
+            console.log(error);
+            setStoredValue(initialValue);
+        }
+    }, [storageKey]);
 
     // Return a wrapped version of useState's setter function that ...
     // ... persists the new value to localStorage.
@@ -29,7 +46,7 @@ function useLocalStorage(key, initialValue) {
 
             // Save to local storage
             if (typeof window !== 'undefined') {
-                window.localStorage.setItem(key, JSON.stringify(valueToStore));
+                window.localStorage.setItem(storageKey, JSON.stringify(valueToStore));
             }
         } catch (error) {
             console.log(error);

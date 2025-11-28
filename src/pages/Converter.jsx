@@ -9,10 +9,10 @@ import SaveCalculationSection from '../components/SaveCalculationSection';
 
 const Converter = () => {
     const { user } = useAuth();
-    const [category, setCategory] = useLocalStorage('conv_cat', 'pressure');
-    const [fromUnit, setFromUnit] = useLocalStorage('conv_from', '');
-    const [toUnit, setToUnit] = useLocalStorage('conv_to', '');
-    const [inputValue, setInputValue] = useLocalStorage('conv_input', '');
+    const [category, setCategory] = useLocalStorage('conv_cat', 'pressure', user?.id);
+    const [fromUnit, setFromUnit] = useLocalStorage('conv_from', '', user?.id);
+    const [toUnit, setToUnit] = useLocalStorage('conv_to', '', user?.id);
+    const [inputValue, setInputValue] = useLocalStorage('conv_input', '', user?.id);
     const [result, setResult] = useState('');
 
     const [label, setLabel] = useState('');

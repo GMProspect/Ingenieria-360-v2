@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu } from 'lucide-react';
 import Sidebar from './Sidebar';
-import GoogleTranslate from './GoogleTranslate';
+import LanguageSelector from './LanguageSelector';
 
 const Layout = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -22,8 +22,8 @@ const Layout = ({ children }) => {
                         <Menu size={24} />
                     </button>
 
-                    {/* Google Translate */}
-                    <GoogleTranslate />
+                    {/* Language Selector */}
+                    <LanguageSelector />
                 </div>
 
                 {/* Background effects */}

@@ -60,6 +60,20 @@ const Transmitter = () => {
         }
     };
 
+    // Auto-recalculate when range changes (if inputMa has value)
+    useEffect(() => {
+        if (inputMa !== '') {
+            const ma = parseFloat(inputMa);
+            const low = parseFloat(rangeLow);
+            const high = parseFloat(rangeHigh);
+
+            if (!isNaN(ma) && !isNaN(low) && !isNaN(high)) {
+                const pv = low + ((ma - 4) / 16) * (high - low);
+                setInputPv(pv.toFixed(2));
+            }
+        }
+    }, [rangeLow, rangeHigh, inputMa]);
+
     const getPercentage = () => {
         const ma = parseFloat(inputMa);
         if (isNaN(ma)) return 0;

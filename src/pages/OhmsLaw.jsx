@@ -131,88 +131,17 @@ const OhmsLaw = () => {
                 subtitle="Calculadora Automática (Triángulo)"
                 icon={Zap}
                 iconColorClass="text-yellow-400"
-                iconBgClass="bg-yellow-500/20"
-                onReset={clearAll}
+                label={label}
+                setLabel={setLabel}
+                description={description}
+                setDescription={setDescription}
+                onSave={handleSave}
+                onClear={clearAll}
+                saving={saving}
             />
 
-            <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
-
-                {/* Triangle Container */}
-                <div className="relative w-full max-w-[500px] mx-auto h-[300px] md:h-[450px] mb-12 flex justify-center items-center overflow-hidden">
-
-                    {/* Scaled Wrapper for Mobile */}
-                    <div className="transform scale-[0.6] sm:scale-[0.75] md:scale-100 origin-center w-[500px] h-[450px] relative flex justify-center items-center">
-
-                        {/* The Triangle Shape (Background) */}
-                        <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-                            <div className="w-0 h-0 
-                                border-l-[250px] border-l-transparent 
-                                border-r-[250px] border-r-transparent 
-                                border-b-[433px] border-b-slate-800/50 
-                                filter drop-shadow-[0_0_15px_rgba(0,242,255,0.1)]">
-                            </div>
-                        </div>
-
-                        {/* Dividers */}
-                        <div className="absolute top-[216px] w-[220px] h-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
-                        <div className="absolute top-[216px] bottom-[17px] w-1 bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full"></div>
-
-                        {/* TOP SECTION: VOLTAGE */}
-                        <div className="absolute top-[80px] flex flex-col items-center z-10">
-                            <label className="text-yellow-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
-                                <Zap size={20} /> Voltaje (V)
-                            </label>
-                            <input
-                                type="number"
-                                value={voltage}
-                                onChange={(e) => handleInputChange(e, 'voltage')}
-                                placeholder="?"
-                                className="w-32 bg-slate-950/80 border-2 border-yellow-500/50 rounded-xl px-2 py-2 text-center text-2xl font-bold text-white focus:outline-none focus:border-yellow-400 focus:shadow-[0_0_20px_rgba(250,204,21,0.4)] transition-all placeholder-slate-600"
-                            />
-                        </div>
-
-                        {/* BOTTOM LEFT: RESISTANCE */}
-                        <div className="absolute bottom-[50px] left-[25px] flex flex-col items-center z-10">
-                            <label className="text-purple-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
-                                <Gauge size={20} /> Resistencia (R)
-                            </label>
-                            <input
-                                type="number"
-                                value={resistance}
-                                onChange={(e) => handleInputChange(e, 'resistance')}
-                                placeholder="?"
-                                className="w-32 bg-slate-950/80 border-2 border-purple-500/50 rounded-xl px-2 py-2 text-center text-2xl font-bold text-white focus:outline-none focus:border-purple-400 focus:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all placeholder-slate-600"
-                            />
-                        </div>
-
-                        {/* BOTTOM RIGHT: CURRENT */}
-                        <div className="absolute bottom-[50px] right-[25px] flex flex-col items-center z-10">
-                            <label className="text-cyan-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
-                                <Activity size={20} /> Corriente (I)
-                            </label>
-                            <input
-                                type="number"
-                                value={current}
-                                onChange={(e) => handleInputChange(e, 'current')}
-                                placeholder="?"
-                                className="w-32 bg-slate-950/80 border-2 border-cyan-500/50 rounded-xl px-2 py-2 text-center text-2xl font-bold text-white focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all placeholder-slate-600"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <SaveCalculationSection
-                    label={label}
-                    setLabel={setLabel}
-                    description={description}
-                    setDescription={setDescription}
-                    onSave={handleSave}
-                    onClear={clearAll}
-                    saving={saving}
-                />
-
-            </div>
         </div>
+        </div >
     );
 };
 

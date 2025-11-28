@@ -172,7 +172,7 @@ const OhmsLaw = () => {
                         </div>
 
                         {/* BOTTOM LEFT: RESISTANCE */}
-                        <div className="absolute bottom-[50px] left-[60px] flex flex-col items-center z-10">
+                        <div className="absolute bottom-[50px] left-[25px] flex flex-col items-center z-10">
                             <label className="text-purple-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
                                 <Gauge size={20} /> Resistencia (R)
                             </label>
@@ -186,7 +186,7 @@ const OhmsLaw = () => {
                         </div>
 
                         {/* BOTTOM RIGHT: CURRENT */}
-                        <div className="absolute bottom-[50px] right-[60px] flex flex-col items-center z-10">
+                        <div className="absolute bottom-[50px] right-[25px] flex flex-col items-center z-10">
                             <label className="text-cyan-400 font-bold mb-1 flex items-center gap-1 text-lg shadow-black drop-shadow-md">
                                 <Activity size={20} /> Corriente (I)
                             </label>

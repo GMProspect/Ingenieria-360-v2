@@ -149,7 +149,7 @@ const Vibration = () => {
                 {/* Conversion Section */}
                 <div className="mb-8">
                     <h3 className="text-cyan-400 font-bold text-sm uppercase tracking-wider mb-4">Conversión en Tiempo Real</h3>
-                    <div className="flex flex-col gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                         {/* Inputs Column */}
                         <div className="space-y-6">
@@ -162,11 +162,8 @@ const Vibration = () => {
                                         onChange={(e) => setVoltage(e.target.value)}
                                         className="w-full bg-transparent px-4 py-3 text-white text-2xl font-bold text-center outline-none"
                                         step="0.1"
+                                        placeholder="-10.0"
                                     />
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-1">
-                                        <button onClick={() => setVoltage((parseFloat(voltage) + 0.1).toFixed(1))} className="text-slate-500 hover:text-white">▲</button>
-                                        <button onClick={() => setVoltage((parseFloat(voltage) - 0.1).toFixed(1))} className="text-slate-500 hover:text-white">▼</button>
-                                    </div>
                                 </div>
                             </div>
 

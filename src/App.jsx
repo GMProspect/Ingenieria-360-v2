@@ -9,14 +9,52 @@ import OhmsLaw from './pages/OhmsLaw';
 import Vibration from './pages/Vibration';
 import Transmitter from './pages/Transmitter';
 import Converter from './pages/Converter';
+import TemperatureSensors from './pages/TemperatureSensors';
+import WrenchConverter from './pages/WrenchConverter';
+import Megohmetro from './pages/Megohmetro';
+import Login from './pages/Login';
+import History from './pages/History';
+import FeedbackList from './pages/FeedbackList';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import AdminGuard from './components/AdminGuard';
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+
+          <Route path="/*" element={
+            <AuthGuard>
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/inventory" element={<Inventory />} />
+                  <Route path="/ohms-law" element={<OhmsLaw />} />
+                  <Route path="/vibration" element={<Vibration />} />
+                  <Route path="/transmitter" element={<Transmitter />} />
+                  <Route path="/temperature-sensors" element={<TemperatureSensors />} />
+                  <Route path="/converter" element={<Converter />} />
+                  <Route path="/wrench-converter" element={<WrenchConverter />} />
+                  <Route path="/megohmetro" element={<Megohmetro />} />
+                  <Route path="/history" element={<History />} />
+                  <Route path="/feedback" element={
+                    <AdminGuard>
+                      <FeedbackList />
+                    </AdminGuard>
                   } />
-                </Routes >
-              </Layout >
-            </AuthGuard >
+                </Routes>
+              </Layout>
+            </AuthGuard>
           } />
-        </Routes >
-      </Router >
-    </AuthProvider >
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

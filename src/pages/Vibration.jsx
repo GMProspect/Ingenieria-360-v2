@@ -102,7 +102,7 @@ const Vibration = () => {
             <BackButton />
 
             <ToolHeader
-                title="Sonda de Vibración (API 670) - ACTUALIZADO"
+                title="Sonda de Vibración (API 670)"
                 subtitle="Conversión de Voltaje de GAP a Distancia (Mils/Micras)"
                 icon={Activity}
                 iconColorClass="text-purple-400"

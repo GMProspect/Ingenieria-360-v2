@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Activity, Info, AlertTriangle, ArrowRightLeft } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';

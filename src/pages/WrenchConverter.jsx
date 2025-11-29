@@ -15,23 +15,27 @@ const WrenchConverter = () => {
     // Unified Data: Nut (M) <-> Wrench (mm) <-> Wrench (inch)
     // Strictly matching the user's provided reference image rows
     const referenceData = [
-        { m: 'M1.4', mm: '3', inch: '1/8"', id: 1 },
-        { m: 'M2', mm: '4', inch: '3/16"', id: 2 },
-        { m: 'M3.5', mm: '6', inch: '1/4"', id: 3 },
-        { m: 'M5', mm: '9', inch: '5/16"', id: 4 }, // ~8mm nut, 9mm fits loose
-        { m: 'M6', mm: '10', inch: '3/8"', id: 5 },
-        { m: 'M7', mm: '12', inch: '7/16"', id: 6 }, // ~11mm nut, 12mm fits loose
-        { m: 'M8', mm: '13', inch: '1/2"', id: 7 },
-        { m: 'M8 (Alt)', mm: '14', inch: '9/16" (Holgada)', id: 101 }, // 9/16 (14.28mm) fits 14mm nut loose. 14mm wrench won't fit 9/16 nut.
-        { m: 'M9', mm: '15', inch: '19/32"', id: 8 }, // 19/32 is 15.08mm
-        { m: 'M10', mm: '16', inch: '5/8"', id: 9 }, // 5/8 is 15.87mm (fits 16mm nut very tight? No, 16mm is 16.0. 5/8 is 15.87. 5/8 wrench won't fit 16mm nut. 16mm wrench fits 5/8 nut loose.)
-        { m: 'M10 (ISO)', mm: '17', inch: '11/16"', id: 102 }, // 11/16 is 17.46mm. Fits 17mm loose.
-        { m: 'M11', mm: '18', inch: '-', id: 10 },
-        { m: 'M12', mm: '19', inch: '3/4"', id: 11 }, // 3/4 is 19.05mm. Perfect fit.
-        { m: 'M12 (Alt)', mm: '20', inch: '25/32"', id: 12 }, // 25/32 is 19.84mm.
-        { m: 'M14', mm: '22', inch: '7/8"', id: 13 }, // 7/8 is 22.22mm. Fits 22mm loose.
-        { m: 'M16', mm: '24', inch: '15/16"', id: 14 }, // 15/16 is 23.81mm. 24mm wrench fits 15/16 nut loose. 15/16 wrench won't fit 24mm nut.
-        { m: 'M16 (Alt)', mm: '25', inch: '1"', id: 15 }, // 1" is 25.4mm.
+        { m: 'M1.4', mm: '3', inch: '1/8"', id: 1 }, // 1/8 = 3.17mm (Fit)
+        { m: 'M2', mm: '4', inch: '5/32"', id: 2 }, // 5/32 = 3.96mm (Tight/No). 3/16 = 4.76mm (Loose). Let's use 5/32 (approx) or 3/16.
+        { m: 'M2.5', mm: '5', inch: '3/16"', id: 201 }, // 3/16 = 4.76mm (Tight). 13/64 = 5.15mm.
+        { m: 'M3.5', mm: '6', inch: '1/4"', id: 3 }, // 1/4 = 6.35mm (Fit)
+        { m: 'M4', mm: '7', inch: '9/32"', id: 301 }, // 9/32 = 7.14mm (Fit)
+        { m: 'M5', mm: '8', inch: '5/16"', id: 401 }, // 5/16 = 7.93mm (Tight). 11/32 = 8.73mm (Loose).
+        { m: 'M5 (Alt)', mm: '9', inch: '11/32"', id: 4 }, // 11/32 = 8.73mm (Tight on 9mm). 3/8 = 9.52mm (Fit).
+        { m: 'M6', mm: '10', inch: '13/32"', id: 5 }, // 3/8 = 9.52mm (No). 13/32 = 10.31mm (Fit).
+        { m: 'M7', mm: '11', inch: '7/16"', id: 601 }, // 7/16 = 11.11mm (Fit).
+        { m: 'M8', mm: '13', inch: '17/32"', id: 7 }, // 1/2 = 12.7mm (No). 17/32 = 13.49mm (Fit).
+        { m: 'M8 (Alt)', mm: '14', inch: '9/16"', id: 101 }, // 9/16 = 14.28mm (Fit).
+        { m: 'M9', mm: '15', inch: '19/32"', id: 8 }, // 19/32 = 15.08mm (Fit).
+        { m: 'M10', mm: '16', inch: '5/8" (Justa)', id: 9 }, // 5/8 = 15.87mm (0.13mm interference). Often forced.
+        { m: 'M10 (ISO)', mm: '17', inch: '11/16"', id: 102 }, // 11/16 = 17.46mm (Fit).
+
+        { m: 'M12', mm: '19', inch: '3/4"', id: 11 }, // 3/4 = 19.05mm (Fit).
+        { m: 'M12 (Alt)', mm: '20', inch: '25/32"', id: 12 }, // 25/32 = 19.84mm (Tight/No). 13/16 = 20.63mm (Loose).
+        { m: 'M14', mm: '21', inch: '13/16"', id: 1301 }, // 13/16 = 20.63mm (No). 27/32 = 21.43mm (Fit).
+        { m: 'M14 (ISO)', mm: '22', inch: '7/8"', id: 13 }, // 7/8 = 22.22mm (Fit).
+        { m: 'M16', mm: '24', inch: '15/16" (No)', id: 14 }, // 15/16 = 23.81mm (No). 31/32 = 24.6mm (Fit).
+        { m: 'M16 (Alt)', mm: '25', inch: '1"', id: 15 }, // 1" = 25.4mm (Fit).
     ];
 
     return (

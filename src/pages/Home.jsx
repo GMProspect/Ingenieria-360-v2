@@ -73,7 +73,6 @@ const Home = () => {
             icon: ClipboardList,
             color: 'gray',
             links: [
-                { to: '/inventory', label: 'Inventario de Equipos', icon: Database, color: 'text-blue-400' },
                 { to: '/history', label: 'Historial de Cálculos', icon: History, color: 'text-slate-400' },
                 { to: '/converter', label: 'Conversor de Unidades', icon: RefreshCw, color: 'text-green-400' }
             ]

@@ -5,7 +5,7 @@ const SensorVisual = ({ type, category, colors, wires = 3, housing = 'connector'
     const isIndustrialHead = isRTD || housing === 'head';
 
     // Helper to render wires
-    const renderWires = (count, color = '#e2e8f0') => {
+    const renderWires = (count) => {
         const wireElements = [];
         const spacing = 6;
         const startY = -((count - 1) * spacing) / 2;

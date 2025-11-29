@@ -278,6 +278,11 @@ const TemperatureSensors = () => {
                                         Cabezal Ind.
                                     </button>
                                 </div>
+                                <p className="text-[10px] text-slate-500 mt-2 leading-tight">
+                                    {housing === 'connector'
+                                        ? 'Conector estándar (ANSI) para uso general y laboratorio.'
+                                        : 'Cabezal de conexión industrial para protección en campo.'}
+                                </p>
                             </div>
                         )}
                     </div>
@@ -317,15 +322,20 @@ const TemperatureSensors = () => {
                 </div>
 
                 {/* Right Column: Info Card */}
-                <div className="lg:col-span-2">
-                    <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl h-full relative overflow-hidden">
+                <div className="lg:col-span-2 space-y-6">
+                    <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl relative overflow-hidden">
                         {/* Background Decoration */}
                         <div className="absolute top-0 right-0 p-32 bg-red-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
 
                         <div className="relative z-10">
                             <div className="flex items-start justify-between mb-6">
                                 <div>
-                                    <h2 className="text-3xl font-bold text-white mb-1">{currentSensor.name}</h2>
+                                    <div className="flex items-center gap-3 mb-1">
+                                        <h2 className="text-3xl font-bold text-white">{currentSensor.name}</h2>
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-slate-400 border border-white/5">
+                                            {safeCategory === 'tc' ? 'ANSI MC96.1' : 'IEC 60751'}
+                                        </span>
+                                    </div>
                                     <p className="text-red-400 text-lg">{currentSensor.desc}</p>
                                 </div>
                                 <div className="p-3 bg-white/5 rounded-xl border border-white/10">
@@ -378,6 +388,31 @@ const TemperatureSensors = () => {
                                     )}
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Educational Note / Did You Know */}
+                    <div className="bg-blue-500/10 p-6 rounded-2xl border border-blue-500/20 backdrop-blur-sm flex gap-4 items-start">
+                        <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400 shrink-0">
+                            <Info size={24} />
+                        </div>
+                        <div>
+                            <h4 className="text-blue-400 font-bold mb-2 text-sm uppercase tracking-wider">
+                                {safeCategory === 'tc' ? '¿Sabías que?' : 'Configuración de Hilos'}
+                            </h4>
+                            {safeCategory === 'tc' ? (
+                                <p className="text-slate-300 text-sm leading-relaxed">
+                                    En la norma americana (ANSI), el conductor <strong>ROJO siempre es NEGATIVO (-)</strong>.
+                                    Esto es contrario a la convención electrónica estándar (donde rojo es positivo), lo que causa confusión frecuente en campo.
+                                    ¡Recuerda siempre verificar la norma del cable!
+                                </p>
+                            ) : (
+                                <p className="text-slate-300 text-sm leading-relaxed">
+                                    <strong>2 Hilos:</strong> Menos preciso, la resistencia del cable se suma a la medición.<br />
+                                    <strong>3 Hilos:</strong> Estándar industrial. Un tercer hilo compensa la resistencia del cable.<br />
+                                    <strong>4 Hilos:</strong> Máxima precisión. Elimina totalmente el error por resistencia de cables.
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>

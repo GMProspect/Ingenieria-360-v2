@@ -15,15 +15,12 @@ const OhmsLaw = () => {
     const [current, setCurrent] = useLocalStorage('ohms_current', '', user?.id);
     const [resistance, setResistance] = useLocalStorage('ohms_resistance', '', user?.id);
 
-    // Track which field is being edited to avoid overwriting it
-    const [activeField, setActiveField] = useState(null);
     const [label, setLabel] = useState('');
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
 
     const handleInputChange = (e, field) => {
         const val = e.target.value;
-        setActiveField(field);
 
         // Update the state for the changed field
         if (field === 'voltage') setVoltage(val);
@@ -33,14 +30,17 @@ const OhmsLaw = () => {
         // SMART CLEARING LOGIC:
         if (val === '') {
             if (field === 'voltage') {
+                // If V is cleared, keep R, clear I (Cycle 1)
                 if (resistance) setCurrent('');
                 else if (current) setResistance('');
             }
             if (field === 'current') {
-                if (resistance) setVoltage('');
-                else if (voltage) setResistance('');
+                // If I is cleared, keep V, clear R (Cycle 2)
+                if (voltage) setResistance('');
+                else if (resistance) setVoltage('');
             }
             if (field === 'resistance') {
+                // If R is cleared, keep I, clear V (Cycle 3)
                 if (current) setVoltage('');
                 else if (voltage) setCurrent('');
             }
@@ -88,7 +88,6 @@ const OhmsLaw = () => {
         setResistance('');
         setLabel('');
         setDescription('');
-        setActiveField(null);
     };
 
     const handleSave = async () => {

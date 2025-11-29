@@ -74,6 +74,11 @@ const Converter = () => {
         }
     };
 
+    // Scroll to top on mount
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     // Ensure units are valid when category changes
     useEffect(() => {
         if (categories[category]) {

@@ -12,7 +12,7 @@ const AdBanner = ({ dataAdSlot, dataAdFormat = 'auto', dataFullWidthResponsive =
     return (
         <div className="my-8 flex justify-center overflow-hidden">
             <ins className="adsbygoogle"
-                style={{ display: 'block', minWidth: '300px', minHeight: '100px' }}
+                style={{ display: 'block', width: '100%', maxHeight: '120px' }}
                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // Placeholder, user needs to replace
                 data-ad-slot={dataAdSlot}
                 data-ad-format={dataAdFormat}

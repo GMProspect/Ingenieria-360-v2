@@ -11,26 +11,27 @@ const History = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        if (user) fetchHistory();
+        const fetchHistory = async () => {
+            if (!user) return;
+            try {
+                setLoading(true);
+                const { data, error } = await supabase
+                    .from('history')
+                    .select('*')
+                    .eq('user_id', user.id) // Filter by user
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                setHistory(data || []);
+            } catch (error) {
+                console.error('Error fetching history:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchHistory();
     }, [user]);
-
-    const fetchHistory = async () => {
-        try {
-            setLoading(true);
-            const { data, error } = await supabase
-                .from('history')
-                .select('*')
-                .eq('user_id', user.id) // Filter by user
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
-            setHistory(data || []);
-        } catch (error) {
-            console.error('Error fetching history:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleDelete = async (id) => {
         if (!window.confirm('¿Estás seguro de eliminar este registro?')) return;

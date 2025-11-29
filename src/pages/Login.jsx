@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/Auth';
 import CraneIcon from '../components/CraneIcon';
 
 const Login = () => {
     const { signInWithGoogle } = useAuth();
-    const navigate = useNavigate();
     const [error, setError] = useState(null);
 
     const handleGoogleLogin = async () => {

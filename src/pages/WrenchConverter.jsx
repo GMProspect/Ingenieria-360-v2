@@ -7,6 +7,11 @@ import AdBanner from '../components/AdBanner';
 const WrenchConverter = () => {
     const [hoveredIndex, setHoveredIndex] = useState(null);
 
+    // Scroll to top on mount
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     // Unified Data: Nut (M) <-> Wrench (mm) <-> Wrench (inch)
     // Strictly matching the user's provided reference image rows
     const referenceData = [

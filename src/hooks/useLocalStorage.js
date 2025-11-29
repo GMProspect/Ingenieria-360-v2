@@ -31,7 +31,7 @@ function useLocalStorage(key, initialValue, userId = null) {
             console.log(error);
             setStoredValue(initialValue);
         }
-    }, [storageKey]);
+    }, [storageKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Return a wrapped version of useState's setter function that ...
     // ... persists the new value to localStorage.

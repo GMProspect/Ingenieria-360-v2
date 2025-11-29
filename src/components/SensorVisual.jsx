@@ -1,7 +1,8 @@
 import React from 'react';
 
-const SensorVisual = ({ type, category, colors, wires = 3 }) => {
+const SensorVisual = ({ type, category, colors, wires = 3, housing = 'connector' }) => {
     const isRTD = category === 'rtd';
+    const isIndustrialHead = isRTD || housing === 'head';
 
     // Helper to render wires
     const renderWires = (count, color = '#e2e8f0') => {
@@ -11,9 +12,6 @@ const SensorVisual = ({ type, category, colors, wires = 3 }) => {
 
         for (let i = 0; i < count; i++) {
             // RTD Color Code Logic (IEC 60751)
-            // 2-wire: Red, White
-            // 3-wire: Red, Red, White
-            // 4-wire: Red, Red, White, White
             let wireColor = '#fff';
             if (count === 2) wireColor = i === 0 ? '#ef4444' : '#fff';
             if (count === 3) wireColor = i < 2 ? '#ef4444' : '#fff';
@@ -38,13 +36,24 @@ const SensorVisual = ({ type, category, colors, wires = 3 }) => {
 
     return (
         <div className="relative w-full h-64 flex items-center justify-center select-none overflow-hidden">
-            {isRTD ? (
-                // RTD Visual: Industrial Probe
+            {isIndustrialHead ? (
+                // Industrial Head Visual (Shared for RTD and Industrial TC)
                 <div className="flex items-center relative">
-                    {/* Wires (Behind Head) */}
-                    <div className="absolute left-2 top-0 w-full h-full z-0">
-                        {renderWires(wires)}
-                    </div>
+                    {/* Wires (Only visible for RTD usually, but we can show conduit entry for TC) */}
+                    {isRTD && (
+                        <div className="absolute left-2 top-0 w-full h-full z-0">
+                            {renderWires(wires)}
+                        </div>
+                    )}
+
+                    {/* TC Conduit Entry (if not RTD) */}
+                    {!isRTD && (
+                        <div className="absolute left-[-20px] top-1/2 -translate-y-1/2 w-16 h-8 bg-gradient-to-r from-slate-800 to-slate-600 rounded-l z-0 border-y border-l border-slate-500">
+                            {/* Threads */}
+                            <div className="absolute right-2 top-0 w-1 h-full bg-black/20"></div>
+                            <div className="absolute right-4 top-0 w-1 h-full bg-black/20"></div>
+                        </div>
+                    )}
 
                     {/* Connection Head (Industrial Style) */}
                     <div className="w-20 h-24 bg-gradient-to-br from-slate-300 via-slate-400 to-slate-600 rounded-xl shadow-2xl border border-slate-500 relative z-10 flex flex-col items-center">
@@ -53,14 +62,16 @@ const SensorVisual = ({ type, category, colors, wires = 3 }) => {
 
                         {/* Label */}
                         <div className="mt-8 w-12 h-8 bg-slate-200 border border-slate-400 rounded flex items-center justify-center shadow-inner">
-                            <span className="text-[8px] font-mono font-bold text-slate-800">Pt100</span>
+                            <span className="text-[8px] font-mono font-bold text-slate-800 uppercase">
+                                {isRTD ? 'Pt100' : `TC-${type}`}
+                            </span>
                         </div>
 
                         {/* Cable Gland */}
                         <div className="absolute -left-3 bottom-4 w-4 h-6 bg-slate-700 rounded-l border-r border-slate-900 shadow-md"></div>
                     </div>
 
-                    {/* Probe Sheath (Stainless Steel) */}
+                    {/* Probe Sheath */}
                     <div className="w-56 h-6 bg-gradient-to-b from-slate-200 via-slate-100 to-slate-300 border-y border-slate-400 -ml-1 z-0 relative shadow-lg">
                         {/* Metallic Shine */}
                         <div className="absolute top-1 left-0 w-full h-1 bg-white/60 blur-[1px]"></div>
@@ -69,11 +80,11 @@ const SensorVisual = ({ type, category, colors, wires = 3 }) => {
                         <div className="absolute -right-3 top-[-1px] w-4 h-[calc(100%+2px)] bg-slate-300 rounded-r-full border-r border-y border-slate-400 shadow-sm"></div>
 
                         {/* Sensor Element (Internal X-ray view hint) */}
-                        <div className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-1.5 bg-red-500/40 blur-[2px] animate-pulse"></div>
+                        <div className={`absolute right-6 top-1/2 -translate-y-1/2 w-10 h-1.5 blur-[2px] animate-pulse ${isRTD ? 'bg-red-500/40' : 'bg-orange-500/60'}`}></div>
                     </div>
                 </div>
             ) : (
-                // Thermocouple Visual: Connector + Wires
+                // Standard Thermocouple Visual: Connector + Wires
                 <div className="flex items-center">
                     {/* Connector (Plug) */}
                     <div

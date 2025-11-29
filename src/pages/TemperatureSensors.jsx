@@ -133,6 +133,7 @@ const TemperatureSensors = () => {
     const [category, setCategory] = useLocalStorage('temp_cat', 'tc', user?.id);
     const [type, setType] = useLocalStorage('temp_type', 'k', user?.id);
     const [wires, setWires] = useLocalStorage('temp_wires', '3', user?.id); // Default 3 wires for RTD
+    const [housing, setHousing] = useLocalStorage('temp_housing', 'connector', user?.id); // 'connector' or 'head'
     const [inputTemp, setInputTemp] = useState('');
 
     useEffect(() => {
@@ -210,6 +211,7 @@ const TemperatureSensors = () => {
                             category={safeCategory}
                             colors={visualColors}
                             wires={safeCategory === 'rtd' ? parseInt(wires) : 2}
+                            housing={housing}
                         />
                     </div>
 
@@ -248,6 +250,33 @@ const TemperatureSensors = () => {
                                             {w} Hilos
                                         </button>
                                     ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Housing Selector for TC */}
+                        {safeCategory === 'tc' && (
+                            <div className="mt-4 pt-4 border-t border-white/5">
+                                <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Tipo de Conexión</label>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setHousing('connector')}
+                                        className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${housing === 'connector'
+                                            ? 'bg-yellow-600 text-white'
+                                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                            }`}
+                                    >
+                                        Conector
+                                    </button>
+                                    <button
+                                        onClick={() => setHousing('head')}
+                                        className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${housing === 'head'
+                                            ? 'bg-slate-500 text-white'
+                                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                            }`}
+                                    >
+                                        Cabezal Ind.
+                                    </button>
                                 </div>
                             </div>
                         )}

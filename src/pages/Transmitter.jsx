@@ -7,6 +7,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import AdBanner from '../components/AdBanner';
+import TransmitterVisual from '../components/TransmitterVisual';
 
 const Transmitter = () => {
     const { user } = useAuth();
@@ -14,6 +15,11 @@ const Transmitter = () => {
     const [rangeLow, setRangeLow] = useLocalStorage('trans_low', '0', user?.id);
     const [rangeHigh, setRangeHigh] = useLocalStorage('trans_high', '100', user?.id);
     const [unit, setUnit] = useLocalStorage('trans_unit', 'PSI', user?.id);
+
+    // Scroll to top on mount
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     // Real-Time State
     const [inputMa, setInputMa] = useState('');
@@ -209,47 +215,69 @@ const Transmitter = () => {
                     </div>
                 </div>
 
-                {/* 2. Real Time Conversion */}
+                {/* 2. Real Time Conversion & Visual */}
                 <div className="mb-8">
                     <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
                         Conversión en Tiempo Real
                     </h3>
-                    <div className="flex items-end gap-4 mb-4">
-                        <div className="flex-1">
-                            <label className="block text-xs text-slate-500 mb-1">Señal (mA)</label>
-                            <input
-                                type="number"
-                                value={inputMa}
-                                onChange={(e) => handleMaChange(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all"
-                                placeholder="4.00"
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        {/* Left: Visual Representation */}
+                        <div className="order-2 md:order-1 bg-slate-950/30 rounded-xl p-4 border border-white/5">
+                            <TransmitterVisual
+                                pv={inputPv}
+                                unit={unit}
+                                ma={inputMa}
+                                percent={getPercentage()}
                             />
                         </div>
 
-                        <div className="pb-4 text-slate-600">
-                            <ArrowRightLeft size={24} />
-                        </div>
+                        {/* Right: Inputs */}
+                        <div className="order-1 md:order-2">
+                            <div className="flex flex-col gap-6">
+                                <div>
+                                    <label className="block text-xs text-slate-500 mb-1">Señal de Salida (mA)</label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            value={inputMa}
+                                            onChange={(e) => handleMaChange(e.target.value)}
+                                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all pl-12"
+                                            placeholder="4.00"
+                                        />
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 font-bold text-sm">mA</div>
+                                    </div>
+                                </div>
 
-                        <div className="flex-1">
-                            <label className="block text-xs text-slate-500 mb-1">Variable Física (PV)</label>
-                            <input
-                                type="number"
-                                value={inputPv}
-                                onChange={(e) => handlePvChange(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all"
-                                placeholder="0.00"
-                            />
-                        </div>
-                    </div>
+                                <div className="flex items-center justify-center text-slate-600">
+                                    <ArrowRightLeft size={24} className="rotate-90 md:rotate-0" />
+                                </div>
 
-                    {/* Progress Bar */}
-                    <div className="relative h-4 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                        <div
-                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-cyan-900 to-cyan-500 transition-all duration-300"
-                            style={{ width: `${getPercentage()}%` }}
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
-                            {getPercentage().toFixed(1)}%
+                                <div>
+                                    <label className="block text-xs text-slate-500 mb-1">Variable de Proceso (PV)</label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            value={inputPv}
+                                            onChange={(e) => handlePvChange(e.target.value)}
+                                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all pl-12"
+                                            placeholder="0.00"
+                                        />
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm">PV</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="mt-6 relative h-4 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                                <div
+                                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-cyan-900 to-cyan-500 transition-all duration-300"
+                                    style={{ width: `${getPercentage()}%` }}
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
+                                    {getPercentage().toFixed(1)}%
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -310,6 +338,23 @@ const Transmitter = () => {
                     onClear={clearAll}
                     saving={saving}
                 />
+
+                <div className="mt-8 mb-8 p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">
+                    <div className="text-cyan-400 shrink-0 mt-0.5">
+                        <Info size={20} />
+                    </div>
+                    <div className="text-sm text-slate-200 space-y-2">
+                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
+                        <p>
+                            Esta herramienta convierte señales de instrumentación industrial (4-20 mA) a variables de proceso (PV) y viceversa.
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-slate-400">
+                            <li><strong>4-20 mA:</strong> Estándar de transmisión de señal analógica. 4mA es el 0% y 20mA es el 100%.</li>
+                            <li><strong>PV (Process Variable):</strong> El valor real medido (ej: 0-100 PSI, -50 a 150 °C).</li>
+                            <li><strong>Rango Invertido:</strong> Soportado. Útil para válvulas "Falla Abierta" o niveles inversos.</li>
+                        </ul>
+                    </div>
+                </div>
 
                 {/* AdSense Banner (Moved to very bottom) */}
                 <AdBanner dataAdSlot="1234567890" />

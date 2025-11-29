@@ -271,6 +271,23 @@ const Converter = () => {
                     saving={saving}
                 />
 
+                <div className="mt-8 mb-8 p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">
+                    <div className="text-green-400 shrink-0 mt-0.5">
+                        <Info size={20} />
+                    </div>
+                    <div className="text-sm text-slate-200 space-y-2">
+                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
+                        <p>
+                            Un conversor universal diseñado para ingenieros. Permite transformar unidades de presión, temperatura, longitud, peso y volumen de forma rápida.
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-slate-400">
+                            <li><strong>Categorías:</strong> Selecciona el tipo de variable arriba (iconos).</li>
+                            <li><strong>Intercambio:</strong> Usa el botón de flechas para invertir las unidades de entrada y salida.</li>
+                            <li><strong>Precisión:</strong> Los resultados se muestran con hasta 4 decimales para mayor exactitud.</li>
+                        </ul>
+                    </div>
+                </div>
+
                 {/* AdSense Banner (Moved to very bottom) */}
                 <AdBanner dataAdSlot="1234567890" />
 

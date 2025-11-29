@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/Auth';
 import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
+import AdBanner from '../components/AdBanner';
 
 const Vibration = () => {
     const { user } = useAuth();
@@ -219,6 +220,9 @@ const Vibration = () => {
                         </div>
                     </div>
                 )}
+
+                {/* AdSense Banner */}
+                <AdBanner dataAdSlot="1234567890" />
 
                 {/* Info Box (Moved to bottom) */}
                 <div className="mb-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-start gap-3">

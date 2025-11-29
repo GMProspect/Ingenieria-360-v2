@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Wrench, Info } from 'lucide-react';
 import ToolHeader from '../components/ToolHeader';
-
 import BackButton from '../components/BackButton';
+import AdBanner from '../components/AdBanner';
 
 const WrenchConverter = () => {
     const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -107,6 +107,9 @@ const WrenchConverter = () => {
 
                 </div>
             </div>
+
+            {/* AdSense Banner */}
+            <AdBanner dataAdSlot="1234567890" />
 
             <div className="mt-8 max-w-4xl mx-auto p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">
                 <div className="text-cyan-400 shrink-0 mt-0.5">

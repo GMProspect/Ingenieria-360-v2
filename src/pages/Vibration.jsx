@@ -18,6 +18,8 @@ const Vibration = () => {
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
 
+    const [gapInput, setGapInput] = useState('');
+
     // Derived Values
     const distance = useMemo(() => {
         const v = Math.abs(parseFloat(voltage));
@@ -25,6 +27,26 @@ const Vibration = () => {
         if (isNaN(v) || isNaN(s) || s === 0) return 0;
         return ((v * 1000) / s);
     }, [voltage, sensitivity]);
+
+    // Update gapInput when distance changes (calculated from voltage)
+    useEffect(() => {
+        if (!isNaN(distance)) {
+            setGapInput(distance.toFixed(2));
+        }
+    }, [distance]);
+
+    const handleGapChange = (val) => {
+        setGapInput(val);
+        const d = parseFloat(val);
+        const s = parseFloat(sensitivity);
+
+        if (!isNaN(d) && !isNaN(s) && s !== 0) {
+            // V = (D * S) / 1000
+            // Maintain negative sign convention for proximity probes
+            const v = (d * s) / 1000;
+            setVoltage((-Math.abs(v)).toFixed(2));
+        }
+    };
 
     // Alerts Logic (API 670)
     const alertStatus = useMemo(() => {
@@ -167,22 +189,17 @@ const Vibration = () => {
                                 </div>
                             </div>
 
+
+
+                            // ... inside return ...
+
                             <div>
                                 <label className="block text-slate-400 mb-2 text-sm">GAP ({unit})</label>
                                 <div className="bg-slate-800/50 rounded-xl border border-slate-700 px-4 py-3 text-center">
                                     <input
                                         type="number"
-                                        value={distance.toFixed(2)}
-                                        onChange={(e) => {
-                                            const d = parseFloat(e.target.value);
-                                            const s = parseFloat(sensitivity);
-                                            if (!isNaN(d) && !isNaN(s) && s !== 0) {
-                                                // V = (D * S) / 1000
-                                                // Maintain negative sign convention for proximity probes
-                                                const v = (d * s) / 1000;
-                                                setVoltage((-Math.abs(v)).toFixed(2));
-                                            }
-                                        }}
+                                        value={gapInput}
+                                        onChange={(e) => handleGapChange(e.target.value)}
                                         className="w-full bg-transparent text-2xl font-bold text-white text-center outline-none"
                                         step="0.01"
                                     />

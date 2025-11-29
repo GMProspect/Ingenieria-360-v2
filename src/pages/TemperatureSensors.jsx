@@ -237,9 +237,7 @@ const TemperatureSensors = () => {
 
     // Recalculate when type/category/unit changes (keeping Temp as master)
     useEffect(() => {
-        if (inputTemp !== '') {
-            handleTempChange(inputTemp);
-        }
+        handleTempChange(inputTemp);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [category, type, tempUnit]);
 

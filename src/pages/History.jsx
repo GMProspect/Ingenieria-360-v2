@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { History as HistoryIcon, Trash2, Search } from 'lucide-react';
 import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
+import BackButton from '../components/BackButton';
 
 const History = () => {
     const { user } = useAuth();
@@ -77,6 +78,7 @@ const History = () => {
 
     return (
         <div className="max-w-6xl mx-auto p-6">
+            <BackButton />
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-3 bg-purple-500/20 rounded-xl text-purple-400">

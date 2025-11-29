@@ -31,15 +31,14 @@ const Home = () => {
                 </p>
             </div>
 
-            {/* Tools Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full px-4 mb-20 animate-fade-in-up">
-                {tools.map((tool) => {
+                {tools.map((tool, index) => {
                     const Icon = tool.icon;
                     return (
                         <Link
                             key={tool.path}
                             to={tool.path}
-                            className={`group bg-slate-900/40 border border-white/5 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 flex flex-col items-center ${tool.border} ${tool.shadow}`}
+                            className={`group bg-slate-900/40 border border-white/5 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 flex flex-col items-center ${tool.border} ${tool.shadow} ${index === tools.length - 1 ? 'lg:col-start-2' : ''}`}
                         >
                             <div className={`p-4 rounded-xl mb-6 transition-colors ${tool.bg}`}>
                                 <Icon size={40} className={`${tool.color} transition-colors`} />

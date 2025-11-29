@@ -14,6 +14,7 @@ const sensorData = {
             pt100: {
                 name: 'Pt100',
                 desc: 'Platino 100Ω a 0°C',
+                note: 'El estándar industrial más común. Excelente precisión y estabilidad.',
                 composition: 'Platino Puro (99.99%)',
                 alpha: '0.00385 (IEC 60751)',
                 range: '-200°C a 850°C',
@@ -30,6 +31,7 @@ const sensorData = {
             pt1000: {
                 name: 'Pt1000',
                 desc: 'Platino 1000Ω a 0°C',
+                note: 'Mayor resistencia reduce el error por cables y el autocalentamiento. Ideal para equipos a batería.',
                 composition: 'Platino Puro (99.99%)',
                 alpha: '0.00385 (IEC 60751)',
                 range: '-200°C a 850°C',
@@ -46,6 +48,7 @@ const sensorData = {
             ni120: {
                 name: 'Ni120',
                 desc: 'Níquel 120Ω a 0°C',
+                note: 'Alta sensibilidad pero rango limitado. Común en HVAC y sistemas antiguos.',
                 composition: 'Níquel Puro',
                 alpha: '0.00672 (DIN 43760)',
                 range: '-80°C a 260°C',
@@ -61,6 +64,7 @@ const sensorData = {
             cu10: {
                 name: 'Cu10',
                 desc: 'Cobre 10Ω a 25°C',
+                note: 'Muy lineal. Se usa principalmente para medir temperatura en bobinados de motores.',
                 composition: 'Cobre Electrolítico',
                 alpha: '0.00427',
                 range: '-200°C a 260°C',
@@ -79,6 +83,7 @@ const sensorData = {
             k: {
                 name: 'Tipo K',
                 desc: 'Uso general, bajo costo',
+                note: 'La más popular. Buen rango y resistencia a la oxidación. No usar en atmósferas sulfurosas.',
                 connectorColor: '#fbbf24', // Yellow
                 composition: {
                     pos: { name: 'Cromel (Chromel)', detail: '90% Níquel, 10% Cromo', color: 'Amarillo (ANSI)', hex: '#fbbf24' },
@@ -91,6 +96,7 @@ const sensorData = {
             j: {
                 name: 'Tipo J',
                 desc: 'Atmósferas reductoras',
+                note: 'Mayor sensibilidad que la K. El hierro se oxida rápido, no recomendada para humedad.',
                 connectorColor: '#000000', // Black
                 composition: {
                     pos: { name: 'Hierro (Iron)', detail: '100% Fe (Magnético)', color: 'Blanco (ANSI)', hex: '#ffffff' },
@@ -103,6 +109,7 @@ const sensorData = {
             t: {
                 name: 'Tipo T',
                 desc: 'Bajas temperaturas / Criogenia',
+                note: 'Excelente estabilidad en frío extremo. Resistente a la humedad.',
                 connectorColor: '#3b82f6', // Blue
                 composition: {
                     pos: { name: 'Cobre (Copper)', detail: '100% Cu', color: 'Azul (ANSI)', hex: '#3b82f6' },
@@ -115,6 +122,7 @@ const sensorData = {
             e: {
                 name: 'Tipo E',
                 desc: 'Alta sensibilidad',
+                note: 'La mayor señal de salida (mV/°C). Ideal para detectar pequeños cambios de temperatura.',
                 connectorColor: '#a855f7', // Purple
                 composition: {
                     pos: { name: 'Cromel (Chromel)', detail: '90% Níquel, 10% Cromo', color: 'Púrpura (ANSI)', hex: '#a855f7' },
@@ -202,63 +210,10 @@ const TemperatureSensors = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column: Visuals & Controls */}
-                <div className="lg:col-span-1 space-y-6">
-                    {/* Visual Representation */}
-                    <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 backdrop-blur-sm flex justify-center">
-                        <SensorVisual
-                            type={safeType}
-                            category={safeCategory}
-                            colors={visualColors}
-                            wires={safeCategory === 'rtd' ? parseInt(wires) : 2}
-                            housing={housing}
-                        />
-                    </div>
-
-                    {/* Calculator (Now Prominent) */}
-                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-4 border-b border-red-500/30 pb-2 flex items-center gap-2">
-                            <Zap size={16} />
-                            Simulador de Salida
-                        </h3>
-                        <div className="space-y-4 relative z-10">
-                            <div>
-                                <label className="block text-xs text-slate-500 mb-1">Temperatura (°C)</label>
-                                <input
-                                    type="number"
-                                    value={inputTemp}
-                                    onChange={(e) => setInputTemp(e.target.value)}
-                                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-red-500 transition-all shadow-inner"
-                                    placeholder="100"
-                                />
-                            </div>
-
-                            <div className="flex items-center gap-4">
-                                <div className="h-px bg-slate-800 flex-1"></div>
-                                <div className="text-slate-600 text-xs font-bold">RESULTADO</div>
-                                <div className="h-px bg-slate-800 flex-1"></div>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs text-slate-500 mb-1">
-                                    Salida ({safeCategory === 'rtd' ? 'Resistencia (Ω)' : 'Voltaje (mV)'})
-                                </label>
-                                <div className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold shadow-inner flex items-center justify-between">
-                                    <span>{outputVal || '-'}</span>
-                                    <span className="text-xs text-slate-600 font-normal">
-                                        {safeCategory === 'rtd' ? 'Ohms' : 'mV'}
-                                    </span>
-                                </div>
-                                <p className="text-[10px] text-slate-500 mt-1 text-right">
-                                    *Cálculo ideal (sin pérdidas)
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Type Selector */}
-                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm">
+                {/* Left Column: Selectors & Visual */}
+                <div className="lg:col-span-1 space-y-6 flex flex-col">
+                    {/* Type Selector (Top) */}
+                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm order-1">
                         <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Tipo de Sensor</label>
                         <div className="grid grid-cols-2 gap-2">
                             {Object.entries(sensorData[safeCategory].types).map(([key, data]) => (
@@ -323,11 +278,56 @@ const TemperatureSensors = () => {
                             </div>
                         )}
                     </div>
+
+                    {/* Visual Representation (Bottom) */}
+                    <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 backdrop-blur-sm flex justify-center order-2">
+                        <SensorVisual
+                            type={safeType}
+                            category={safeCategory}
+                            colors={visualColors}
+                            wires={safeCategory === 'rtd' ? parseInt(wires) : 2}
+                            housing={housing}
+                        />
+                    </div>
                 </div>
 
-                {/* Right Column: Info Card */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl relative overflow-hidden">
+                {/* Right Column: Simulator & Info */}
+                <div className="lg:col-span-2 space-y-6 flex flex-col">
+                    {/* Simulator (Top Right) */}
+                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative overflow-hidden group order-1">
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-4 border-b border-red-500/30 pb-2 flex items-center gap-2">
+                            <Zap size={16} />
+                            Simulador de Salida
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                            <div>
+                                <label className="block text-xs text-slate-500 mb-1">Temperatura de Entrada (°C)</label>
+                                <input
+                                    type="number"
+                                    value={inputTemp}
+                                    onChange={(e) => setInputTemp(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-red-500 transition-all shadow-inner"
+                                    placeholder="Ej: 100"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs text-slate-500 mb-1">
+                                    Salida Esperada ({safeCategory === 'rtd' ? 'Resistencia' : 'Voltaje'})
+                                </label>
+                                <div className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold shadow-inner flex items-center justify-between">
+                                    <span>{outputVal || '-'}</span>
+                                    <span className="text-xs text-slate-600 font-normal">
+                                        {safeCategory === 'rtd' ? 'Ω' : 'mV'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Info Card (Below Simulator) */}
+                    <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl relative overflow-hidden order-2 h-full">
                         {/* Background Decoration */}
                         <div className="absolute top-0 right-0 p-32 bg-red-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
 
@@ -396,46 +396,54 @@ const TemperatureSensors = () => {
                     </div>
 
                     {/* Educational Note / Dynamic Info */}
-                    <div className="bg-blue-500/10 p-6 rounded-2xl border border-blue-500/20 backdrop-blur-sm flex gap-4 items-start">
+                    <div className="bg-blue-500/10 p-6 rounded-2xl border border-blue-500/20 backdrop-blur-sm flex gap-4 items-start order-3">
                         <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400 shrink-0">
                             <Info size={24} />
                         </div>
                         <div>
                             <h4 className="text-blue-400 font-bold mb-2 text-sm uppercase tracking-wider">
-                                {safeCategory === 'tc' ? 'Información de Conexión' : 'Configuración de Hilos'}
+                                Información del Sensor
                             </h4>
 
-                            {safeCategory === 'tc' ? (
-                                <div className="space-y-2">
-                                    <p className="text-slate-300 text-sm leading-relaxed">
-                                        {housing === 'connector'
-                                            ? <span><strong>Conector Estándar:</strong> Ideal para conexiones rápidas en laboratorio o ambientes controlados. Los pines están polarizados (ancho = negativo).</span>
-                                            : <span><strong>Cabezal Industrial:</strong> Protege las conexiones en ambientes agresivos. Permite el uso de transmisores de temperatura internos.</span>
-                                        }
-                                    </p>
-                                    <div className="mt-2 pt-2 border-t border-blue-500/20 text-xs text-slate-400">
-                                        <span className="text-red-400 font-bold">¡OJO!</span> En norma ANSI, el cable <strong className="text-red-400">ROJO es NEGATIVO (-)</strong>.
+                            <div className="space-y-3">
+                                {/* Type Specific Note */}
+                                <p className="text-slate-300 text-sm leading-relaxed italic border-l-2 border-blue-500/30 pl-3">
+                                    "{currentSensor.note}"
+                                </p>
+
+                                {/* Context Specific Info */}
+                                {safeCategory === 'tc' ? (
+                                    <div className="space-y-2">
+                                        <p className="text-slate-400 text-xs leading-relaxed">
+                                            {housing === 'connector'
+                                                ? 'Mostrando conector estándar polarizado.'
+                                                : 'Mostrando cabezal de conexión industrial.'
+                                            }
+                                        </p>
+                                        <div className="pt-2 border-t border-blue-500/20 text-xs text-slate-400">
+                                            <span className="text-red-400 font-bold">¡OJO!</span> En norma ANSI, el cable <strong className="text-red-400">ROJO es NEGATIVO (-)</strong>.
+                                        </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    {wires === '2' && (
-                                        <p className="text-slate-300 text-sm leading-relaxed animate-in fade-in slide-in-from-left-2">
-                                            <strong>2 Hilos:</strong> Configuración más simple pero menos precisa. La resistencia de los cables se suma a la medición, causando errores en distancias largas.
-                                        </p>
-                                    )}
-                                    {wires === '3' && (
-                                        <p className="text-slate-300 text-sm leading-relaxed animate-in fade-in slide-in-from-left-2">
-                                            <strong>3 Hilos:</strong> Estándar industrial más común. Utiliza un tercer hilo para compensar la resistencia del cable, ofreciendo un buen balance entre precisión y costo.
-                                        </p>
-                                    )}
-                                    {wires === '4' && (
-                                        <p className="text-slate-300 text-sm leading-relaxed animate-in fade-in slide-in-from-left-2">
-                                            <strong>4 Hilos:</strong> Máxima precisión (Laboratorio). Elimina completamente el error por resistencia de cables inyectando corriente por dos hilos y midiendo voltaje por los otros dos.
-                                        </p>
-                                    )}
-                                </div>
-                            )}
+                                ) : (
+                                    <div className="space-y-2">
+                                        {wires === '2' && (
+                                            <p className="text-slate-400 text-xs leading-relaxed">
+                                                <strong>2 Hilos:</strong> Baja precisión. La resistencia del cable se suma al error.
+                                            </p>
+                                        )}
+                                        {wires === '3' && (
+                                            <p className="text-slate-400 text-xs leading-relaxed">
+                                                <strong>3 Hilos:</strong> Estándar industrial. Compensa la resistencia del cable.
+                                            </p>
+                                        )}
+                                        {wires === '4' && (
+                                            <p className="text-slate-400 text-xs leading-relaxed">
+                                                <strong>4 Hilos:</strong> Máxima precisión (Laboratorio). Elimina error de cables.
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

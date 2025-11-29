@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Database, Plus, Search, Trash2, Edit } from 'lucide-react';
+import { Database, Plus, Search, Trash2, Edit, Wrench } from 'lucide-react';
 import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
 import BackButton from '../components/BackButton';
@@ -210,6 +210,16 @@ const Inventory = () => {
                     <Plus size={20} />
                     Nuevo Equipo
                 </button>
+            </div>
+
+            {/* Tribute to Mechanics */}
+            <div className="mb-6 bg-orange-500/10 border border-orange-500/20 rounded-xl p-4 flex items-center gap-3">
+                <div className="p-2 bg-orange-500/20 rounded-lg text-orange-400">
+                    <Wrench size={18} />
+                </div>
+                <p className="text-sm text-orange-200/80 italic">
+                    "Para la fuerza de la planta: Un buen inventario es la base de un mantenimiento impecable."
+                </p>
             </div>
 
             {/* Search Bar */}

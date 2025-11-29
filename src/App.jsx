@@ -11,6 +11,7 @@ import Transmitter from './pages/Transmitter';
 import Converter from './pages/Converter';
 import TemperatureSensors from './pages/TemperatureSensors';
 import WrenchConverter from './pages/WrenchConverter';
+import TorqueCalculator from './pages/TorqueCalculator';
 import Megohmetro from './pages/Megohmetro';
 import Login from './pages/Login';
 import History from './pages/History';
@@ -35,6 +36,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/inventory" element={<Inventory />} />
+                  <Route path="/torque" element={<TorqueCalculator />} />
                   <Route path="/ohms-law" element={<OhmsLaw />} />
                   <Route path="/vibration" element={<Vibration />} />
                   <Route path="/transmitter" element={<Transmitter />} />

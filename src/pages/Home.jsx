@@ -43,8 +43,8 @@ const Home = () => {
             icon: Wrench,
             color: 'orange',
             links: [
-                { to: '#', label: 'Próximamente: Torques', icon: Wrench, color: 'text-slate-500' },
-                { to: '#', label: 'Próximamente: Inventario Turbinas', icon: Wrench, color: 'text-slate-500' }
+                { to: '/torque', label: 'Calculadora de Torque', icon: Wrench, color: 'text-orange-400', isNew: true },
+                { to: '/inventory', label: 'Inventario de Taller', icon: Database, color: 'text-blue-400' }
             ]
         },
         {

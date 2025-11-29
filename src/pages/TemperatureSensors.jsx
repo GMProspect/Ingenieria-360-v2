@@ -294,9 +294,12 @@ const TemperatureSensors = () => {
                 {/* Right Column: Simulator & Info */}
                 <div className="lg:col-span-2 space-y-6 flex flex-col">
                     {/* Simulator (Top Right) */}
-                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative overflow-hidden group order-1">
-                        <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-4 border-b border-red-500/30 pb-2 flex items-center gap-2">
+                    {/* Simulator (Top Right) */}
+                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative group order-1">
+                        <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+                            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                        <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-4 border-b border-red-500/30 pb-2 flex items-center gap-2 relative z-10">
                             <Zap size={16} />
                             Simulador de Salida
                         </h3>
@@ -316,9 +319,9 @@ const TemperatureSensors = () => {
                                 <label className="block text-xs text-slate-500 mb-1">
                                     Salida Esperada ({safeCategory === 'rtd' ? 'Resistencia' : 'Voltaje'})
                                 </label>
-                                <div className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold shadow-inner flex items-center justify-between">
-                                    <span>{outputVal || '-'}</span>
-                                    <span className="text-xs text-slate-600 font-normal">
+                                <div className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold shadow-inner flex items-center justify-between overflow-hidden">
+                                    <span className="truncate mr-2">{outputVal || '-'}</span>
+                                    <span className="text-xs text-slate-600 font-normal shrink-0">
                                         {safeCategory === 'rtd' ? 'Ω' : 'mV'}
                                     </span>
                                 </div>
@@ -327,7 +330,8 @@ const TemperatureSensors = () => {
                     </div>
 
                     {/* Info Card (Below Simulator) */}
-                    <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl relative overflow-hidden order-2 h-full">
+                    {/* Info Card (Below Simulator) */}
+                    <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl relative overflow-hidden order-2">
                         {/* Background Decoration */}
                         <div className="absolute top-0 right-0 p-32 bg-red-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
 

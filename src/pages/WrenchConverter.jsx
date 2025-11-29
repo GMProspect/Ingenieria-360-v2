@@ -22,14 +22,16 @@ const WrenchConverter = () => {
         { m: 'M6', mm: '10', inch: '3/8"', id: 5 },
         { m: 'M7', mm: '12', inch: '7/16"', id: 6 }, // ~11mm nut, 12mm fits loose
         { m: 'M8', mm: '13', inch: '1/2"', id: 7 },
-        { m: 'M9', mm: '15', inch: '9/16"', id: 8 }, // Rare size
-        { m: 'M10', mm: '16', inch: '5/8"', id: 9 },
-        { m: 'M11', mm: '18', inch: '11/16"', id: 10 }, // Rare size
-        { m: 'M12', mm: '19', inch: '3/4"', id: 11 },
-        { m: 'M12 (Alt)', mm: '20', inch: '13/16"', id: 12 },
-        { m: 'M14', mm: '22', inch: '7/8"', id: 13 },
-        { m: 'M16', mm: '24', inch: '15/16"', id: 14 },
-        { m: 'M16 (Alt)', mm: '25', inch: '1"', id: 15 },
+        { m: 'M8 (Alt)', mm: '14', inch: '9/16" (Holgada)', id: 101 }, // 9/16 (14.28mm) fits 14mm nut loose. 14mm wrench won't fit 9/16 nut.
+        { m: 'M9', mm: '15', inch: '19/32"', id: 8 }, // 19/32 is 15.08mm
+        { m: 'M10', mm: '16', inch: '5/8"', id: 9 }, // 5/8 is 15.87mm (fits 16mm nut very tight? No, 16mm is 16.0. 5/8 is 15.87. 5/8 wrench won't fit 16mm nut. 16mm wrench fits 5/8 nut loose.)
+        { m: 'M10 (ISO)', mm: '17', inch: '11/16"', id: 102 }, // 11/16 is 17.46mm. Fits 17mm loose.
+        { m: 'M11', mm: '18', inch: '-', id: 10 },
+        { m: 'M12', mm: '19', inch: '3/4"', id: 11 }, // 3/4 is 19.05mm. Perfect fit.
+        { m: 'M12 (Alt)', mm: '20', inch: '25/32"', id: 12 }, // 25/32 is 19.84mm.
+        { m: 'M14', mm: '22', inch: '7/8"', id: 13 }, // 7/8 is 22.22mm. Fits 22mm loose.
+        { m: 'M16', mm: '24', inch: '15/16"', id: 14 }, // 15/16 is 23.81mm. 24mm wrench fits 15/16 nut loose. 15/16 wrench won't fit 24mm nut.
+        { m: 'M16 (Alt)', mm: '25', inch: '1"', id: 15 }, // 1" is 25.4mm.
     ];
 
     return (

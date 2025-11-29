@@ -234,7 +234,9 @@ const ReferenceTableModal = ({ isOpen, onClose, sensor, category }) => {
 
 const TemperatureSensors = () => {
     const { user } = useAuth();
-    // Removed 'mode' state - now automatic
+    // 'mode' is now automatically determined by which input is being used
+    // 'source' (Input Temp -> Output Res/mV) or 'measure' (Input Res/mV -> Output Temp)
+    const [mode, setMode] = useState('source');
     const [category, setCategory] = useLocalStorage('temp_cat', 'tc', user?.id);
     const [type, setType] = useLocalStorage('temp_type', 'k', user?.id);
     const [wires, setWires] = useLocalStorage('temp_wires', '3', user?.id); // Default 3 wires for RTD
@@ -311,6 +313,7 @@ const TemperatureSensors = () => {
 
     // Handle Input Temp Change (Source Mode)
     const handleTempChange = (val) => {
+        setMode('source'); // Automatically switch to source mode
         setInputTemp(val);
         // Automatically calculate output
         setInputOutput(calculateOutput(val, tempUnit, safeCategory, safeType));
@@ -318,11 +321,10 @@ const TemperatureSensors = () => {
 
     // Handle Input Output Change (Measure Mode)
     const handleOutputChange = (val) => {
+        setMode('measure'); // Automatically switch to measure mode
         setInputOutput(val);
         if (val === '' || isNaN(parseFloat(val))) {
-            setInputTemp(''); // Clear temp if output is invalid, but don't clear if it's just partial typing
-            // Actually, if it's empty string, clear temp. If it's partial number like "-", keep temp as is or clear?
-            // Safer to clear temp if invalid number
+            setInputTemp(''); // Clear temp if output is invalid
             if (val === '') setInputTemp('');
             return;
         }
@@ -331,8 +333,6 @@ const TemperatureSensors = () => {
         let t = solveTemp(out);
 
         if (t === '' || typeof t !== 'number' || isNaN(t)) {
-            // If solveTemp fails (out of range), maybe show nothing or keep previous?
-            // Let's show nothing to indicate invalid range
             setInputTemp('');
             return;
         }
@@ -475,16 +475,19 @@ const TemperatureSensors = () => {
                     {/* Simulator (Top Right) */}
                     <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative group order-1">
                         <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div className={`absolute inset-0 bg-gradient-to-br ${mode === 'source' ? 'from-red-500/5' : 'from-green-500/5'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
                         </div>
 
                         <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 relative z-10">
-                            <h3 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 text-blue-400">
+                            <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${mode === 'source' ? 'text-red-400' : 'text-green-400'}`}>
                                 <Zap size={16} />
-                                Conversor Bidireccional
+                                {mode === 'source' ? 'Modo Fuente (Simular)' : 'Modo Medición (Leer)'}
                             </h3>
-                            <div className="text-[10px] text-slate-500 font-mono bg-slate-950 px-2 py-1 rounded border border-slate-800">
-                                AUTO-DETECT
+                            <div className={`text-[10px] font-mono px-2 py-1 rounded border transition-colors ${mode === 'source'
+                                ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                                : 'bg-green-500/10 text-green-400 border-green-500/20'
+                                }`}>
+                                {mode === 'source' ? 'SOURCE' : 'MEASURE'}
                             </div>
                         </div>
 
@@ -492,19 +495,19 @@ const TemperatureSensors = () => {
                             {/* Temperature Input */}
                             <div className="transition-opacity duration-300">
                                 <div className="flex justify-between items-center mb-1">
-                                    <label className="block text-xs font-bold text-slate-400">
+                                    <label className={`block text-xs font-bold ${mode === 'source' ? 'text-red-400' : 'text-slate-500'}`}>
                                         Temperatura
                                     </label>
                                     <div className="flex bg-slate-800 rounded-lg p-0.5">
                                         <button
                                             onClick={() => setTempUnit('C')}
-                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'C' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white'}`}
+                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'C' ? (mode === 'source' ? 'bg-red-500 text-white' : 'bg-green-500 text-white') : 'text-slate-400 hover:text-white'}`}
                                         >
                                             °C
                                         </button>
                                         <button
                                             onClick={() => setTempUnit('F')}
-                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'F' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white'}`}
+                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'F' ? (mode === 'source' ? 'bg-red-500 text-white' : 'bg-green-500 text-white') : 'text-slate-400 hover:text-white'}`}
                                         >
                                             °F
                                         </button>
@@ -514,14 +517,17 @@ const TemperatureSensors = () => {
                                     type="number"
                                     value={inputTemp}
                                     onChange={(e) => handleTempChange(e.target.value)}
-                                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 font-mono text-lg text-white outline-none focus:border-blue-500 transition-all shadow-inner"
+                                    className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-lg outline-none transition-all shadow-inner ${mode === 'source'
+                                        ? 'border-red-500/50 text-white shadow-[0_0_10px_rgba(239,68,68,0.1)]'
+                                        : 'border-slate-700 text-slate-400'
+                                        }`}
                                     placeholder={`Ej: ${tempUnit === 'C' ? '100' : '212'}`}
                                 />
                             </div>
 
                             {/* Output Input */}
                             <div className="transition-opacity duration-300">
-                                <label className="block text-xs font-bold mb-1 text-slate-400">
+                                <label className={`block text-xs font-bold mb-1 ${mode === 'measure' ? 'text-green-400' : 'text-slate-500'}`}>
                                     Salida ({safeCategory === 'rtd' ? 'Resistencia' : 'Voltaje'})
                                 </label>
                                 <div className="relative">
@@ -529,7 +535,10 @@ const TemperatureSensors = () => {
                                         type="number"
                                         value={inputOutput}
                                         onChange={(e) => handleOutputChange(e.target.value)}
-                                        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 font-mono text-xl text-white outline-none focus:border-blue-500 transition-all shadow-inner"
+                                        className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-xl outline-none transition-all shadow-inner ${mode === 'measure'
+                                            ? 'border-green-500/50 text-white shadow-[0_0_10px_rgba(34,197,94,0.1)]'
+                                            : 'border-slate-700 text-slate-400'
+                                            }`}
                                         placeholder="Ej: 138.5"
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-600 font-normal pointer-events-none">

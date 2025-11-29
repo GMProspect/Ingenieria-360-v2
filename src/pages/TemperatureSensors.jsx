@@ -294,7 +294,6 @@ const TemperatureSensors = () => {
                 {/* Right Column: Simulator & Info */}
                 <div className="lg:col-span-2 space-y-6 flex flex-col">
                     {/* Simulator (Top Right) */}
-                    {/* Simulator (Top Right) */}
                     <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative group order-1">
                         <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
                             <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -329,7 +328,6 @@ const TemperatureSensors = () => {
                         </div>
                     </div>
 
-                    {/* Info Card (Below Simulator) */}
                     {/* Info Card (Below Simulator) */}
                     <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl relative overflow-hidden order-2">
                         {/* Background Decoration */}
@@ -396,57 +394,59 @@ const TemperatureSensors = () => {
                                     )}
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Educational Note / Dynamic Info */}
-                    <div className="bg-blue-500/10 p-6 rounded-2xl border border-blue-500/20 backdrop-blur-sm flex gap-4 items-start order-3">
-                        <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400 shrink-0">
-                            <Info size={24} />
-                        </div>
-                        <div>
-                            <h4 className="text-blue-400 font-bold mb-2 text-sm uppercase tracking-wider">
-                                Información del Sensor
-                            </h4>
+                            {/* Educational Note / Dynamic Info (Merged) */}
+                            <div className="mt-6 pt-6 border-t border-white/10">
+                                <div className="flex gap-4 items-start bg-blue-500/10 p-4 rounded-xl border border-blue-500/20">
+                                    <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400 shrink-0">
+                                        <Info size={20} />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-blue-400 font-bold mb-2 text-xs uppercase tracking-wider">
+                                            Información Adicional
+                                        </h4>
 
-                            <div className="space-y-3">
-                                {/* Type Specific Note */}
-                                <p className="text-slate-300 text-sm leading-relaxed italic border-l-2 border-blue-500/30 pl-3">
-                                    "{currentSensor.note}"
-                                </p>
+                                        <div className="space-y-3">
+                                            {/* Type Specific Note */}
+                                            <p className="text-slate-300 text-xs leading-relaxed italic border-l-2 border-blue-500/30 pl-3">
+                                                "{currentSensor.note}"
+                                            </p>
 
-                                {/* Context Specific Info */}
-                                {safeCategory === 'tc' ? (
-                                    <div className="space-y-2">
-                                        <p className="text-slate-400 text-xs leading-relaxed">
-                                            {housing === 'connector'
-                                                ? 'Mostrando conector estándar polarizado.'
-                                                : 'Mostrando cabezal de conexión industrial.'
-                                            }
-                                        </p>
-                                        <div className="pt-2 border-t border-blue-500/20 text-xs text-slate-400">
-                                            <span className="text-red-400 font-bold">¡OJO!</span> En norma ANSI, el cable <strong className="text-red-400">ROJO es NEGATIVO (-)</strong>.
+                                            {/* Context Specific Info */}
+                                            {safeCategory === 'tc' ? (
+                                                <div className="space-y-2">
+                                                    <p className="text-slate-400 text-[10px] leading-relaxed">
+                                                        {housing === 'connector'
+                                                            ? 'Mostrando conector estándar polarizado.'
+                                                            : 'Mostrando cabezal de conexión industrial.'
+                                                        }
+                                                    </p>
+                                                    <div className="pt-2 border-t border-blue-500/20 text-[10px] text-slate-400">
+                                                        <span className="text-red-400 font-bold">¡OJO!</span> En norma ANSI, el cable <strong className="text-red-400">ROJO es NEGATIVO (-)</strong>.
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    {wires === '2' && (
+                                                        <p className="text-slate-400 text-[10px] leading-relaxed">
+                                                            <strong>2 Hilos:</strong> Baja precisión. La resistencia del cable se suma al error.
+                                                        </p>
+                                                    )}
+                                                    {wires === '3' && (
+                                                        <p className="text-slate-400 text-[10px] leading-relaxed">
+                                                            <strong>3 Hilos:</strong> Estándar industrial. Compensa la resistencia del cable.
+                                                        </p>
+                                                    )}
+                                                    {wires === '4' && (
+                                                        <p className="text-slate-400 text-[10px] leading-relaxed">
+                                                            <strong>4 Hilos:</strong> Máxima precisión (Laboratorio). Elimina error de cables.
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                ) : (
-                                    <div className="space-y-2">
-                                        {wires === '2' && (
-                                            <p className="text-slate-400 text-xs leading-relaxed">
-                                                <strong>2 Hilos:</strong> Baja precisión. La resistencia del cable se suma al error.
-                                            </p>
-                                        )}
-                                        {wires === '3' && (
-                                            <p className="text-slate-400 text-xs leading-relaxed">
-                                                <strong>3 Hilos:</strong> Estándar industrial. Compensa la resistencia del cable.
-                                            </p>
-                                        )}
-                                        {wires === '4' && (
-                                            <p className="text-slate-400 text-xs leading-relaxed">
-                                                <strong>4 Hilos:</strong> Máxima precisión (Laboratorio). Elimina error de cables.
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
+                                </div>
                             </div>
                         </div>
                     </div>

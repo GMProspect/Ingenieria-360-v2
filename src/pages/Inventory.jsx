@@ -6,6 +6,7 @@ import BackButton from '../components/BackButton';
 import InventoryModal from '../components/inventory/InventoryModal';
 import ItemDetailsModal from '../components/inventory/ItemDetailsModal';
 import TagList from '../components/inventory/TagList';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const Inventory = () => {
     const { user } = useAuth();
@@ -14,6 +15,8 @@ const Inventory = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
     const [currentItem, setCurrentItem] = useState(null); // null for new, object for edit
     const [detailsItem, setDetailsItem] = useState(null); // Item to show details for
 
@@ -158,18 +161,25 @@ const Inventory = () => {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('¿Estás seguro de eliminar este equipo?')) return;
+    const handleDeleteClick = (item) => {
+        setItemToDelete(item);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
         try {
             const { error } = await supabase
                 .from('equipos')
                 .delete()
-                .eq('id', id)
+                .eq('id', itemToDelete.id)
                 .eq('user_id', user.id); // Ensure ownership
             if (error) throw error;
             fetchItems();
         } catch (error) {
             console.error('Error deleting item:', error);
+        } finally {
+            setItemToDelete(null);
         }
     };
 
@@ -267,7 +277,7 @@ const Inventory = () => {
                                                     <Edit size={18} />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(item.id)}
+                                                    onClick={() => handleDeleteClick(item)}
                                                     className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors active:scale-95"
                                                     title="Eliminar"
                                                 >
@@ -313,7 +323,7 @@ const Inventory = () => {
                                         <Edit size={18} />
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() => handleDeleteClick(item)}
                                         className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors active:scale-95"
                                         title="Eliminar"
                                     >
@@ -368,6 +378,16 @@ const Inventory = () => {
                 isOpen={isDetailsOpen}
                 onClose={() => setIsDetailsOpen(false)}
                 item={detailsItem}
+            />
+
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Eliminar Equipo"
+                message={`¿Estás seguro de que deseas eliminar "${itemToDelete?.name}"? Esta acción no se puede deshacer.`}
+                confirmText="Eliminar"
+                type="danger"
             />
         </div>
     );

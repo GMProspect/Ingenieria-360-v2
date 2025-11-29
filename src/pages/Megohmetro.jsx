@@ -181,6 +181,48 @@ const Megohmetro = () => {
             <ToolHeader
                 title="Megóhmetro"
                 subtitle="Evaluación de Aislamiento (IEEE 43)"
+                icon={Activity}
+                iconColorClass="text-purple-400"
+                iconBgClass="bg-purple-500/20"
+                onReset={clearAll}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-stretch">
+
+                {/* Visual Section - CENTERED/LEFT */}
+                <div className="flex flex-col items-center p-6 bg-slate-900/30 rounded-2xl border border-white/5 relative overflow-hidden transition-all duration-500">
+                    <h3 className="text-slate-400 text-sm font-bold uppercase tracking-wider mb-4">Estado del Bobinado</h3>
+                    <MotorVisual status={result?.status} />
+
+                    {result ? (
+                        <div className="mt-4 text-center animate-fade-in-up w-full bg-slate-950/50 p-4 rounded-xl border border-white/5 backdrop-blur-sm">
+                            <h4 className={`text-xl font-bold ${result.color} mb-2 flex items-center justify-center gap-2`}>
+                                {result.status === 'danger' && <AlertTriangle size={20} />}
+                                {result.status === 'warning' && <AlertTriangle size={20} />}
+                                {result.status === 'success' && <CheckCircle size={20} />}
+                                {result.title}
+                            </h4>
+                            <p className="text-white text-sm mb-3 leading-relaxed">
+                                {result.message}
+                            </p>
+                            <div className="bg-black/40 rounded-lg p-3 border border-white/10 text-left">
+                                <p className="text-slate-300 text-xs">
+                                    <strong className="block mb-1 text-slate-500 uppercase text-[10px] tracking-wider">Recomendación:</strong>
+                                    {result.action}
+                                </p>
+                            </div>
+                        </div>
+                    ) : (
+                        <p className="text-slate-500 text-xs text-center max-w-xs mt-4">
+                            Representación visual del estator. El color indica la integridad del aislamiento según IEEE 43.
+                        </p>
+                    )}
+                </div>
+
+                {/* Input Section - RIGHT */}
+                <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl h-full flex flex-col justify-center">
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                        <Zap className="mr-2 text-yellow-400" size={20} />
                         Datos de Medición
                     </h3>
 
@@ -237,11 +279,11 @@ const Megohmetro = () => {
                             </div>
                         </div>
                     </div>
-                </div >
-            </div >
+                </div>
+            </div>
 
-    {/* Safety Tips */ }
-    < div className = "bg-blue-900/20 border border-blue-500/30 rounded-2xl p-6 mb-8" >
+            {/* Safety Tips */}
+            <div className="bg-blue-900/20 border border-blue-500/30 rounded-2xl p-6 mb-8">
                 <h4 className="text-blue-400 font-bold mb-4 flex items-center">
                     <Info className="mr-2" size={20} />
                     Tips de Seguridad y Mantenimiento
@@ -268,7 +310,7 @@ const Megohmetro = () => {
                         </span>
                     </li>
                 </ul>
-            </div >
+            </div>
 
             <SaveCalculationSection
                 label={label}
@@ -281,7 +323,7 @@ const Megohmetro = () => {
             />
 
             <AdBanner dataAdSlot="9876543210" />
-        </div >
+        </div>
     );
 };
 

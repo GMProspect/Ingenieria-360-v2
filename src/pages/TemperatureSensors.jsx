@@ -235,6 +235,14 @@ const ReferenceTableModal = ({ isOpen, onClose, sensor, category }) => {
 const TemperatureSensors = () => {
     const { user } = useAuth();
     const [mode, setMode] = useState('source'); // 'source' (Input Temp -> Output Res/mV) or 'measure' (Input Res/mV -> Output Temp)
+    const [category, setCategory] = useLocalStorage('temp_cat', 'tc', user?.id);
+    const [type, setType] = useLocalStorage('temp_type', 'k', user?.id);
+    const [wires, setWires] = useLocalStorage('temp_wires', '3', user?.id); // Default 3 wires for RTD
+    const [housing, setHousing] = useLocalStorage('temp_housing', 'connector', user?.id); // 'connector' or 'head'
+    const [inputTemp, setInputTemp] = useState('');
+    const [tempUnit, setTempUnit] = useLocalStorage('temp_unit', 'C', user?.id); // 'C' or 'F'
+    const [inputOutput, setInputOutput] = useState('');
+    const [showTable, setShowTable] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);

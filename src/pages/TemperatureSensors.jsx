@@ -28,6 +28,22 @@ const sensorData = {
                     return R0 * (1 + A * t + B * t * t + C * (t - 100) * t * t * t);
                 }
             },
+            pt100_lube: {
+                name: 'Pt100 (Lube/Turbina)',
+                desc: 'Platino 100Ω (Alpha 0.00396)',
+                note: 'Curva específica para sistemas de lubricación y turbinas antiguas (GE/Westinghouse).',
+                composition: 'Platino Puro (High Alpha)',
+                alpha: '0.00396',
+                range: '-40°C a 250°C',
+                color: 'Blanco / Rojo',
+                calc: (t) => {
+                    // Linear approximation based on user provided table
+                    // Alpha approx 0.00396
+                    const R0 = 100;
+                    const alpha = 0.00396;
+                    return R0 * (1 + alpha * t);
+                }
+            },
             pt1000: {
                 name: 'Pt1000',
                 desc: 'Platino 1000Ω a 0°C',
@@ -136,6 +152,86 @@ const sensorData = {
     }
 };
 
+const ReferenceTableModal = ({ isOpen, onClose, sensor, category }) => {
+    if (!isOpen) return null;
+
+    // Generate reference points based on sensor range
+    const points = [];
+    let start, end, step;
+
+    if (category === 'rtd') {
+        start = -40;
+        end = 260;
+        step = 20;
+    } else {
+        start = 0;
+        end = 1000;
+        step = 100;
+    }
+
+    for (let t = start; t <= end; t += step) {
+        points.push({
+            c: t,
+            f: (t * 9 / 5) + 32,
+            val: sensor.calc(t)
+        });
+    }
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl" onClick={e => e.stopPropagation()}>
+                <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-2xl">
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <Layers size={18} className="text-blue-400" />
+                        Tabla de Referencia
+                    </h3>
+                    <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+                        ✕
+                    </button>
+                </div>
+
+                <div className="overflow-y-auto p-4 custom-scrollbar">
+                    <div className="mb-4 text-sm text-slate-400">
+                        Valores teóricos para <strong className="text-white">{sensor.name}</strong>
+                    </div>
+
+                    <table className="w-full text-sm text-left">
+                        <thead className="text-xs text-slate-500 uppercase bg-slate-950/50 sticky top-0">
+                            <tr>
+                                <th className="px-4 py-3 rounded-tl-lg">Temp (°C)</th>
+                                <th className="px-4 py-3">Temp (°F)</th>
+                                <th className="px-4 py-3 rounded-tr-lg text-right">
+                                    {category === 'rtd' ? 'Resistencia (Ω)' : 'Voltaje (mV)'}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800">
+                            {points.map((p, i) => (
+                                <tr key={i} className="hover:bg-white/5 transition-colors">
+                                    <td className="px-4 py-2 font-mono text-slate-300">{p.c}</td>
+                                    <td className="px-4 py-2 font-mono text-slate-400">{p.f.toFixed(1)}</td>
+                                    <td className="px-4 py-2 font-mono text-right font-bold text-blue-400">
+                                        {p.val.toFixed(2)}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="p-4 border-t border-slate-700 bg-slate-800/30 rounded-b-2xl">
+                    <button
+                        onClick={onClose}
+                        className="w-full py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-bold transition-colors"
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const TemperatureSensors = () => {
     const { user } = useAuth();
     const [category, setCategory] = useLocalStorage('temp_cat', 'tc', user?.id);
@@ -145,6 +241,7 @@ const TemperatureSensors = () => {
     const [inputTemp, setInputTemp] = useState('');
     const [tempUnit, setTempUnit] = useLocalStorage('temp_unit', 'C', user?.id); // 'C' or 'F'
     const [inputOutput, setInputOutput] = useState('');
+    const [showTable, setShowTable] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -430,13 +527,20 @@ const TemperatureSensors = () => {
                                     <div className="flex items-center gap-3 mb-1">
                                         <h2 className="text-3xl font-bold text-white">{currentSensor.name}</h2>
                                         <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-slate-400 border border-white/5">
-                                            {safeCategory === 'tc' ? 'ANSI MC96.1' : 'IEC 60751'}
+                                            {safeCategory === 'tc' ? 'ANSI MC96.1' : (safeType === 'pt100_lube' ? 'US Industrial' : 'IEC 60751')}
                                         </span>
                                     </div>
                                     <p className="text-red-400 text-lg">{currentSensor.desc}</p>
                                 </div>
-                                <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-                                    <Layers className="text-slate-400" size={32} />
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setShowTable(true)}
+                                        className="p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-xl border border-blue-500/30 transition-colors flex items-center gap-2"
+                                        title="Ver Tabla de Referencia"
+                                    >
+                                        <Layers size={20} />
+                                        <span className="text-xs font-bold hidden sm:inline">Tabla</span>
+                                    </button>
                                 </div>
                             </div>
 
@@ -545,6 +649,14 @@ const TemperatureSensors = () => {
             </div>
 
             <AdBanner dataAdSlot="1234567890" />
+
+            {/* Reference Table Modal */}
+            <ReferenceTableModal
+                isOpen={showTable}
+                onClose={() => setShowTable(false)}
+                sensor={currentSensor}
+                category={safeCategory}
+            />
         </div>
     );
 };

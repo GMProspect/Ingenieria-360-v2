@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Database, Zap, Activity, Gauge, RefreshCw, Wrench } from 'lucide-react';
+import { Database, Zap, Activity, Gauge, RefreshCw, Wrench, Thermometer } from 'lucide-react';
 import HomeCraneIcon from '../components/HomeCraneIcon';
 import FeedbackForm from '../components/FeedbackForm';
 
@@ -9,6 +9,7 @@ const Home = () => {
         { path: '/inventory', name: 'Inventario', icon: Database, desc: 'Gestión de activos y especificaciones dinámicas.', color: 'text-blue-400', bg: 'bg-blue-500/10', hover: 'group-hover:text-blue-300', border: 'hover:border-blue-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(59,130,246,0.1)]' },
         { path: '/ohms-law', name: 'Ley de Ohm', icon: Zap, desc: 'Cálculo de V, I, R con interfaz triangular.', color: 'text-yellow-400', bg: 'bg-yellow-500/10', hover: 'group-hover:text-yellow-300', border: 'hover:border-yellow-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(234,179,8,0.1)]' },
         { path: '/transmitter', name: 'Transmisor 4-20mA', icon: Gauge, desc: 'Conversión de señales de instrumentación.', color: 'text-purple-400', bg: 'bg-purple-500/10', hover: 'group-hover:text-purple-300', border: 'hover:border-purple-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(168,85,247,0.1)]' },
+        { path: '/temperature-sensors', name: 'Sensores de Temperatura', icon: Thermometer, desc: 'RTDs, Termocuplas y Aleaciones.', color: 'text-red-400', bg: 'bg-red-500/10', hover: 'group-hover:text-red-300', border: 'hover:border-red-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(239,68,68,0.1)]' },
         { path: '/vibration', name: 'Sondas de Vibración', icon: Activity, desc: 'API 670: Voltaje de GAP a Mils/Micras.', color: 'text-cyan-400', bg: 'bg-cyan-500/10', hover: 'group-hover:text-cyan-300', border: 'hover:border-cyan-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]' },
         { path: '/wrench-converter', name: 'Medidas de Llaves', icon: Wrench, desc: 'Tabla Maestra: Tuercas (M) vs Llaves (mm/pulg).', color: 'text-orange-400', bg: 'bg-orange-500/10', hover: 'group-hover:text-orange-300', border: 'hover:border-orange-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(249,115,22,0.1)]' },
         { path: '/converter', name: 'Conversor Universal', icon: RefreshCw, desc: 'Presión, Temperatura, Longitud y Peso.', color: 'text-green-400', bg: 'bg-green-500/10', hover: 'group-hover:text-green-300', border: 'hover:border-green-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(34,197,94,0.1)]' },

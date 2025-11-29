@@ -9,6 +9,7 @@ import OhmsLaw from './pages/OhmsLaw';
 import Vibration from './pages/Vibration';
 import Transmitter from './pages/Transmitter';
 import Converter from './pages/Converter';
+import TemperatureSensors from './pages/TemperatureSensors';
 import WrenchConverter from './pages/WrenchConverter';
 import Login from './pages/Login';
 import History from './pages/History';
@@ -36,6 +37,7 @@ function App() {
                   <Route path="/ohms-law" element={<OhmsLaw />} />
                   <Route path="/vibration" element={<Vibration />} />
                   <Route path="/transmitter" element={<Transmitter />} />
+                  <Route path="/temperature-sensors" element={<TemperatureSensors />} />
                   <Route path="/converter" element={<Converter />} />
                   <Route path="/wrench-converter" element={<WrenchConverter />} />
                   <Route path="/history" element={<History />} />

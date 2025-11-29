@@ -181,53 +181,6 @@ const Megohmetro = () => {
             <ToolHeader
                 title="Megóhmetro"
                 subtitle="Evaluación de Aislamiento (IEEE 43)"
-                icon={Activity}
-                iconColorClass="text-purple-400"
-                iconBgClass="bg-purple-500/20"
-                onReset={clearAll}
-            />
-
-            {/* Result Alert - MOVED TO TOP */}
-            {result && (
-                <div className={`mb-8 p-6 rounded-2xl border ${result.borderColor} ${result.bgColor} backdrop-blur-sm transition-all animate-fade-in-down`}>
-                    <div className="flex items-start">
-                        {result.status === 'danger' && <AlertTriangle className="text-red-500 mr-3 shrink-0" size={32} />}
-                        {result.status === 'warning' && <AlertTriangle className="text-yellow-500 mr-3 shrink-0" size={32} />}
-                        {result.status === 'success' && <CheckCircle className="text-green-500 mr-3 shrink-0" size={32} />}
-
-                        <div>
-                            <h3 className={`text-2xl font-bold ${result.color} mb-2`}>
-                                {result.title}
-                            </h3>
-                            <p className="text-white text-lg font-medium mb-4 leading-relaxed">
-                                {result.message}
-                            </p>
-                            <div className="bg-black/20 rounded-xl p-4 border border-black/10">
-                                <p className="text-slate-200 text-sm">
-                                    <strong className="block mb-1 text-slate-400 uppercase text-xs tracking-wider">Recomendación:</strong>
-                                    {result.action}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-center">
-
-                {/* Visual Section - CENTERED/LEFT */}
-                <div className="flex flex-col items-center justify-center p-6 bg-slate-900/30 rounded-2xl border border-white/5">
-                    <h3 className="text-slate-400 text-sm font-bold uppercase tracking-wider mb-4">Estado del Bobinado</h3>
-                    <MotorVisual status={result?.status} />
-                    <p className="text-slate-500 text-xs text-center max-w-xs">
-                        Representación visual del estator. El color indica la integridad del aislamiento según IEEE 43.
-                    </p>
-                </div>
-
-                {/* Input Section - RIGHT */}
-                <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl h-full flex flex-col justify-center">
-                    <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-                        <Zap className="mr-2 text-yellow-400" size={20} />
                         Datos de Medición
                     </h3>
 
@@ -284,11 +237,11 @@ const Megohmetro = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
 
-            {/* Safety Tips */}
-            <div className="bg-blue-900/20 border border-blue-500/30 rounded-2xl p-6 mb-8">
+    {/* Safety Tips */ }
+    < div className = "bg-blue-900/20 border border-blue-500/30 rounded-2xl p-6 mb-8" >
                 <h4 className="text-blue-400 font-bold mb-4 flex items-center">
                     <Info className="mr-2" size={20} />
                     Tips de Seguridad y Mantenimiento
@@ -315,7 +268,7 @@ const Megohmetro = () => {
                         </span>
                     </li>
                 </ul>
-            </div>
+            </div >
 
             <SaveCalculationSection
                 label={label}
@@ -328,7 +281,7 @@ const Megohmetro = () => {
             />
 
             <AdBanner dataAdSlot="9876543210" />
-        </div>
+        </div >
     );
 };
 

@@ -132,6 +132,7 @@ const TemperatureSensors = () => {
     const { user } = useAuth();
     const [category, setCategory] = useLocalStorage('temp_cat', 'tc', user?.id);
     const [type, setType] = useLocalStorage('temp_type', 'k', user?.id);
+    const [wires, setWires] = useLocalStorage('temp_wires', '3', user?.id); // Default 3 wires for RTD
     const [inputTemp, setInputTemp] = useState('');
 
     useEffect(() => {
@@ -208,6 +209,7 @@ const TemperatureSensors = () => {
                             type={safeType}
                             category={safeCategory}
                             colors={visualColors}
+                            wires={safeCategory === 'rtd' ? parseInt(wires) : 2}
                         />
                     </div>
 
@@ -228,6 +230,27 @@ const TemperatureSensors = () => {
                                 </button>
                             ))}
                         </div>
+
+                        {/* Wire Selector for RTD */}
+                        {safeCategory === 'rtd' && (
+                            <div className="mt-4 pt-4 border-t border-white/5">
+                                <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Configuración de Hilos</label>
+                                <div className="flex gap-2">
+                                    {[2, 3, 4].map((w) => (
+                                        <button
+                                            key={w}
+                                            onClick={() => setWires(w.toString())}
+                                            className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${wires === w.toString()
+                                                ? 'bg-blue-500 text-white'
+                                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                                }`}
+                                        >
+                                            {w} Hilos
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Calculator */}

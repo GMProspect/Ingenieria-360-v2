@@ -45,7 +45,11 @@ const Vibration = () => {
                 description: 'La sonda está demasiado lejos. La medición no es confiable.'
             };
         }
-        return null;
+        return {
+            type: 'success',
+            message: 'Rango Lineal Óptimo',
+            description: 'La sonda opera dentro de los parámetros API 670 (-2V a -18V).'
+        };
     }, [voltage]);
 
     const clearAll = () => {
@@ -155,7 +159,7 @@ const Vibration = () => {
                         <div className="space-y-6">
                             <div>
                                 <label className="block text-slate-400 mb-2 text-sm">Voltaje DC (V)</label>
-                                <div className={`relative rounded-xl border-2 transition-colors ${alertStatus?.type === 'danger' ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : alertStatus?.type === 'warning' ? 'border-yellow-500' : 'border-cyan-500'}`}>
+                                <div className={`relative rounded-xl border-2 transition-colors ${alertStatus?.type === 'danger' ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : alertStatus?.type === 'warning' ? 'border-yellow-500' : alertStatus?.type === 'success' ? 'border-emerald-500' : 'border-cyan-500'}`}>
                                     <input
                                         type="number"
                                         value={voltage}
@@ -210,9 +214,17 @@ const Vibration = () => {
                 {alertStatus && (
                     <div className={`mb-8 p-4 rounded-xl border flex items-center gap-3 ${alertStatus.type === 'danger'
                         ? 'bg-red-500/10 border-red-500/50 text-red-400'
-                        : 'bg-yellow-500/10 border-yellow-500/50 text-yellow-400'
+                        : alertStatus.type === 'warning'
+                            ? 'bg-yellow-500/10 border-yellow-500/50 text-yellow-400'
+                            : 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
                         }`}>
-                        <AlertTriangle className="shrink-0" />
+                        {alertStatus.type === 'success' ? (
+                            <div className="shrink-0 p-1 bg-emerald-500/20 rounded-full">
+                                <Activity size={16} />
+                            </div>
+                        ) : (
+                            <AlertTriangle className="shrink-0" />
+                        )}
                         <div>
                             <div className="font-bold uppercase">{alertStatus.message}</div>
                             <div className="text-sm opacity-80">{alertStatus.description}</div>

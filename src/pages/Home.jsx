@@ -51,27 +51,6 @@ const Home = () => {
             icon: Zap,
             color: 'yellow',
             links: [
-                { to: '/ohms-law', label: 'Ley de Ohm / Potencia' },
-                // Future: Motor Star/Delta, Cable Sizing
-            ]
-        },
-        {
-            title: 'Especialista TFA',
-            description: 'Power Gen, Excitación, PSS, Mark VIe y Ciclos Termodinámicos.',
-            icon: Cpu,
-            color: 'purple',
-            links: [
-                // Future: PSS Viewer, Saturation Curves
-                { to: '#', label: 'Próximamente: Modelos PSS' },
-                { to: '#', label: 'Próximamente: Curvas de Saturación' }
-            ]
-        },
-        {
-            title: 'Gestión y Operaciones',
-            description: 'Rondas de operación, inventario, historial y reportes.',
-            icon: ClipboardList,
-            color: 'gray',
-            links: [
                 { to: '/inventory', label: 'Inventario de Equipos' },
                 { to: '/history', label: 'Historial de Cálculos' },
                 { to: '/converter', label: 'Conversor de Unidades' }

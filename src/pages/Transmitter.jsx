@@ -155,116 +155,130 @@ const Transmitter = () => {
         const pv = low + (percent / 100) * (high - low);
         return { pv: pv.toFixed(2), ma: ma.toFixed(2) };
     };
-    {/* 1. Calibration Section */ }
-    <div className="mb-8">
-        <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
-            Calibración del Instrumento
-        </h3>
-        <div className="grid grid-cols-3 gap-4 mb-4">
-            <div>
-                <label className="block text-xs text-slate-500 mb-1">Valor a 4mA (Mínimo)</label>
-                <input
-                    type="number"
-                    value={rangeLow}
-                    onChange={(e) => setRangeLow(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
-                />
-            </div>
-            <div>
-                <label className="block text-xs text-slate-500 mb-1">Valor a 20mA (Máximo)</label>
-                <input
-                    type="number"
-                    value={rangeHigh}
-                    onChange={(e) => setRangeHigh(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
-                />
-            </div>
-            <div>
-                <label className="block text-xs text-slate-500 mb-1">Unidad</label>
-                <input
-                    type="text"
-                    value={unit}
-                    onChange={(e) => setUnit(e.target.value)}
-                    placeholder="PSI, °C..."
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
-                />
-            </div>
-        </div>
-        <div className="text-center text-xs text-slate-400">
-            Alcance (Span): <span className="text-purple-400 font-bold">{span.toFixed(2)}</span>
-        </div>
-    </div>
 
-    {/* 2. Real Time Conversion */ }
-    <div className="mb-8">
-        <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
-            Conversión en Tiempo Real
-        </h3>
-        <div className="flex items-end gap-4 mb-4">
-            <div className="flex-1">
-                <label className="block text-xs text-slate-500 mb-1">Señal (mA)</label>
-                <input
-                    type="number"
-                    value={inputMa}
-                    onChange={(e) => handleMaChange(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all"
-                    placeholder="4.00"
-                />
-            </div>
-
-            <div className="pb-4 text-slate-600">
-                <ArrowRightLeft size={24} />
-            </div>
-
-            <div className="flex-1">
-                <label className="block text-xs text-slate-500 mb-1">Variable Física (PV)</label>
-                <input
-                    type="number"
-                    value={inputPv}
-                    onChange={(e) => handlePvChange(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all"
-                    placeholder="0.00"
-                />
-            </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="relative h-4 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-            <div
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-cyan-900 to-cyan-500 transition-all duration-300"
-                style={{ width: `${getPercentage()}%` }}
+    return (
+        <div className="max-w-5xl mx-auto p-6">
+            <BackButton />
+            <ToolHeader
+                title="Transmisor 4-20mA"
+                subtitle="Conversión Bidireccional de Señal Analógica"
+                icon={Gauge}
+                iconColorClass="text-purple-400"
+                iconBgClass="bg-purple-500/20"
+                onReset={clearAll}
             />
-            <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
-                {getPercentage().toFixed(1)}%
-            </div>
-        </div>
 
-        {/* Validation Warnings */}
-        {isRangeInverted() && (
-            <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg animate-pulse">
-                <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
-                    ⚠️ <span>Rango Invertido: El mínimo ({rangeLow}) es mayor o igual al máximo ({rangeHigh})</span>
-                </p>
-            </div>
-        )}
+            <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
+                {/* 1. Calibration Section */}
+                <div className="mb-8">
+                    <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
+                        Calibración del Instrumento
+                    </h3>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label className="block text-xs text-slate-500 mb-1">Valor a 4mA (Mínimo)</label>
+                            <input
+                                type="number"
+                                value={rangeLow}
+                                onChange={(e) => setRangeLow(e.target.value)}
+                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs text-slate-500 mb-1">Valor a 20mA (Máximo)</label>
+                            <input
+                                type="number"
+                                value={rangeHigh}
+                                onChange={(e) => setRangeHigh(e.target.value)}
+                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs text-slate-500 mb-1">Unidad</label>
+                            <input
+                                type="text"
+                                value={unit}
+                                onChange={(e) => setUnit(e.target.value)}
+                                placeholder="PSI, °C..."
+                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
+                            />
+                        </div>
+                    </div>
+                    <div className="text-center text-xs text-slate-400">
+                        Alcance (Span): <span className="text-purple-400 font-bold">{span.toFixed(2)}</span>
+                    </div>
+                </div>
 
-        {getMaDiagnostic() && getMaDiagnostic().type !== 'ok' && (
-            <div className={`mt-4 p-3 rounded-lg border flex items-center gap-2 ${getMaDiagnostic().type === 'error'
-                ? 'bg-red-500/10 border-red-500/30'
-                : 'bg-yellow-500/10 border-yellow-500/30'
-                }`}>
-                <span className="text-lg">⚠️</span>
-                <p className={`text-sm font-semibold ${getMaDiagnostic().type === 'error'
-                    ? 'text-red-400'
-                    : 'text-yellow-400'
-                    }`}>
-                    {getMaDiagnostic().message}
-                </p>
-            </div>
-        )}
-    </div>
+                {/* 2. Real Time Conversion */}
+                <div className="mb-8">
+                    <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
+                        Conversión en Tiempo Real
+                    </h3>
+                    <div className="flex items-end gap-4 mb-4">
+                        <div className="flex-1">
+                            <label className="block text-xs text-slate-500 mb-1">Señal (mA)</label>
+                            <input
+                                type="number"
+                                value={inputMa}
+                                onChange={(e) => handleMaChange(e.target.value)}
+                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all"
+                                placeholder="4.00"
+                            />
+                        </div>
 
-    {/* 3. Checkpoints Table */ }
+                        <div className="pb-4 text-slate-600">
+                            <ArrowRightLeft size={24} />
+                        </div>
+
+                        <div className="flex-1">
+                            <label className="block text-xs text-slate-500 mb-1">Variable Física (PV)</label>
+                            <input
+                                type="number"
+                                value={inputPv}
+                                onChange={(e) => handlePvChange(e.target.value)}
+                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all"
+                                placeholder="0.00"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="relative h-4 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                        <div
+                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-cyan-900 to-cyan-500 transition-all duration-300"
+                            style={{ width: `${getPercentage()}%` }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
+                            {getPercentage().toFixed(1)}%
+                        </div>
+                    </div>
+
+                    {/* Validation Warnings */}
+                    {isRangeInverted() && (
+                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg animate-pulse">
+                            <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
+                                ⚠️ <span>Rango Invertido: El mínimo ({rangeLow}) es mayor o igual al máximo ({rangeHigh})</span>
+                            </p>
+                        </div>
+                    )}
+
+                    {getMaDiagnostic() && getMaDiagnostic().type !== 'ok' && (
+                        <div className={`mt-4 p-3 rounded-lg border flex items-center gap-2 ${getMaDiagnostic().type === 'error'
+                            ? 'bg-red-500/10 border-red-500/30'
+                            : 'bg-yellow-500/10 border-yellow-500/30'
+                            }`}>
+                            <span className="text-lg">⚠️</span>
+                            <p className={`text-sm font-semibold ${getMaDiagnostic().type === 'error'
+                                ? 'text-red-400'
+                                : 'text-yellow-400'
+                                }`}>
+                                {getMaDiagnostic().message}
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* 3. Checkpoints Table */}
                 <div className="mb-8">
                     <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
                         Puntos de Calibración (Check Points)
@@ -297,11 +311,11 @@ const Transmitter = () => {
                     saving={saving}
                 />
 
-    {/* AdSense Banner (Moved to very bottom) */ }
-    <AdBanner dataAdSlot="1234567890" />
+                {/* AdSense Banner (Moved to very bottom) */}
+                <AdBanner dataAdSlot="1234567890" />
 
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
 

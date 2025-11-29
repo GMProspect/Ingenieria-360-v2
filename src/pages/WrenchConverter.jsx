@@ -34,6 +34,8 @@ const WrenchConverter = () => {
                 title="Tabla Maestra de Taller"
                 subtitle="Conversor Unificado: Tuercas y Llaves"
                 icon={Wrench}
+                iconColorClass="text-orange-400"
+                iconBgClass="bg-orange-500/20"
             />
 
             <div className="bg-slate-900/90 rounded-3xl border border-white/10 p-1 md:p-8 relative overflow-hidden shadow-2xl min-h-[800px] flex justify-center">

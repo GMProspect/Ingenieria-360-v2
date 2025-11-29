@@ -6,12 +6,12 @@ import FeedbackForm from '../components/FeedbackForm';
 
 const Home = () => {
     const tools = [
-        { path: '/inventory', name: 'Inventario', icon: Database, desc: 'Gestión de activos y especificaciones dinámicas.' },
-        { path: '/ohms-law', name: 'Ley de Ohm', icon: Zap, desc: 'Cálculo de V, I, R con interfaz triangular.' },
-        { path: '/transmitter', name: 'Transmisor 4-20mA', icon: Gauge, desc: 'Conversión de señales de instrumentación.' },
-        { path: '/vibration', name: 'Sondas de Vibración', icon: Activity, desc: 'API 670: Voltaje de GAP a Mils/Micras.' },
-        { path: '/wrench-converter', name: 'Medidas de Llaves', icon: Wrench, desc: 'Tabla Maestra: Tuercas (M) vs Llaves (mm/pulg).' },
-        { path: '/converter', name: 'Conversor Universal', icon: RefreshCw, desc: 'Presión, Temperatura, Longitud y Peso.' },
+        { path: '/inventory', name: 'Inventario', icon: Database, desc: 'Gestión de activos y especificaciones dinámicas.', color: 'text-blue-400', bg: 'bg-blue-500/10', hover: 'group-hover:text-blue-300', border: 'hover:border-blue-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(59,130,246,0.1)]' },
+        { path: '/ohms-law', name: 'Ley de Ohm', icon: Zap, desc: 'Cálculo de V, I, R con interfaz triangular.', color: 'text-yellow-400', bg: 'bg-yellow-500/10', hover: 'group-hover:text-yellow-300', border: 'hover:border-yellow-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(234,179,8,0.1)]' },
+        { path: '/transmitter', name: 'Transmisor 4-20mA', icon: Gauge, desc: 'Conversión de señales de instrumentación.', color: 'text-purple-400', bg: 'bg-purple-500/10', hover: 'group-hover:text-purple-300', border: 'hover:border-purple-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(168,85,247,0.1)]' },
+        { path: '/vibration', name: 'Sondas de Vibración', icon: Activity, desc: 'API 670: Voltaje de GAP a Mils/Micras.', color: 'text-cyan-400', bg: 'bg-cyan-500/10', hover: 'group-hover:text-cyan-300', border: 'hover:border-cyan-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]' },
+        { path: '/wrench-converter', name: 'Medidas de Llaves', icon: Wrench, desc: 'Tabla Maestra: Tuercas (M) vs Llaves (mm/pulg).', color: 'text-orange-400', bg: 'bg-orange-500/10', hover: 'group-hover:text-orange-300', border: 'hover:border-orange-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(249,115,22,0.1)]' },
+        { path: '/converter', name: 'Conversor Universal', icon: RefreshCw, desc: 'Presión, Temperatura, Longitud y Peso.', color: 'text-green-400', bg: 'bg-green-500/10', hover: 'group-hover:text-green-300', border: 'hover:border-green-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(34,197,94,0.1)]' },
     ];
 
     return (
@@ -38,12 +38,12 @@ const Home = () => {
                         <Link
                             key={tool.path}
                             to={tool.path}
-                            className="group bg-slate-900/40 border border-white/5 hover:border-cyan-500/50 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(34,211,238,0.1)] flex flex-col items-center"
+                            className={`group bg-slate-900/40 border border-white/5 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 flex flex-col items-center ${tool.border} ${tool.shadow}`}
                         >
-                            <div className="p-4 bg-slate-800/50 rounded-xl mb-6 group-hover:bg-cyan-500/20 transition-colors">
-                                <Icon size={40} className="text-slate-300 group-hover:text-cyan-400 transition-colors" />
+                            <div className={`p-4 rounded-xl mb-6 transition-colors ${tool.bg}`}>
+                                <Icon size={40} className={`${tool.color} transition-colors`} />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                            <h3 className={`text-xl font-bold text-white mb-2 transition-colors ${tool.hover}`}>
                                 {tool.name}
                             </h3>
                             <p className="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">

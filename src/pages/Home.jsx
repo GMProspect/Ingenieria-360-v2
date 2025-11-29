@@ -172,12 +172,10 @@ const Home = () => {
                 <p className="mb-2">
                     Hecho con ❤️ por
                     <a
-                        href="https://www.linkedin.com/in/felipe-andres-ruiz-perez/"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="#"
                         className="text-cyan-600 hover:text-cyan-400 transition-colors ml-1"
                     >
-                        Felipe Ruiz
+                        Gustavo Matheus
                     </a>
                 </p>
                 <div className="flex justify-center items-center space-x-4">

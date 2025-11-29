@@ -9,70 +9,286 @@ import { useAuth } from '../contexts/Auth';
 import useLocalStorage from '../hooks/useLocalStorage';
 import AdBanner from '../components/AdBanner';
 
-                            </label >
-    <div className="grid grid-cols-2 gap-4">
-        <button
-            onClick={() => setVoltageRating('low')}
-            className={`p-3 rounded-xl border transition-all flex flex-col items-center justify-center ${voltageRating === 'low'
-                ? 'bg-purple-500/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
-                : 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-600'
-                }`}
-        >
-            <span className="font-bold text-lg">&lt; 1000 V</span>
-            <span className="text-xs opacity-80">Baja Tensión</span>
-        </button>
-        <button
-            onClick={() => setVoltageRating('high')}
-            className={`p-3 rounded-xl border transition-all flex flex-col items-center justify-center ${voltageRating === 'high'
-                ? 'bg-purple-500/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
-                : 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-600'
-                }`}
-        >
-            <span className="font-bold text-lg">&ge; 1000 V</span>
-            <span className="text-xs opacity-80">Alta Tensión</span>
-        </button>
-    </div>
-                        </div >
-                    </div >
-                </div >
+const Megohmetro = () => {
+    const { t } = useTranslation();
+    const { user } = useAuth();
 
-    {/* Result Section */ }
-    < div className = "space-y-6" >
-    {
-        result?(
-                        <div className = {`h-full p-6 rounded-2xl border ${result.borderColor} ${result.bgColor} backdrop-blur-sm transition-all animate-fade-in`} >
-        <div className="flex items-start mb-4">
-            {result.status === 'danger' && <AlertTriangle className="text-red-500 mr-3 shrink-0" size={32} />}
-            {result.status === 'warning' && <AlertTriangle className="text-yellow-500 mr-3 shrink-0" size={32} />}
-            {result.status === 'success' && <CheckCircle className="text-green-500 mr-3 shrink-0" size={32} />}
+    // State
+    const [resistance, setResistance] = useLocalStorage('megger_resistance', '', user?.id);
+    const [unit, setUnit] = useLocalStorage('megger_unit', 'MΩ', user?.id);
+    const [voltageRating, setVoltageRating] = useLocalStorage('megger_voltage_rating', 'low', user?.id); // 'low' (<1kV), 'high' (>1kV)
 
-            <div>
-                <h3 className={`text-2xl font-bold ${result.color} mb-2`}>
-                    {result.title}
-                </h3>
-                <p className="text-white text-lg font-medium mb-4 leading-relaxed">
-                    {result.message}
-                </p>
-                <div className="bg-black/20 rounded-xl p-4 border border-black/10">
-                    <p className="text-slate-200 text-sm">
-                        <strong className="block mb-1 text-slate-400 uppercase text-xs tracking-wider">Recomendación:</strong>
-                        {result.action}
-                    </p>
+    const [label, setLabel] = useState('');
+    const [description, setDescription] = useState('');
+    const [saving, setSaving] = useState(false);
+
+    // Scroll to top
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    // Evaluation Logic (IEEE 43-2013)
+    const evaluateInsulation = (res, unit, rating) => {
+        if (!res) return null;
+        let r = parseFloat(res);
+        if (isNaN(r)) return null;
+
+        // Convert to MΩ for evaluation
+        if (unit === 'GΩ') r = r * 1000;
+        if (unit === 'kΩ') r = r / 1000;
+
+        if (r < 5) {
+            return {
+                status: 'danger',
+                title: 'PELIGRO CRÍTICO',
+                message: `Resistencia (${r.toFixed(2)} MΩ) severamente comprometida. NO ENERGIZAR.`,
+                action: 'El motor requiere limpieza profunda, secado en horno y re-evaluación. Riesgo inminente de falla a tierra.',
+                color: 'text-red-500',
+                bgColor: 'bg-red-500/10',
+                borderColor: 'border-red-500/50',
+                glowColor: 'red'
+            };
+        } else if (r >= 5 && r < 100) {
+            if (rating === 'low') {
+                return {
+                    status: 'warning',
+                    title: 'PRECAUCIÓN (Baja Tensión)',
+                    message: `Valor (${r.toFixed(2)} MΩ) aceptable para < 1kV, pero bajo para estándares modernos.`,
+                    action: 'Monitorear tendencia. Si el valor ha bajado drásticamente respecto al historial, programar mantenimiento.',
+                    color: 'text-yellow-500',
+                    bgColor: 'bg-yellow-500/10',
+                    borderColor: 'border-yellow-500/50',
+                    glowColor: 'yellow'
+                };
+            } else {
+                return {
+                    status: 'warning',
+                    title: 'ALERTA (Alta Tensión)',
+                    message: `Valor (${r.toFixed(2)} MΩ) bajo para > 1kV. Se recomienda > 100 MΩ.`,
+                    action: 'Investigar causas (humedad, suciedad). Se recomienda limpieza y secado.',
+                    color: 'text-orange-500',
+                    bgColor: 'bg-orange-500/10',
+                    borderColor: 'border-orange-500/50',
+                    glowColor: 'orange'
+                };
+            }
+        } else {
+            return {
+                status: 'success',
+                title: 'AISLAMIENTO ÓPTIMO',
+                message: `Valor (${r.toFixed(2)} MΩ) seguro para operación.`,
+                action: 'El motor está en buenas condiciones de aislamiento. Registrar valor para historial.',
+                color: 'text-green-500',
+                bgColor: 'bg-green-500/10',
+                borderColor: 'border-green-500/50',
+                glowColor: 'green'
+            };
+        }
+    };
+
+    const result = evaluateInsulation(resistance, unit, voltageRating);
+
+    const handleSave = async () => {
+        if (!label.trim()) {
+            alert('Por favor ingresa una etiqueta.');
+            return;
+        }
+        if (!user) {
+            alert('Debes iniciar sesión para guardar.');
+            return;
+        }
+        setSaving(true);
+        try {
+            const { error } = await supabase.from('history').insert([{
+                tool_name: 'Megóhmetro',
+                label: label,
+                description: description,
+                user_id: user.id,
+                data: {
+                    resistance,
+                    unit,
+                    voltageRating,
+                    result: result?.status
+                }
+            }]);
+            if (error) throw error;
+            alert('Evaluación guardada correctamente.');
+            setLabel('');
+            setDescription('');
+        } catch (error) {
+            console.error('Error saving:', error);
+            alert('Error al guardar.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const clearAll = () => {
+        setResistance('');
+        setLabel('');
+        setDescription('');
+    };
+
+    // Motor Visual Component
+    const MotorVisual = ({ status }) => {
+        const glowColor = status === 'danger' ? '#ef4444' :
+            status === 'warning' ? '#eab308' :
+                status === 'success' ? '#22c55e' : '#64748b';
+
+        const shadowIntensity = status ? '0 0 30px' : '0 0 10px';
+
+        return (
+            <div className="relative w-48 h-48 mx-auto my-6 flex items-center justify-center">
+                {/* Stator Housing */}
+                <div
+                    className="absolute inset-0 rounded-full border-4 border-slate-700 bg-slate-900/80 backdrop-blur-md transition-all duration-500"
+                    style={{ borderColor: glowColor, boxShadow: `${shadowIntensity} ${glowColor}40` }}
+                ></div>
+
+                {/* Windings (Coils) */}
+                {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => (
+                    <div
+                        key={i}
+                        className="absolute w-8 h-12 rounded-full border-2 bg-slate-800/50 transition-all duration-500"
+                        style={{
+                            transform: `rotate(${deg}deg) translateY(-65px)`,
+                            borderColor: glowColor,
+                            boxShadow: status ? `inset 0 0 10px ${glowColor}40` : 'none'
+                        }}
+                    ></div>
+                ))}
+
+                {/* Rotor */}
+                <div className="absolute w-24 h-24 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center shadow-inner">
+                    <div className="w-4 h-4 rounded-full bg-slate-500"></div>
+                </div>
+
+                {/* Status Icon Overlay */}
+                <div className="absolute -bottom-2 -right-2 bg-slate-900 rounded-full p-2 border border-slate-700 shadow-xl">
+                    {status === 'danger' && <AlertTriangle className="text-red-500 animate-pulse" size={24} />}
+                    {status === 'warning' && <AlertTriangle className="text-yellow-500" size={24} />}
+                    {status === 'success' && <CheckCircle className="text-green-500" size={24} />}
+                    {!status && <Activity className="text-slate-500" size={24} />}
                 </div>
             </div>
-        </div>
-                        </div >
-                    ) : (
-    <div className="h-full bg-slate-900/30 p-6 rounded-2xl border border-white/5 flex flex-col justify-center items-center text-center text-slate-500 border-dashed">
-        <Activity size={48} className="mb-4 opacity-20" />
-        <p>Ingresa el valor de resistencia para ver el diagnóstico.</p>
-    </div>
-)}
-                </div >
-            </div >
+        );
+    };
 
-    {/* Safety Tips */ }
-    < div className = "bg-blue-900/20 border border-blue-500/30 rounded-2xl p-6 mb-8" >
+    return (
+        <div className="max-w-4xl mx-auto p-6">
+            <BackButton />
+
+            <ToolHeader
+                title="Megóhmetro"
+                subtitle="Evaluación de Aislamiento (IEEE 43)"
+                icon={Activity}
+                iconColorClass="text-purple-400"
+                iconBgClass="bg-purple-500/20"
+                onReset={clearAll}
+            />
+
+            {/* Result Alert - MOVED TO TOP */}
+            {result && (
+                <div className={`mb-8 p-6 rounded-2xl border ${result.borderColor} ${result.bgColor} backdrop-blur-sm transition-all animate-fade-in-down`}>
+                    <div className="flex items-start">
+                        {result.status === 'danger' && <AlertTriangle className="text-red-500 mr-3 shrink-0" size={32} />}
+                        {result.status === 'warning' && <AlertTriangle className="text-yellow-500 mr-3 shrink-0" size={32} />}
+                        {result.status === 'success' && <CheckCircle className="text-green-500 mr-3 shrink-0" size={32} />}
+
+                        <div>
+                            <h3 className={`text-2xl font-bold ${result.color} mb-2`}>
+                                {result.title}
+                            </h3>
+                            <p className="text-white text-lg font-medium mb-4 leading-relaxed">
+                                {result.message}
+                            </p>
+                            <div className="bg-black/20 rounded-xl p-4 border border-black/10">
+                                <p className="text-slate-200 text-sm">
+                                    <strong className="block mb-1 text-slate-400 uppercase text-xs tracking-wider">Recomendación:</strong>
+                                    {result.action}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-center">
+
+                {/* Visual Section - CENTERED/LEFT */}
+                <div className="flex flex-col items-center justify-center p-6 bg-slate-900/30 rounded-2xl border border-white/5">
+                    <h3 className="text-slate-400 text-sm font-bold uppercase tracking-wider mb-4">Estado del Bobinado</h3>
+                    <MotorVisual status={result?.status} />
+                    <p className="text-slate-500 text-xs text-center max-w-xs">
+                        Representación visual del estator. El color indica la integridad del aislamiento según IEEE 43.
+                    </p>
+                </div>
+
+                {/* Input Section - RIGHT */}
+                <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl h-full flex flex-col justify-center">
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                        <Zap className="mr-2 text-yellow-400" size={20} />
+                        Datos de Medición
+                    </h3>
+
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-slate-400 mb-2 text-sm font-medium">
+                                Resistencia Medida (1 min)
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="number"
+                                    value={resistance}
+                                    onChange={(e) => setResistance(e.target.value)}
+                                    placeholder="0.0"
+                                    className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                                />
+                                <select
+                                    value={unit}
+                                    onChange={(e) => setUnit(e.target.value)}
+                                    className="w-24 bg-slate-950 border border-slate-700 rounded-xl px-2 py-3 text-white text-lg font-bold focus:outline-none focus:border-purple-500 transition-all text-center cursor-pointer"
+                                >
+                                    <option value="MΩ">MΩ</option>
+                                    <option value="GΩ">GΩ</option>
+                                    <option value="kΩ">kΩ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-slate-400 mb-2 text-sm font-medium">
+                                Voltaje Nominal del Motor
+                            </label>
+                            <div className="grid grid-cols-2 gap-4">
+                                <button
+                                    onClick={() => setVoltageRating('low')}
+                                    className={`p-3 rounded-xl border transition-all flex flex-col items-center justify-center ${voltageRating === 'low'
+                                            ? 'bg-purple-500/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
+                                            : 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-600'
+                                        }`}
+                                >
+                                    <span className="font-bold text-lg">&lt; 1000 V</span>
+                                    <span className="text-xs opacity-80">Baja Tensión</span>
+                                </button>
+                                <button
+                                    onClick={() => setVoltageRating('high')}
+                                    className={`p-3 rounded-xl border transition-all flex flex-col items-center justify-center ${voltageRating === 'high'
+                                            ? 'bg-purple-500/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
+                                            : 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-600'
+                                        }`}
+                                >
+                                    <span className="font-bold text-lg">&ge; 1000 V</span>
+                                    <span className="text-xs opacity-80">Alta Tensión</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Safety Tips */}
+            <div className="bg-blue-900/20 border border-blue-500/30 rounded-2xl p-6 mb-8">
                 <h4 className="text-blue-400 font-bold mb-4 flex items-center">
                     <Info className="mr-2" size={20} />
                     Tips de Seguridad y Mantenimiento
@@ -99,7 +315,7 @@ import AdBanner from '../components/AdBanner';
                         </span>
                     </li>
                 </ul>
-            </div >
+            </div>
 
             <SaveCalculationSection
                 label={label}
@@ -112,7 +328,7 @@ import AdBanner from '../components/AdBanner';
             />
 
             <AdBanner dataAdSlot="9876543210" />
-        </div >
+        </div>
     );
 };
 

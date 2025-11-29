@@ -5,6 +5,7 @@ import BackButton from '../components/BackButton';
 import AdBanner from '../components/AdBanner';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useAuth } from '../contexts/Auth';
+import SensorVisual from '../components/SensorVisual';
 
 const sensorData = {
     rtd: {
@@ -18,12 +19,10 @@ const sensorData = {
                 range: '-200°C a 850°C',
                 color: 'Blanco / Rojo (IEC)',
                 calc: (t) => {
-                    // Callendar-Van Dusen (Simplified for >0: R = R0 * (1 + A*t + B*t^2))
                     const R0 = 100;
                     const A = 3.9083e-3;
                     const B = -5.775e-7;
                     if (t >= 0) return R0 * (1 + A * t + B * t * t);
-                    // For <0: R = R0 * (1 + A*t + B*t^2 + C*(t-100)*t^3)
                     const C = -4.183e-12;
                     return R0 * (1 + A * t + B * t * t + C * (t - 100) * t * t * t);
                 }
@@ -43,6 +42,34 @@ const sensorData = {
                     const C = -4.183e-12;
                     return R0 * (1 + A * t + B * t * t + C * (t - 100) * t * t * t);
                 }
+            },
+            ni120: {
+                name: 'Ni120',
+                desc: 'Níquel 120Ω a 0°C',
+                composition: 'Níquel Puro',
+                alpha: '0.00672 (DIN 43760)',
+                range: '-80°C a 260°C',
+                color: 'Rojo / Rojo / Blanco (DIN)',
+                calc: (t) => {
+                    // Simplified polynomial for Ni120
+                    const R0 = 120;
+                    const A = 5.485e-3;
+                    const B = 6.65e-6;
+                    return R0 * (1 + A * t + B * t * t);
+                }
+            },
+            cu10: {
+                name: 'Cu10',
+                desc: 'Cobre 10Ω a 25°C',
+                composition: 'Cobre Electrolítico',
+                alpha: '0.00427',
+                range: '-200°C a 260°C',
+                color: 'Blanco / Rojo',
+                calc: (t) => {
+                    // Linear approx for Cu10 (R25 = 10)
+                    // R(t) = R25 * (1 + alpha * (t - 25))
+                    return 10 * (1 + 0.00427 * (t - 25));
+                }
             }
         }
     },
@@ -52,46 +79,50 @@ const sensorData = {
             k: {
                 name: 'Tipo K',
                 desc: 'Uso general, bajo costo',
+                connectorColor: '#fbbf24', // Yellow
                 composition: {
-                    pos: { name: 'Cromel (Chromel)', detail: '90% Níquel, 10% Cromo', color: 'Amarillo (ANSI) / Verde (IEC)' },
-                    neg: { name: 'Alumel', detail: '95% Níquel, 2% Manganeso, 2% Aluminio, 1% Silicio', color: 'Rojo (ANSI) / Blanco (IEC)' }
+                    pos: { name: 'Cromel (Chromel)', detail: '90% Níquel, 10% Cromo', color: 'Amarillo (ANSI)', hex: '#fbbf24' },
+                    neg: { name: 'Alumel', detail: '95% Níquel, 2% Manganeso...', color: 'Rojo (ANSI)', hex: '#ef4444' }
                 },
                 range: '-270°C a 1260°C',
                 sensitivity: '~41 µV/°C',
-                calc: (t) => t * 0.041 // Linear approx for demo (Real is NIST poly)
+                calc: (t) => t * 0.041
             },
             j: {
                 name: 'Tipo J',
                 desc: 'Atmósferas reductoras',
+                connectorColor: '#000000', // Black
                 composition: {
-                    pos: { name: 'Hierro (Iron)', detail: '100% Fe (Magnético)', color: 'Blanco (ANSI) / Negro (IEC)' },
-                    neg: { name: 'Constantán', detail: '55% Cobre, 45% Níquel', color: 'Rojo (ANSI) / Blanco (IEC)' }
+                    pos: { name: 'Hierro (Iron)', detail: '100% Fe (Magnético)', color: 'Blanco (ANSI)', hex: '#ffffff' },
+                    neg: { name: 'Constantán', detail: '55% Cobre, 45% Níquel', color: 'Rojo (ANSI)', hex: '#ef4444' }
                 },
                 range: '-40°C a 750°C',
                 sensitivity: '~50 µV/°C',
-                calc: (t) => t * 0.050 // Linear approx
+                calc: (t) => t * 0.050
             },
             t: {
                 name: 'Tipo T',
                 desc: 'Bajas temperaturas / Criogenia',
+                connectorColor: '#3b82f6', // Blue
                 composition: {
-                    pos: { name: 'Cobre (Copper)', detail: '100% Cu', color: 'Azul (ANSI) / Marrón (IEC)' },
-                    neg: { name: 'Constantán', detail: '55% Cobre, 45% Níquel', color: 'Rojo (ANSI) / Blanco (IEC)' }
+                    pos: { name: 'Cobre (Copper)', detail: '100% Cu', color: 'Azul (ANSI)', hex: '#3b82f6' },
+                    neg: { name: 'Constantán', detail: '55% Cobre, 45% Níquel', color: 'Rojo (ANSI)', hex: '#ef4444' }
                 },
                 range: '-270°C a 370°C',
                 sensitivity: '~43 µV/°C',
-                calc: (t) => t * 0.043 // Linear approx
+                calc: (t) => t * 0.043
             },
             e: {
                 name: 'Tipo E',
                 desc: 'Alta sensibilidad',
+                connectorColor: '#a855f7', // Purple
                 composition: {
-                    pos: { name: 'Cromel (Chromel)', detail: '90% Níquel, 10% Cromo', color: 'Púrpura (ANSI) / Violeta (IEC)' },
-                    neg: { name: 'Constantán', detail: '55% Cobre, 45% Níquel', color: 'Rojo (ANSI) / Blanco (IEC)' }
+                    pos: { name: 'Cromel (Chromel)', detail: '90% Níquel, 10% Cromo', color: 'Púrpura (ANSI)', hex: '#a855f7' },
+                    neg: { name: 'Constantán', detail: '55% Cobre, 45% Níquel', color: 'Rojo (ANSI)', hex: '#ef4444' }
                 },
                 range: '-270°C a 870°C',
                 sensitivity: '~68 µV/°C',
-                calc: (t) => t * 0.068 // Linear approx
+                calc: (t) => t * 0.068
             }
         }
     }
@@ -134,6 +165,13 @@ const TemperatureSensors = () => {
 
     const currentSensor = sensorData[safeCategory].types[safeType];
 
+    // Prepare colors for visual
+    const visualColors = safeCategory === 'tc' ? {
+        pos: currentSensor.composition.pos.hex,
+        neg: currentSensor.composition.neg.hex,
+        connector: currentSensor.connectorColor
+    } : {};
+
     return (
         <div className="max-w-4xl mx-auto p-6 pb-20">
             <BackButton />
@@ -164,6 +202,15 @@ const TemperatureSensors = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column: Controls & Calc */}
                 <div className="lg:col-span-1 space-y-6">
+                    {/* Visual Representation */}
+                    <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 backdrop-blur-sm flex justify-center">
+                        <SensorVisual
+                            type={safeType}
+                            category={safeCategory}
+                            colors={visualColors}
+                        />
+                    </div>
+
                     {/* Type Selector */}
                     <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm">
                         <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Tipo de Sensor</label>

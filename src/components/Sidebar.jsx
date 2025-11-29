@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Database, Zap, Activity, Gauge, RefreshCw, History as HistoryIcon, LogOut, X, MessageSquare, Wrench } from 'lucide-react';
+import { Home, Database, Zap, Activity, Gauge, RefreshCw, History as HistoryIcon, LogOut, X, MessageSquare, Wrench, Thermometer } from 'lucide-react';
 import { useAuth } from '../contexts/Auth';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -11,6 +11,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     const links = [
         { path: '/', name: 'Inicio', icon: Home },
         { path: '/transmitter', name: 'Transmisor 4-20mA', icon: Gauge },
+        { path: '/temperature-sensors', name: 'Sensores de Temp.', icon: Thermometer },
         { path: '/inventory', name: 'Inventario', icon: Database },
         { path: '/ohms-law', name: 'Ley de Ohm', icon: Zap },
         { path: '/vibration', name: 'Sondas de Vibración', icon: Activity },

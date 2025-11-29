@@ -117,13 +117,20 @@ const Vibration = () => {
                     <h3 className="text-cyan-400 font-bold text-sm uppercase tracking-wider mb-4">Configuración de Sonda</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-slate-400 mb-2 text-sm">Sensibilidad (mV/mil) <span className="text-cyan-500">↺</span></label>
-                            <input
-                                type="number"
+                            <label className="block text-slate-400 mb-2 text-sm">Sensibilidad</label>
+                            <select
                                 value={sensitivity}
                                 onChange={(e) => setSensitivity(e.target.value)}
                                 className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none transition-colors"
-                            />
+                            >
+                                <option value="200">200 mV/mil (Estándar API 670)</option>
+                                <option value="7.87">7.87 mV/µm (Estándar Métrico)</option>
+                                <option value="100">100 mV/mil (Sondas Antiguas)</option>
+                                <option value="3.94">3.94 mV/µm (Equiv. 100 mV/mil)</option>
+                            </select>
+                            <div className="mt-2 text-[10px] text-slate-500">
+                                * 200 mV/mil ≈ 7.87 mV/µm
+                            </div>
                         </div>
                         <div>
                             <label className="block text-slate-400 mb-2 text-sm">Unidad de Salida</label>

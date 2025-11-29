@@ -313,361 +313,402 @@ const TemperatureSensors = () => {
         if (val === '' || isNaN(parseFloat(val))) {
             setInputTemp('');
             return;
+        }
 
-            // Prepare colors for visual
-            const visualColors = safeCategory === 'tc' ? {
-                pos: currentSensor.composition.pos.hex,
-                neg: currentSensor.composition.neg.hex,
-                connector: currentSensor.connectorColor
-            } : {};
+        const out = parseFloat(val);
+        let t = solveTemp(out);
 
-            return (
-                <div className="max-w-4xl mx-auto p-6 pb-20">
-                    <BackButton />
-                    <ToolHeader
-                        title="Sensores de Temperatura"
-                        subtitle="RTDs, Termocuplas y Aleaciones"
-                        icon={Thermometer}
-                        iconColorClass="text-red-400"
-                        iconBgClass="bg-red-500/20"
-                    />
+        if (t === '' || typeof t !== 'number' || isNaN(t)) {
+            setInputTemp('');
+            return;
+        }
 
-                    {/* Category Selector */}
-                    <div className="flex gap-4 mb-8">
-                        {Object.entries(sensorData).map(([key, data]) => (
-                            <button
-                                key={key}
-                                onClick={() => setCategory(key)}
-                                className={`flex-1 p-4 rounded-xl border transition-all font-bold text-lg ${safeCategory === key
-                                    ? 'bg-red-500/20 border-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)]'
-                                    : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:bg-slate-800'
-                                    }`}
-                            >
-                                {data.name}
-                            </button>
-                        ))}
-                    </div>
+        // Convert C to F for display if needed
+        if (tempUnit === 'F') {
+            t = (t * 9 / 5) + 32;
+        }
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Left Column: Selectors & Visual */}
-                        <div className="lg:col-span-1 space-y-6 flex flex-col">
-                            {/* Type Selector (Top) */}
-                            <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm order-1">
-                                <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Tipo de Sensor</label>
-                                <div className="grid grid-cols-2 gap-2">
-                                    {Object.entries(sensorData[safeCategory].types).map(([key, data]) => (
+        setInputTemp(t.toFixed(2));
+    };
+
+    // Recalculate Output when type/category/unit changes (Only in Source Mode)
+    useEffect(() => {
+        if (mode === 'source') {
+            setInputOutput(calculateOutput(inputTemp, tempUnit, safeCategory, safeType));
+        } else {
+            // In measure mode, if unit changes, we need to update the displayed temp
+            if (inputOutput) {
+                const out = parseFloat(inputOutput);
+                if (!isNaN(out)) {
+                    let t = solveTemp(out);
+                    if (t !== '' && typeof t === 'number' && !isNaN(t)) {
+                        if (tempUnit === 'F') t = (t * 9 / 5) + 32;
+                        setInputTemp(t.toFixed(2));
+                    } else {
+                        setInputTemp('');
+                    }
+                }
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [category, type, tempUnit, mode]);
+
+    const currentSensor = sensorData[safeCategory].types[safeType];
+
+    // Prepare colors for visual
+    const visualColors = safeCategory === 'tc' ? {
+        pos: currentSensor.composition.pos.hex,
+        neg: currentSensor.composition.neg.hex,
+        connector: currentSensor.connectorColor
+    } : {};
+
+    return (
+        <div className="max-w-4xl mx-auto p-6 pb-20">
+            <BackButton />
+            <ToolHeader
+                title="Sensores de Temperatura"
+                subtitle="RTDs, Termocuplas y Aleaciones"
+                icon={Thermometer}
+                iconColorClass="text-red-400"
+                iconBgClass="bg-red-500/20"
+            />
+
+            {/* Category Selector */}
+            <div className="flex gap-4 mb-8">
+                {Object.entries(sensorData).map(([key, data]) => (
+                    <button
+                        key={key}
+                        onClick={() => setCategory(key)}
+                        className={`flex-1 p-4 rounded-xl border transition-all font-bold text-lg ${safeCategory === key
+                            ? 'bg-red-500/20 border-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)]'
+                            : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:bg-slate-800'
+                            }`}
+                    >
+                        {data.name}
+                    </button>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Column: Selectors & Visual */}
+                <div className="lg:col-span-1 space-y-6 flex flex-col">
+                    {/* Type Selector (Top) */}
+                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm order-1">
+                        <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Tipo de Sensor</label>
+                        <div className="grid grid-cols-2 gap-2">
+                            {Object.entries(sensorData[safeCategory].types).map(([key, data]) => (
+                                <button
+                                    key={key}
+                                    onClick={() => setType(key)}
+                                    className={`p-2 rounded-lg text-sm font-bold transition-colors ${safeType === key
+                                        ? 'bg-red-500 text-white'
+                                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                        }`}
+                                >
+                                    {data.name}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Wire Selector for RTD */}
+                        {safeCategory === 'rtd' && (
+                            <div className="mt-4 pt-4 border-t border-white/5">
+                                <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Configuración de Hilos</label>
+                                <div className="flex gap-2">
+                                    {[2, 3, 4].map((w) => (
                                         <button
-                                            key={key}
-                                            onClick={() => setType(key)}
-                                            className={`p-2 rounded-lg text-sm font-bold transition-colors ${safeType === key
-                                                ? 'bg-red-500 text-white'
+                                            key={w}
+                                            onClick={() => setWires(w.toString())}
+                                            className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${wires === w.toString()
+                                                ? 'bg-blue-500 text-white'
                                                 : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                                 }`}
                                         >
-                                            {data.name}
+                                            {w} Hilos
                                         </button>
                                     ))}
                                 </div>
-
-                                {/* Wire Selector for RTD */}
-                                {safeCategory === 'rtd' && (
-                                    <div className="mt-4 pt-4 border-t border-white/5">
-                                        <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Configuración de Hilos</label>
-                                        <div className="flex gap-2">
-                                            {[2, 3, 4].map((w) => (
-                                                <button
-                                                    key={w}
-                                                    onClick={() => setWires(w.toString())}
-                                                    className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${wires === w.toString()
-                                                        ? 'bg-blue-500 text-white'
-                                                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                                        }`}
-                                                >
-                                                    {w} Hilos
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Housing Selector for TC */}
-                                {safeCategory === 'tc' && (
-                                    <div className="mt-4 pt-4 border-t border-white/5">
-                                        <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Tipo de Conexión</label>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => setHousing('connector')}
-                                                className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${housing === 'connector'
-                                                    ? 'bg-yellow-600 text-white'
-                                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                                    }`}
-                                            >
-                                                Conector
-                                            </button>
-                                            <button
-                                                onClick={() => setHousing('head')}
-                                                className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${housing === 'head'
-                                                    ? 'bg-slate-500 text-white'
-                                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                                    }`}
-                                            >
-                                                Cabezal Ind.
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
+                        )}
 
-                            {/* Visual Representation (Bottom) */}
-                            <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 backdrop-blur-sm flex justify-center order-2">
-                                <SensorVisual
-                                    type={safeType}
-                                    category={safeCategory}
-                                    colors={visualColors}
-                                    wires={safeCategory === 'rtd' ? parseInt(wires) : 2}
-                                    housing={housing}
-                                />
+                        {/* Housing Selector for TC */}
+                        {safeCategory === 'tc' && (
+                            <div className="mt-4 pt-4 border-t border-white/5">
+                                <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Tipo de Conexión</label>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setHousing('connector')}
+                                        className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${housing === 'connector'
+                                            ? 'bg-yellow-600 text-white'
+                                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                            }`}
+                                    >
+                                        Conector
+                                    </button>
+                                    <button
+                                        onClick={() => setHousing('head')}
+                                        className={`flex-1 p-2 rounded-lg text-sm font-bold transition-colors ${housing === 'head'
+                                            ? 'bg-slate-500 text-white'
+                                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                            }`}
+                                    >
+                                        Cabezal Ind.
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Visual Representation (Bottom) */}
+                    <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 backdrop-blur-sm flex justify-center order-2">
+                        <SensorVisual
+                            type={safeType}
+                            category={safeCategory}
+                            colors={visualColors}
+                            wires={safeCategory === 'rtd' ? parseInt(wires) : 2}
+                            housing={housing}
+                        />
+                    </div>
+                </div>
+
+                {/* Right Column: Simulator & Info */}
+                <div className="lg:col-span-2 space-y-6 flex flex-col">
+                    {/* Simulator (Top Right) */}
+                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative group order-1">
+                        <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+                            <div className={`absolute inset-0 bg-gradient-to-br ${mode === 'source' ? 'from-red-500/5' : 'from-green-500/5'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
+                        </div>
+
+                        <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 relative z-10">
+                            <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${mode === 'source' ? 'text-red-400' : 'text-green-400'}`}>
+                                <Zap size={16} />
+                                {mode === 'source' ? 'Modo Fuente (Simular)' : 'Modo Medición (Leer)'}
+                            </h3>
+
+                            {/* Mode Toggle */}
+                            <div className="flex bg-slate-950 rounded-lg p-1 border border-slate-800">
+                                <button
+                                    onClick={() => setMode('source')}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${mode === 'source'
+                                        ? 'bg-red-500 text-white shadow-lg'
+                                        : 'text-slate-500 hover:text-slate-300'}`}
+                                >
+                                    Simular (Source)
+                                </button>
+                                <button
+                                    onClick={() => setMode('measure')}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${mode === 'measure'
+                                        ? 'bg-green-500 text-white shadow-lg'
+                                        : 'text-slate-500 hover:text-slate-300'}`}
+                                >
+                                    Medir (Measure)
+                                </button>
                             </div>
                         </div>
 
-                        {/* Right Column: Simulator & Info */}
-                        <div className="lg:col-span-2 space-y-6 flex flex-col">
-                            {/* Simulator (Top Right) */}
-                            <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative group order-1">
-                                <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-                                    <div className={`absolute inset-0 bg-gradient-to-br ${mode === 'source' ? 'from-red-500/5' : 'from-green-500/5'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
-                                </div>
-
-                                <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 relative z-10">
-                                    <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${mode === 'source' ? 'text-red-400' : 'text-green-400'}`}>
-                                        <Zap size={16} />
-                                        {mode === 'source' ? 'Modo Fuente (Simular)' : 'Modo Medición (Leer)'}
-                                    </h3>
-
-                                    {/* Mode Toggle */}
-                                    <div className="flex bg-slate-950 rounded-lg p-1 border border-slate-800">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                            {/* Temperature Input */}
+                            <div className={`transition-opacity duration-300 ${mode === 'measure' ? 'opacity-100' : 'opacity-100'}`}>
+                                <div className="flex justify-between items-center mb-1">
+                                    <label className={`block text-xs font-bold ${mode === 'source' ? 'text-red-400' : 'text-slate-500'}`}>
+                                        {mode === 'source' ? 'Temperatura a Simular' : 'Temperatura Leída'}
+                                    </label>
+                                    <div className="flex bg-slate-800 rounded-lg p-0.5">
                                         <button
-                                            onClick={() => setMode('source')}
-                                            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${mode === 'source'
-                                                ? 'bg-red-500 text-white shadow-lg'
-                                                : 'text-slate-500 hover:text-slate-300'}`}
+                                            onClick={() => setTempUnit('C')}
+                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'C' ? (mode === 'source' ? 'bg-red-500 text-white' : 'bg-green-500 text-white') : 'text-slate-400 hover:text-white'}`}
                                         >
-                                            Simular (Source)
+                                            °C
                                         </button>
                                         <button
-                                            onClick={() => setMode('measure')}
-                                            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${mode === 'measure'
-                                                ? 'bg-green-500 text-white shadow-lg'
-                                                : 'text-slate-500 hover:text-slate-300'}`}
+                                            onClick={() => setTempUnit('F')}
+                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'F' ? (mode === 'source' ? 'bg-red-500 text-white' : 'bg-green-500 text-white') : 'text-slate-400 hover:text-white'}`}
                                         >
-                                            Medir (Measure)
+                                            °F
                                         </button>
                                     </div>
                                 </div>
+                                <input
+                                    type="number"
+                                    value={inputTemp}
+                                    onChange={(e) => handleTempChange(e.target.value)}
+                                    disabled={mode === 'measure'}
+                                    className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-lg outline-none transition-all shadow-inner ${mode === 'source'
+                                        ? 'border-slate-700 text-white focus:border-red-500'
+                                        : 'border-transparent text-green-400 font-bold bg-slate-900/50 cursor-not-allowed'
+                                        }`}
+                                    placeholder={mode === 'source' ? `Ej: ${tempUnit === 'C' ? '100' : '212'}` : 'Calculando...'}
+                                />
+                            </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-                                    {/* Temperature Input */}
-                                    <div className={`transition-opacity duration-300 ${mode === 'measure' ? 'opacity-100' : 'opacity-100'}`}>
-                                        <div className="flex justify-between items-center mb-1">
-                                            <label className={`block text-xs font-bold ${mode === 'source' ? 'text-red-400' : 'text-slate-500'}`}>
-                                                {mode === 'source' ? 'Temperatura a Simular' : 'Temperatura Leída'}
-                                            </label>
-                                            <div className="flex bg-slate-800 rounded-lg p-0.5">
-                                                <button
-                                                    onClick={() => setTempUnit('C')}
-                                                    className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'C' ? (mode === 'source' ? 'bg-red-500 text-white' : 'bg-green-500 text-white') : 'text-slate-400 hover:text-white'}`}
-                                                >
-                                                    °C
-                                                </button>
-                                                <button
-                                                    onClick={() => setTempUnit('F')}
-                                                    className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'F' ? (mode === 'source' ? 'bg-red-500 text-white' : 'bg-green-500 text-white') : 'text-slate-400 hover:text-white'}`}
-                                                >
-                                                    °F
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <input
-                                            type="number"
-                                            value={inputTemp}
-                                            onChange={(e) => handleTempChange(e.target.value)}
-                                            disabled={mode === 'measure'}
-                                            className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-lg outline-none transition-all shadow-inner ${mode === 'source'
-                                                ? 'border-slate-700 text-white focus:border-red-500'
-                                                : 'border-transparent text-green-400 font-bold bg-slate-900/50 cursor-not-allowed'
-                                                }`}
-                                            placeholder={mode === 'source' ? `Ej: ${tempUnit === 'C' ? '100' : '212'}` : 'Calculando...'}
-                                        />
-                                    </div>
-
-                                    {/* Output Input */}
-                                    <div className={`transition-opacity duration-300 ${mode === 'source' ? 'opacity-100' : 'opacity-100'}`}>
-                                        <label className={`block text-xs font-bold mb-1 ${mode === 'measure' ? 'text-green-400' : 'text-slate-500'}`}>
-                                            {mode === 'measure' ? `Valor Medido (${safeCategory === 'rtd' ? 'Ω' : 'mV'})` : `Salida Esperada (${safeCategory === 'rtd' ? 'Ω' : 'mV'})`}
-                                        </label>
-                                        <div className="relative">
-                                            <input
-                                                type="number"
-                                                value={inputOutput}
-                                                onChange={(e) => handleOutputChange(e.target.value)}
-                                                disabled={mode === 'source'}
-                                                className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-xl outline-none transition-all shadow-inner ${mode === 'measure'
-                                                    ? 'border-slate-700 text-white focus:border-green-500'
-                                                    : 'border-transparent text-red-400 font-bold bg-slate-900/50 cursor-not-allowed'
-                                                    }`}
-                                                placeholder={mode === 'measure' ? 'Ej: 138.5' : 'Calculando...'}
-                                            />
-                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-600 font-normal pointer-events-none">
-                                                {safeCategory === 'rtd' ? 'Ω' : 'mV'}
-                                            </div>
-                                        </div>
+                            {/* Output Input */}
+                            <div className={`transition-opacity duration-300 ${mode === 'source' ? 'opacity-100' : 'opacity-100'}`}>
+                                <label className={`block text-xs font-bold mb-1 ${mode === 'measure' ? 'text-green-400' : 'text-slate-500'}`}>
+                                    {mode === 'measure' ? `Valor Medido (${safeCategory === 'rtd' ? 'Ω' : 'mV'})` : `Salida Esperada (${safeCategory === 'rtd' ? 'Ω' : 'mV'})`}
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="number"
+                                        value={inputOutput}
+                                        onChange={(e) => handleOutputChange(e.target.value)}
+                                        disabled={mode === 'source'}
+                                        className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-xl outline-none transition-all shadow-inner ${mode === 'measure'
+                                            ? 'border-slate-700 text-white focus:border-green-500'
+                                            : 'border-transparent text-red-400 font-bold bg-slate-900/50 cursor-not-allowed'
+                                            }`}
+                                        placeholder={mode === 'measure' ? 'Ej: 138.5' : 'Calculando...'}
+                                    />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-600 font-normal pointer-events-none">
+                                        {safeCategory === 'rtd' ? 'Ω' : 'mV'}
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            {/* Info Card (Below Simulator) */}
-                            <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl relative overflow-hidden order-2">
-                                {/* Background Decoration */}
-                                <div className="absolute top-0 right-0 p-32 bg-red-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                    {/* Info Card (Below Simulator) */}
+                    <div className="bg-slate-900/80 p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-2xl relative overflow-hidden order-2">
+                        {/* Background Decoration */}
+                        <div className="absolute top-0 right-0 p-32 bg-red-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
 
-                                <div className="relative z-10">
-                                    <div className="flex items-start justify-between mb-6">
-                                        <div>
-                                            <div className="flex items-center gap-3 mb-1">
-                                                <h2 className="text-3xl font-bold text-white">{currentSensor.name}</h2>
-                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-slate-400 border border-white/5">
-                                                    {safeCategory === 'tc' ? 'ANSI MC96.1' : (safeType === 'pt100_lube' ? 'US Industrial' : 'IEC 60751')}
-                                                </span>
+                        <div className="relative z-10">
+                            <div className="flex items-start justify-between mb-6">
+                                <div>
+                                    <div className="flex items-center gap-3 mb-1">
+                                        <h2 className="text-3xl font-bold text-white">{currentSensor.name}</h2>
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-slate-400 border border-white/5">
+                                            {safeCategory === 'tc' ? 'ANSI MC96.1' : (safeType === 'pt100_lube' ? 'US Industrial' : 'IEC 60751')}
+                                        </span>
+                                    </div>
+                                    <p className="text-red-400 text-lg">{currentSensor.desc}</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setShowTable(true)}
+                                        className="p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-xl border border-blue-500/30 transition-colors flex items-center gap-2"
+                                        title="Ver Tabla de Referencia"
+                                    >
+                                        <Layers size={20} />
+                                        <span className="text-xs font-bold hidden sm:inline">Tabla</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Composition Details */}
+                            <div className="space-y-6">
+                                {safeCategory === 'tc' ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="bg-slate-950/50 p-4 rounded-xl border-l-4 border-red-500">
+                                            <h4 className="text-xs text-slate-500 uppercase tracking-wider mb-2">Pata Positiva (+)</h4>
+                                            <div className="text-white font-bold text-lg mb-1">{currentSensor.composition.pos.name}</div>
+                                            <div className="text-sm text-slate-400 mb-2">{currentSensor.composition.pos.detail}</div>
+                                            <div className="text-xs font-mono bg-slate-900 py-1 px-2 rounded inline-block text-slate-300">
+                                                Color: {currentSensor.composition.pos.color}
                                             </div>
-                                            <p className="text-red-400 text-lg">{currentSensor.desc}</p>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => setShowTable(true)}
-                                                className="p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-xl border border-blue-500/30 transition-colors flex items-center gap-2"
-                                                title="Ver Tabla de Referencia"
-                                            >
-                                                <Layers size={20} />
-                                                <span className="text-xs font-bold hidden sm:inline">Tabla</span>
-                                            </button>
+                                        <div className="bg-slate-950/50 p-4 rounded-xl border-l-4 border-blue-500">
+                                            <h4 className="text-xs text-slate-500 uppercase tracking-wider mb-2">Pata Negativa (-)</h4>
+                                            <div className="text-white font-bold text-lg mb-1">{currentSensor.composition.neg.name}</div>
+                                            <div className="text-sm text-slate-400 mb-2">{currentSensor.composition.neg.detail}</div>
+                                            <div className="text-xs font-mono bg-slate-900 py-1 px-2 rounded inline-block text-slate-300">
+                                                Color: {currentSensor.composition.neg.color}
+                                            </div>
                                         </div>
                                     </div>
+                                ) : (
+                                    <div className="bg-slate-950/50 p-6 rounded-xl border border-white/5">
+                                        <h4 className="text-xs text-slate-500 uppercase tracking-wider mb-2">Material del Elemento</h4>
+                                        <div className="text-white font-bold text-xl mb-2">{currentSensor.composition}</div>
+                                        <p className="text-slate-400 text-sm">
+                                            El platino es ideal por su estabilidad química y linealidad. El coeficiente de temperatura (Alpha) estándar es {currentSensor.alpha}.
+                                        </p>
+                                    </div>
+                                )}
 
-                                    {/* Composition Details */}
-                                    <div className="space-y-6">
-                                        {safeCategory === 'tc' ? (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div className="bg-slate-950/50 p-4 rounded-xl border-l-4 border-red-500">
-                                                    <h4 className="text-xs text-slate-500 uppercase tracking-wider mb-2">Pata Positiva (+)</h4>
-                                                    <div className="text-white font-bold text-lg mb-1">{currentSensor.composition.pos.name}</div>
-                                                    <div className="text-sm text-slate-400 mb-2">{currentSensor.composition.pos.detail}</div>
-                                                    <div className="text-xs font-mono bg-slate-900 py-1 px-2 rounded inline-block text-slate-300">
-                                                        Color: {currentSensor.composition.pos.color}
+                                {/* Specs Grid */}
+                                <div className="grid grid-cols-2 gap-4 mt-6">
+                                    <div className="p-4 bg-white/5 rounded-xl">
+                                        <div className="text-xs text-slate-500 mb-1">Rango de Temperatura</div>
+                                        <div className="text-white font-mono font-bold">{currentSensor.range}</div>
+                                    </div>
+                                    {currentSensor.sensitivity && (
+                                        <div className="p-4 bg-white/5 rounded-xl">
+                                            <div className="text-xs text-slate-500 mb-1">Sensibilidad (Seebeck)</div>
+                                            <div className="text-white font-mono font-bold">{currentSensor.sensitivity}</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Educational Note / Dynamic Info (Merged) */}
+                            <div className="mt-6 pt-6 border-t border-white/10">
+                                <div className="flex gap-4 items-start bg-blue-500/10 p-4 rounded-xl border border-blue-500/20">
+                                    <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400 shrink-0">
+                                        <Info size={20} />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-blue-400 font-bold mb-2 text-xs uppercase tracking-wider">
+                                            Información Adicional
+                                        </h4>
+
+                                        <div className="space-y-3">
+                                            {/* Type Specific Note */}
+                                            <p className="text-slate-300 text-xs leading-relaxed italic border-l-2 border-blue-500/30 pl-3">
+                                                "{currentSensor.note}"
+                                            </p>
+
+                                            {/* Context Specific Info */}
+                                            {safeCategory === 'tc' ? (
+                                                <div className="space-y-2">
+                                                    <p className="text-slate-400 text-[10px] leading-relaxed">
+                                                        {housing === 'connector'
+                                                            ? 'Mostrando conector estándar polarizado.'
+                                                            : 'Mostrando cabezal de conexión industrial.'
+                                                        }
+                                                    </p>
+                                                    <div className="pt-2 border-t border-blue-500/20 text-[10px] text-slate-400">
+                                                        <span className="text-red-400 font-bold">¡OJO!</span> En norma ANSI, el cable <strong className="text-red-400">ROJO es NEGATIVO (-)</strong>.
                                                     </div>
                                                 </div>
-                                                <div className="bg-slate-950/50 p-4 rounded-xl border-l-4 border-blue-500">
-                                                    <h4 className="text-xs text-slate-500 uppercase tracking-wider mb-2">Pata Negativa (-)</h4>
-                                                    <div className="text-white font-bold text-lg mb-1">{currentSensor.composition.neg.name}</div>
-                                                    <div className="text-sm text-slate-400 mb-2">{currentSensor.composition.neg.detail}</div>
-                                                    <div className="text-xs font-mono bg-slate-900 py-1 px-2 rounded inline-block text-slate-300">
-                                                        Color: {currentSensor.composition.neg.color}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="bg-slate-950/50 p-6 rounded-xl border border-white/5">
-                                                <h4 className="text-xs text-slate-500 uppercase tracking-wider mb-2">Material del Elemento</h4>
-                                                <div className="text-white font-bold text-xl mb-2">{currentSensor.composition}</div>
-                                                <p className="text-slate-400 text-sm">
-                                                    El platino es ideal por su estabilidad química y linealidad. El coeficiente de temperatura (Alpha) estándar es {currentSensor.alpha}.
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        {/* Specs Grid */}
-                                        <div className="grid grid-cols-2 gap-4 mt-6">
-                                            <div className="p-4 bg-white/5 rounded-xl">
-                                                <div className="text-xs text-slate-500 mb-1">Rango de Temperatura</div>
-                                                <div className="text-white font-mono font-bold">{currentSensor.range}</div>
-                                            </div>
-                                            {currentSensor.sensitivity && (
-                                                <div className="p-4 bg-white/5 rounded-xl">
-                                                    <div className="text-xs text-slate-500 mb-1">Sensibilidad (Seebeck)</div>
-                                                    <div className="text-white font-mono font-bold">{currentSensor.sensitivity}</div>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    {wires === '2' && (
+                                                        <p className="text-slate-400 text-[10px] leading-relaxed">
+                                                            <strong>2 Hilos:</strong> Baja precisión. La resistencia del cable se suma al error.
+                                                        </p>
+                                                    )}
+                                                    {wires === '3' && (
+                                                        <p className="text-slate-400 text-[10px] leading-relaxed">
+                                                            <strong>3 Hilos:</strong> Estándar industrial. Compensa la resistencia del cable.
+                                                        </p>
+                                                    )}
+                                                    {wires === '4' && (
+                                                        <p className="text-slate-400 text-[10px] leading-relaxed">
+                                                            <strong>4 Hilos:</strong> Máxima precisión (Laboratorio). Elimina error de cables.
+                                                        </p>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
                                     </div>
-
-                                    {/* Educational Note / Dynamic Info (Merged) */}
-                                    <div className="mt-6 pt-6 border-t border-white/10">
-                                        <div className="flex gap-4 items-start bg-blue-500/10 p-4 rounded-xl border border-blue-500/20">
-                                            <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400 shrink-0">
-                                                <Info size={20} />
-                                            </div>
-                                            <div>
-                                                <h4 className="text-blue-400 font-bold mb-2 text-xs uppercase tracking-wider">
-                                                    Información Adicional
-                                                </h4>
-
-                                                <div className="space-y-3">
-                                                    {/* Type Specific Note */}
-                                                    <p className="text-slate-300 text-xs leading-relaxed italic border-l-2 border-blue-500/30 pl-3">
-                                                        "{currentSensor.note}"
-                                                    </p>
-
-                                                    {/* Context Specific Info */}
-                                                    {safeCategory === 'tc' ? (
-                                                        <div className="space-y-2">
-                                                            <p className="text-slate-400 text-[10px] leading-relaxed">
-                                                                {housing === 'connector'
-                                                                    ? 'Mostrando conector estándar polarizado.'
-                                                                    : 'Mostrando cabezal de conexión industrial.'
-                                                                }
-                                                            </p>
-                                                            <div className="pt-2 border-t border-blue-500/20 text-[10px] text-slate-400">
-                                                                <span className="text-red-400 font-bold">¡OJO!</span> En norma ANSI, el cable <strong className="text-red-400">ROJO es NEGATIVO (-)</strong>.
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="space-y-2">
-                                                            {wires === '2' && (
-                                                                <p className="text-slate-400 text-[10px] leading-relaxed">
-                                                                    <strong>2 Hilos:</strong> Baja precisión. La resistencia del cable se suma al error.
-                                                                </p>
-                                                            )}
-                                                            {wires === '3' && (
-                                                                <p className="text-slate-400 text-[10px] leading-relaxed">
-                                                                    <strong>3 Hilos:</strong> Estándar industrial. Compensa la resistencia del cable.
-                                                                </p>
-                                                            )}
-                                                            {wires === '4' && (
-                                                                <p className="text-slate-400 text-[10px] leading-relaxed">
-                                                                    <strong>4 Hilos:</strong> Máxima precisión (Laboratorio). Elimina error de cables.
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <AdBanner dataAdSlot="1234567890" />
-
-                    {/* Reference Table Modal */}
-                    <ReferenceTableModal
-                        isOpen={showTable}
-                        onClose={() => setShowTable(false)}
-                        sensor={currentSensor}
-                        category={safeCategory}
-                    />
                 </div>
-            );
-        };
+            </div>
 
-        export default TemperatureSensors;
+            <AdBanner dataAdSlot="1234567890" />
+
+            {/* Reference Table Modal */}
+            <ReferenceTableModal
+                isOpen={showTable}
+                onClose={() => setShowTable(false)}
+                sensor={currentSensor}
+                category={safeCategory}
+            />
+        </div>
+    );
+};
+
+export default TemperatureSensors;

@@ -107,25 +107,32 @@ const TemperatureSensors = () => {
         window.scrollTo(0, 0);
     }, []);
 
-    // Reset type when category changes if invalid
+    // Safety check for category
+    const safeCategory = sensorData[category] ? category : 'tc';
+    // Safety check for type
+    const safeType = (sensorData[safeCategory].types && sensorData[safeCategory].types[type])
+        ? type
+        : Object.keys(sensorData[safeCategory].types)[0];
+
+    // Update state if mismatch found (to fix local storage)
     useEffect(() => {
-        if (!sensorData[category].types[type]) {
-            setType(Object.keys(sensorData[category].types)[0]);
-        }
-    }, [category, type]);
+        if (category !== safeCategory) setCategory(safeCategory);
+        if (type !== safeType) setType(safeType);
+    }, [category, safeCategory, type, safeType, setCategory, setType]);
+
     const outputVal = React.useMemo(() => {
         if (inputTemp === '' || isNaN(parseFloat(inputTemp))) {
             return '';
         }
         const t = parseFloat(inputTemp);
-        const sensor = sensorData[category].types[type];
+        const sensor = sensorData[safeCategory]?.types[safeType];
         if (sensor && sensor.calc) {
             return sensor.calc(t).toFixed(3);
         }
         return '';
-    }, [inputTemp, category, type]);
+    }, [inputTemp, safeCategory, safeType]);
 
-    const currentSensor = sensorData[category].types[type];
+    const currentSensor = sensorData[safeCategory].types[safeType];
 
     return (
         <div className="max-w-4xl mx-auto p-6 pb-20">
@@ -144,7 +151,7 @@ const TemperatureSensors = () => {
                     <button
                         key={key}
                         onClick={() => setCategory(key)}
-                        className={`flex-1 p-4 rounded-xl border transition-all font-bold text-lg ${category === key
+                        className={`flex-1 p-4 rounded-xl border transition-all font-bold text-lg ${safeCategory === key
                             ? 'bg-red-500/20 border-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)]'
                             : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:bg-slate-800'
                             }`}
@@ -161,11 +168,11 @@ const TemperatureSensors = () => {
                     <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm">
                         <label className="block text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Tipo de Sensor</label>
                         <div className="grid grid-cols-2 gap-2">
-                            {Object.entries(sensorData[category].types).map(([key, data]) => (
+                            {Object.entries(sensorData[safeCategory].types).map(([key, data]) => (
                                 <button
                                     key={key}
                                     onClick={() => setType(key)}
-                                    className={`p-2 rounded-lg text-sm font-bold transition-colors ${type === key
+                                    className={`p-2 rounded-lg text-sm font-bold transition-colors ${safeType === key
                                         ? 'bg-red-500 text-white'
                                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                         }`}
@@ -197,7 +204,7 @@ const TemperatureSensors = () => {
                             </div>
                             <div>
                                 <label className="block text-xs text-slate-500 mb-1">
-                                    Salida ({category === 'rtd' ? 'Resistencia (Ω)' : 'Voltaje (mV)'})
+                                    Salida ({safeCategory === 'rtd' ? 'Resistencia (Ω)' : 'Voltaje (mV)'})
                                 </label>
                                 <div className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold">
                                     {outputVal || '-'}
@@ -229,7 +236,7 @@ const TemperatureSensors = () => {
 
                             {/* Composition Details */}
                             <div className="space-y-6">
-                                {category === 'tc' ? (
+                                {safeCategory === 'tc' ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="bg-slate-950/50 p-4 rounded-xl border-l-4 border-red-500">
                                             <h4 className="text-xs text-slate-500 uppercase tracking-wider mb-2">Pata Positiva (+)</h4>

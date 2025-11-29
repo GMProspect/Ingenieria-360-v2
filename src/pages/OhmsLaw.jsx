@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Zap, Gauge, Activity } from 'lucide-react';
+import { Zap, Gauge, Activity, Info } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/Auth';

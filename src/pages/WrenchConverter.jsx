@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wrench } from 'lucide-react';
+import { Wrench, Info } from 'lucide-react';
 import ToolHeader from '../components/ToolHeader';
 
 import BackButton from '../components/BackButton';

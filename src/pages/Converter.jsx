@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, ArrowRightLeft, Gauge, Thermometer, Ruler, Scale, Beaker } from 'lucide-react';
+import { RefreshCw, ArrowRightLeft, Gauge, Thermometer, Ruler, Scale, Beaker, Info } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/Auth';

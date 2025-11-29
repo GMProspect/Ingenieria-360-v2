@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Gauge, ArrowRightLeft } from 'lucide-react';
+import { Gauge, ArrowRightLeft, Info } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/Auth';

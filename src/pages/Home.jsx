@@ -1,85 +1,117 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Database, Zap, Activity, Gauge, RefreshCw, Wrench, Thermometer } from 'lucide-react';
-import HomeCraneIcon from '../components/HomeCraneIcon';
-import FeedbackForm from '../components/FeedbackForm';
+import React from 'react';
+import {
+    Activity,
+    Wrench,
+    Zap,
+    Cpu,
+    ClipboardList,
+    Thermometer,
+    Radio,
+    Settings,
+    BookOpen,
+    Calculator,
+    Box
+} from 'lucide-react';
+import CategoryCard from '../components/CategoryCard';
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
+    const { t } = useTranslation();
+
     // Scroll to top on mount
-    useEffect(() => {
+    React.useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    const tools = [
-        { path: '/inventory', name: 'Inventario', icon: Database, desc: 'Gestión de activos y especificaciones dinámicas.', color: 'text-blue-400', bg: 'bg-blue-500/10', hover: 'group-hover:text-blue-300', border: 'hover:border-blue-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(59,130,246,0.1)]' },
-        { path: '/ohms-law', name: 'Ley de Ohm', icon: Zap, desc: 'Cálculo de V, I, R con interfaz triangular.', color: 'text-yellow-400', bg: 'bg-yellow-500/10', hover: 'group-hover:text-yellow-300', border: 'hover:border-yellow-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(234,179,8,0.1)]' },
-        { path: '/transmitter', name: 'Transmisor 4-20mA', icon: Gauge, desc: 'Conversión de señales de instrumentación.', color: 'text-purple-400', bg: 'bg-purple-500/10', hover: 'group-hover:text-purple-300', border: 'hover:border-purple-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(168,85,247,0.1)]' },
-        { path: '/temperature-sensors', name: 'Sensores de Temperatura', icon: Thermometer, desc: 'RTDs, Termocuplas y Aleaciones.', color: 'text-red-400', bg: 'bg-red-500/10', hover: 'group-hover:text-red-300', border: 'hover:border-red-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(239,68,68,0.1)]' },
-        { path: '/vibration', name: 'Sondas de Vibración', icon: Activity, desc: 'API 670: Voltaje de GAP a Mils/Micras.', color: 'text-cyan-400', bg: 'bg-cyan-500/10', hover: 'group-hover:text-cyan-300', border: 'hover:border-cyan-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]' },
-        { path: '/wrench-converter', name: 'Medidas de Llaves', icon: Wrench, desc: 'Tabla Maestra: Tuercas (M) vs Llaves (mm/pulg).', color: 'text-orange-400', bg: 'bg-orange-500/10', hover: 'group-hover:text-orange-300', border: 'hover:border-orange-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(249,115,22,0.1)]' },
-        { path: '/converter', name: 'Conversor Universal', icon: RefreshCw, desc: 'Presión, Temperatura, Longitud y Peso.', color: 'text-green-400', bg: 'bg-green-500/10', hover: 'group-hover:text-green-300', border: 'hover:border-green-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(34,197,94,0.1)]' },
+    const categories = [
+        {
+            title: 'Instrumentación y Control',
+            description: 'Sensores, Transmisores, PLC, Lógica y Troubleshooting.',
+            icon: Activity,
+            color: 'blue',
+            links: [
+                { to: '/transmitter', label: 'Transmisor 4-20mA' },
+                { to: '/temperature-sensors', label: 'Sensores de Temperatura (RTD/TC)' },
+                { to: '/vibration', label: 'Vibración (API 670)' }
+            ]
+        },
+        {
+            title: 'Mecánica y Rotativos',
+            description: 'Torques, medidas de llaves y mantenimiento de equipos rotativos.',
+            icon: Wrench,
+            color: 'orange',
+            links: [
+                { to: '/wrench-converter', label: 'Conversor de Llaves (Wrench)', isNew: true },
+                // Future: Turbine Inventory, Torque Calculator
+            ]
+        },
+        {
+            title: 'Electricidad Industrial',
+            description: 'Cálculos para motores, transformadores y distribución eléctrica.',
+            icon: Zap,
+            color: 'yellow',
+            links: [
+                { to: '/ohms-law', label: 'Ley de Ohm / Potencia' },
+                // Future: Motor Star/Delta, Cable Sizing
+            ]
+        },
+        {
+            title: 'Especialista TFA',
+            description: 'Power Gen, Excitación, PSS, Mark VIe y Ciclos Termodinámicos.',
+            icon: Cpu,
+            color: 'purple',
+            links: [
+                // Future: PSS Viewer, Saturation Curves
+                { to: '#', label: 'Próximamente: Modelos PSS' },
+                { to: '#', label: 'Próximamente: Curvas de Saturación' }
+            ]
+        },
+        {
+            title: 'Gestión y Operaciones',
+            description: 'Rondas de operación, inventario, historial y reportes.',
+            icon: ClipboardList,
+            color: 'gray',
+            links: [
+                { to: '/inventory', label: 'Inventario de Equipos' },
+                { to: '/history', label: 'Historial de Cálculos' },
+                { to: '/converter', label: 'Conversor de Unidades' }
+            ]
+        }
     ];
 
     return (
-        <div className="flex flex-col min-h-[calc(100vh-100px)] items-center justify-center text-center">
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             {/* Header Section */}
-            <div className="mb-16 animate-fade-in-down">
-                <div className="flex justify-center mb-6">
-                    <HomeCraneIcon size={120} className="drop-shadow-[0_0_25px_rgba(234,179,8,0.4)]" />
-                </div>
-                <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-4 tracking-tight">
-                    Ingeniería 360
+            <div className="text-center mb-16">
+                <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
+                    Ingeniería <span className="text-blue-600">360</span>
                 </h1>
-                <p className="text-xl text-slate-400 font-light tracking-wide">
-                    Bienvenido a tu Entorno Técnico Inteligente
+                <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                    La Super App para especialistas de campo. Instrumentación, Mecánica, Electricidad y Control en un solo lugar.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full px-4 mb-20 animate-fade-in-up">
-                {tools.map((tool, index) => {
-                    const Icon = tool.icon;
-                    return (
-                        <Link
-                            key={tool.path}
-                            to={tool.path}
-                            className={`group bg-slate-900/40 border border-white/5 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 flex flex-col items-center ${tool.border} ${tool.shadow} ${index === tools.length - 1 ? 'lg:col-start-2' : ''}`}
-                        >
-                            <div className={`p-4 rounded-xl mb-6 transition-colors ${tool.bg}`}>
-                                <Icon size={40} className={`${tool.color} transition-colors`} />
-                            </div>
-                            <h3 className={`text-xl font-bold text-white mb-2 transition-colors ${tool.hover}`}>
-                                {tool.name}
-                            </h3>
-                            <p className="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">
-                                {tool.desc}
-                            </p>
-                        </Link>
-                    );
-                })}
+            {/* Grid Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                {categories.map((category, index) => (
+                    <CategoryCard key={index} {...category} />
+                ))}
             </div>
 
-            {/* Feedback Section */}
-            <div className="w-full max-w-2xl px-4 mb-16 animate-fade-in-up delay-200">
-                <FeedbackForm />
+            {/* Footer Links */}
+            <div className="border-t border-slate-200 pt-8 mt-12">
+                <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+                    <a href="/privacy-policy" className="hover:text-blue-600 transition-colors">
+                        Política de Privacidad
+                    </a>
+                    <span className="text-slate-300">•</span>
+                    <a href="/terms-of-service" className="hover:text-blue-600 transition-colors">
+                        Términos de Servicio
+                    </a>
+                    <span className="text-slate-300">•</span>
+                    <span>v2.1.0 (Super App Beta)</span>
+                </div>
             </div>
-
-            {/* Footer */}
-            <footer className="mt-auto text-xs text-slate-600 font-mono space-y-2">
-                <div className="flex justify-center gap-4 mb-2">
-                    <Link to="/privacy-policy" className="hover:text-cyan-400 transition-colors">
-                        Privacy Policy
-                    </Link>
-                    <span>•</span>
-                    <Link to="/terms-of-service" className="hover:text-cyan-400 transition-colors">
-                        Terms of Service
-                    </Link>
-                </div>
-                <div>
-                    Creado por <span className="text-cyan-600 font-bold">Gustavo Matheus</span> | Ingeniería 360 © 2025
-                </div>
-            </footer>
-
         </div>
     );
 };

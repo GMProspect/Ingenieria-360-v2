@@ -4,6 +4,8 @@ import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
 import BackButton from '../components/BackButton';
 import InventoryModal from '../components/inventory/InventoryModal';
+import ItemDetailsModal from '../components/inventory/ItemDetailsModal';
+import TagList from '../components/inventory/TagList';
 
 const Inventory = () => {
     const { user } = useAuth();
@@ -11,7 +13,9 @@ const Inventory = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState(null); // null for new, object for edit
+    const [detailsItem, setDetailsItem] = useState(null); // Item to show details for
 
     // Form State
     const [formData, setFormData] = useState({
@@ -26,11 +30,8 @@ const Inventory = () => {
     const [tags, setTags] = useState([]);
     const [currentTag, setCurrentTag] = useState('');
 
-    useEffect(() => {
-        if (user) fetchItems();
-    }, [user]);
-
-    const fetchItems = async () => {
+    const fetchItems = React.useCallback(async () => {
+        if (!user) return;
         setLoading(true);
         try {
             const { data, error } = await supabase
@@ -46,7 +47,11 @@ const Inventory = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [user]);
+
+    useEffect(() => {
+        fetchItems();
+    }, [fetchItems]);
 
     const handleOpenModal = (item = null) => {
         if (item) {
@@ -88,6 +93,11 @@ const Inventory = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setCurrentItem(null);
+    };
+
+    const handleViewDetails = (item) => {
+        setDetailsItem(item);
+        setIsDetailsOpen(true);
     };
 
     // Tag Handlers
@@ -205,7 +215,7 @@ const Inventory = () => {
             </div>
 
             {/* Desktop Table View (hidden on mobile) */}
-            <div className="hidden md:block bg-slate-900/50 rounded-2xl border border-white/5 overflow-hidden backdrop-blur-sm">
+            <div className="hidden md:block bg-slate-900/50 rounded-2xl border border-white/5 overflow-hidden backdrop-blur-sm min-h-[60vh]">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -230,36 +240,10 @@ const Inventory = () => {
                                 filteredItems.map((item) => (
                                     <tr key={item.id} className="hover:bg-white/5 transition-colors group">
                                         <td className="p-4">
-                                            <div className="font-bold text-white">{item.name}</div>
-                                            <div className="flex flex-wrap gap-1 mt-2">
-                                                {(() => {
-                                                    const tags = Array.isArray(item.specs)
-                                                        ? item.specs
-                                                        : Object.entries(item.specs || {}).map(([k, v]) => `${k}: ${v}`);
-
-                                                    const visibleTags = tags.slice(0, 3);
-                                                    const remainingCount = tags.length - 3;
-
-                                                    return (
-                                                        <>
-                                                            {visibleTags.map((tag, idx) => (
-                                                                <span
-                                                                    key={idx}
-                                                                    className="px-2 py-0.5 bg-slate-800 text-slate-300 text-[10px] rounded-full border border-slate-700"
-                                                                    title={tag}
-                                                                >
-                                                                    {tag.length > 20 ? tag.substring(0, 20) + '...' : tag}
-                                                                </span>
-                                                            ))}
-                                                            {remainingCount > 0 && (
-                                                                <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] rounded-full border border-slate-700 font-bold">
-                                                                    +{remainingCount}
-                                                                </span>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })()}
+                                            <div className="font-bold text-white cursor-pointer hover:text-cyan-400 transition-colors" onClick={() => handleViewDetails(item)}>
+                                                {item.name}
                                             </div>
+                                            <TagList specs={item.specs} onClick={() => handleViewDetails(item)} />
                                         </td>
                                         <td className="p-4 text-slate-300">
                                             <div className="text-white">{item.brand}</div>
@@ -315,34 +299,10 @@ const Inventory = () => {
                             {/* Header: Name and Actions */}
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex-1">
-                                    <h3 className="font-bold text-white text-lg">{item.name}</h3>
-                                    <div className="flex flex-wrap gap-1 mt-2">
-                                        {(() => {
-                                            const tags = Array.isArray(item.specs)
-                                                ? item.specs
-                                                : Object.entries(item.specs || {}).map(([k, v]) => `${k}: ${v}`);
-                                            const visibleTags = tags.slice(0, 3);
-                                            const remainingCount = tags.length - 3;
-                                            return (
-                                                <>
-                                                    {visibleTags.map((tag, idx) => (
-                                                        <span
-                                                            key={idx}
-                                                            className="px-2 py-0.5 bg-slate-800 text-slate-300 text-[10px] rounded-full border border-slate-700"
-                                                            title={tag}
-                                                        >
-                                                            {tag.length > 20 ? tag.substring(0, 20) + '...' : tag}
-                                                        </span>
-                                                    ))}
-                                                    {remainingCount > 0 && (
-                                                        <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] rounded-full border border-slate-700 font-bold">
-                                                            +{remainingCount}
-                                                        </span>
-                                                    )}
-                                                </>
-                                            );
-                                        })()}
-                                    </div>
+                                    <h3 className="font-bold text-white text-lg cursor-pointer hover:text-cyan-400 transition-colors" onClick={() => handleViewDetails(item)}>
+                                        {item.name}
+                                    </h3>
+                                    <TagList specs={item.specs} onClick={() => handleViewDetails(item)} />
                                 </div>
                                 <div className="flex items-center gap-2 ml-4">
                                     <button
@@ -402,6 +362,12 @@ const Inventory = () => {
                 onAddTag={handleAddTag}
                 onRemoveTag={handleRemoveTag}
                 onKeyDown={handleKeyDown}
+            />
+
+            <ItemDetailsModal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                item={detailsItem}
             />
         </div>
     );

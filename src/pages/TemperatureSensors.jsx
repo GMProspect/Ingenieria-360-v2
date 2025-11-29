@@ -202,7 +202,7 @@ const TemperatureSensors = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column: Controls & Calc */}
+                {/* Left Column: Visuals & Controls */}
                 <div className="lg:col-span-1 space-y-6">
                     {/* Visual Representation */}
                     <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 backdrop-blur-sm flex justify-center">
@@ -213,6 +213,48 @@ const TemperatureSensors = () => {
                             wires={safeCategory === 'rtd' ? parseInt(wires) : 2}
                             housing={housing}
                         />
+                    </div>
+
+                    {/* Calculator (Now Prominent) */}
+                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-4 border-b border-red-500/30 pb-2 flex items-center gap-2">
+                            <Zap size={16} />
+                            Simulador de Salida
+                        </h3>
+                        <div className="space-y-4 relative z-10">
+                            <div>
+                                <label className="block text-xs text-slate-500 mb-1">Temperatura (°C)</label>
+                                <input
+                                    type="number"
+                                    value={inputTemp}
+                                    onChange={(e) => setInputTemp(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-red-500 transition-all shadow-inner"
+                                    placeholder="100"
+                                />
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                                <div className="h-px bg-slate-800 flex-1"></div>
+                                <div className="text-slate-600 text-xs font-bold">RESULTADO</div>
+                                <div className="h-px bg-slate-800 flex-1"></div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs text-slate-500 mb-1">
+                                    Salida ({safeCategory === 'rtd' ? 'Resistencia (Ω)' : 'Voltaje (mV)'})
+                                </label>
+                                <div className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold shadow-inner flex items-center justify-between">
+                                    <span>{outputVal || '-'}</span>
+                                    <span className="text-xs text-slate-600 font-normal">
+                                        {safeCategory === 'rtd' ? 'Ohms' : 'mV'}
+                                    </span>
+                                </div>
+                                <p className="text-[10px] text-slate-500 mt-1 text-right">
+                                    *Cálculo ideal (sin pérdidas)
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Type Selector */}
@@ -278,46 +320,8 @@ const TemperatureSensors = () => {
                                         Cabezal Ind.
                                     </button>
                                 </div>
-                                <p className="text-[10px] text-slate-500 mt-2 leading-tight">
-                                    {housing === 'connector'
-                                        ? 'Conector estándar (ANSI) para uso general y laboratorio.'
-                                        : 'Cabezal de conexión industrial para protección en campo.'}
-                                </p>
                             </div>
                         )}
-                    </div>
-
-                    {/* Calculator */}
-                    <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm">
-                        <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-4 border-b border-red-500/30 pb-2">
-                            Simulador de Salida
-                        </h3>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-xs text-slate-500 mb-1">Temperatura (°C)</label>
-                                <input
-                                    type="number"
-                                    value={inputTemp}
-                                    onChange={(e) => setInputTemp(e.target.value)}
-                                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-red-500 transition-all"
-                                    placeholder="100"
-                                />
-                            </div>
-                            <div className="flex items-center justify-center text-slate-600">
-                                <Zap size={24} className="fill-current" />
-                            </div>
-                            <div>
-                                <label className="block text-xs text-slate-500 mb-1">
-                                    Salida ({safeCategory === 'rtd' ? 'Resistencia (Ω)' : 'Voltaje (mV)'})
-                                </label>
-                                <div className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold">
-                                    {outputVal || '-'}
-                                </div>
-                                <p className="text-[10px] text-slate-500 mt-1 text-right">
-                                    *Cálculo aproximado ideal
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -391,27 +395,46 @@ const TemperatureSensors = () => {
                         </div>
                     </div>
 
-                    {/* Educational Note / Did You Know */}
+                    {/* Educational Note / Dynamic Info */}
                     <div className="bg-blue-500/10 p-6 rounded-2xl border border-blue-500/20 backdrop-blur-sm flex gap-4 items-start">
                         <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400 shrink-0">
                             <Info size={24} />
                         </div>
                         <div>
                             <h4 className="text-blue-400 font-bold mb-2 text-sm uppercase tracking-wider">
-                                {safeCategory === 'tc' ? '¿Sabías que?' : 'Configuración de Hilos'}
+                                {safeCategory === 'tc' ? 'Información de Conexión' : 'Configuración de Hilos'}
                             </h4>
+
                             {safeCategory === 'tc' ? (
-                                <p className="text-slate-300 text-sm leading-relaxed">
-                                    En la norma americana (ANSI), el conductor <strong>ROJO siempre es NEGATIVO (-)</strong>.
-                                    Esto es contrario a la convención electrónica estándar (donde rojo es positivo), lo que causa confusión frecuente en campo.
-                                    ¡Recuerda siempre verificar la norma del cable!
-                                </p>
+                                <div className="space-y-2">
+                                    <p className="text-slate-300 text-sm leading-relaxed">
+                                        {housing === 'connector'
+                                            ? <span><strong>Conector Estándar:</strong> Ideal para conexiones rápidas en laboratorio o ambientes controlados. Los pines están polarizados (ancho = negativo).</span>
+                                            : <span><strong>Cabezal Industrial:</strong> Protege las conexiones en ambientes agresivos. Permite el uso de transmisores de temperatura internos.</span>
+                                        }
+                                    </p>
+                                    <div className="mt-2 pt-2 border-t border-blue-500/20 text-xs text-slate-400">
+                                        <span className="text-red-400 font-bold">¡OJO!</span> En norma ANSI, el cable <strong className="text-red-400">ROJO es NEGATIVO (-)</strong>.
+                                    </div>
+                                </div>
                             ) : (
-                                <p className="text-slate-300 text-sm leading-relaxed">
-                                    <strong>2 Hilos:</strong> Menos preciso, la resistencia del cable se suma a la medición.<br />
-                                    <strong>3 Hilos:</strong> Estándar industrial. Un tercer hilo compensa la resistencia del cable.<br />
-                                    <strong>4 Hilos:</strong> Máxima precisión. Elimina totalmente el error por resistencia de cables.
-                                </p>
+                                <div className="space-y-2">
+                                    {wires === '2' && (
+                                        <p className="text-slate-300 text-sm leading-relaxed animate-in fade-in slide-in-from-left-2">
+                                            <strong>2 Hilos:</strong> Configuración más simple pero menos precisa. La resistencia de los cables se suma a la medición, causando errores en distancias largas.
+                                        </p>
+                                    )}
+                                    {wires === '3' && (
+                                        <p className="text-slate-300 text-sm leading-relaxed animate-in fade-in slide-in-from-left-2">
+                                            <strong>3 Hilos:</strong> Estándar industrial más común. Utiliza un tercer hilo para compensar la resistencia del cable, ofreciendo un buen balance entre precisión y costo.
+                                        </p>
+                                    )}
+                                    {wires === '4' && (
+                                        <p className="text-slate-300 text-sm leading-relaxed animate-in fade-in slide-in-from-left-2">
+                                            <strong>4 Hilos:</strong> Máxima precisión (Laboratorio). Elimina completamente el error por resistencia de cables inyectando corriente por dos hilos y midiendo voltaje por los otros dos.
+                                        </p>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>

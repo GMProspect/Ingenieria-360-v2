@@ -68,6 +68,7 @@ const Transmitter = () => {
     };
 
     // Auto-recalculate when range changes (if inputMa has value)
+    // Auto-recalculate when range changes (if inputMa has value)
     useEffect(() => {
         if (inputMa !== '') {
             const ma = parseFloat(inputMa);
@@ -79,7 +80,8 @@ const Transmitter = () => {
                 setInputPv(pv.toFixed(2));
             }
         }
-    }, [rangeLow, rangeHigh, inputMa]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [rangeLow, rangeHigh]);
 
     const getPercentage = () => {
         const ma = parseFloat(inputMa);
@@ -201,13 +203,57 @@ const Transmitter = () => {
                         </div>
                         <div>
                             <label className="block text-xs text-slate-500 mb-1">Unidad</label>
-                            <input
-                                type="text"
+                            <select
                                 value={unit}
                                 onChange={(e) => setUnit(e.target.value)}
-                                placeholder="PSI, °C..."
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
-                            />
+                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none appearance-none"
+                            >
+                                <optgroup label="Presión">
+                                    <option value="PSI">PSI</option>
+                                    <option value="Bar">Bar</option>
+                                    <option value="kPa">kPa</option>
+                                    <option value="MPa">MPa</option>
+                                    <option value="inH2O">inH2O</option>
+                                    <option value="mmHg">mmHg</option>
+                                    <option value="atm">atm</option>
+                                </optgroup>
+                                <optgroup label="Temperatura">
+                                    <option value="°C">°C</option>
+                                    <option value="°F">°F</option>
+                                    <option value="K">K</option>
+                                </optgroup>
+                                <optgroup label="Nivel / Distancia">
+                                    <option value="%">%</option>
+                                    <option value="m">Metros (m)</option>
+                                    <option value="cm">Centímetros (cm)</option>
+                                    <option value="mm">Milímetros (mm)</option>
+                                    <option value="ft">Pies (ft)</option>
+                                    <option value="in">Pulgadas (in)</option>
+                                </optgroup>
+                                <optgroup label="Flujo">
+                                    <option value="GPM">GPM</option>
+                                    <option value="L/min">L/min</option>
+                                    <option value="m³/h">m³/h</option>
+                                    <option value="CFM">CFM</option>
+                                </optgroup>
+                                <optgroup label="Peso">
+                                    <option value="kg">kg</option>
+                                    <option value="lb">lb</option>
+                                    <option value="g">g</option>
+                                </optgroup>
+                                <optgroup label="Eléctrico">
+                                    <option value="V">Voltios (V)</option>
+                                    <option value="mV">Milivoltios (mV)</option>
+                                    <option value="A">Amperios (A)</option>
+                                    <option value="mA">Miliamperios (mA)</option>
+                                    <option value="Hz">Hertz (Hz)</option>
+                                </optgroup>
+                                <optgroup label="Otros">
+                                    <option value="RPM">RPM</option>
+                                    <option value="pH">pH</option>
+                                    <option value="% HR">% Humedad</option>
+                                </optgroup>
+                            </select>
                         </div>
                     </div>
                     <div className="text-center text-xs text-slate-400">

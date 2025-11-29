@@ -494,7 +494,7 @@ const TemperatureSensors = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                             {/* Temperature Input */}
                             <div className="transition-opacity duration-300">
-                                <div className="flex justify-between items-center mb-1">
+                                <div className="flex justify-between items-center mb-1 h-7">
                                     <label className={`block text-xs font-bold ${mode === 'source' ? 'text-red-400' : 'text-slate-500'}`}>
                                         Temperatura
                                     </label>
@@ -527,9 +527,11 @@ const TemperatureSensors = () => {
 
                             {/* Output Input */}
                             <div className="transition-opacity duration-300">
-                                <label className={`block text-xs font-bold mb-1 ${mode === 'measure' ? 'text-green-400' : 'text-slate-500'}`}>
-                                    Salida ({safeCategory === 'rtd' ? 'Resistencia' : 'Voltaje'})
-                                </label>
+                                <div className="flex justify-between items-center mb-1 h-7">
+                                    <label className={`block text-xs font-bold ${mode === 'measure' ? 'text-green-400' : 'text-slate-500'}`}>
+                                        Salida ({safeCategory === 'rtd' ? 'Resistencia' : 'Voltaje'})
+                                    </label>
+                                </div>
                                 <div className="relative">
                                     <input
                                         type="number"

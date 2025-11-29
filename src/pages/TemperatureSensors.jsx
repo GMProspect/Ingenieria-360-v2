@@ -142,6 +142,8 @@ const TemperatureSensors = () => {
     const [type, setType] = useLocalStorage('temp_type', 'k', user?.id);
     const [wires, setWires] = useLocalStorage('temp_wires', '3', user?.id); // Default 3 wires for RTD
     const [housing, setHousing] = useLocalStorage('temp_housing', 'connector', user?.id); // 'connector' or 'head'
+    const [inputTemp, setInputTemp] = useState('');
+    const [tempUnit, setTempUnit] = useLocalStorage('temp_unit', 'C', user?.id); // 'C' or 'F'
     const [inputOutput, setInputOutput] = useState('');
 
     useEffect(() => {
@@ -168,14 +170,10 @@ const TemperatureSensors = () => {
 
         if (safeCategory === 'tc') {
             // Linear approximation inverse: T = V / Sensitivity
-            // Sensitivity is roughly constant in this simplified model
-            // We need to extract the factor from the calc function or use the sensitivity value
-            // Since calc is t => t * factor, factor = calc(1)
             const factor = sensor.calc(1);
             return (outVal / factor);
         } else {
             // RTD: Binary Search
-            // Range: -200 to 850
             let low = -200;
             let high = 850;
             let mid = 0;
@@ -196,24 +194,27 @@ const TemperatureSensors = () => {
         }
     };
 
-    // Handle Input Temp Change
-    const handleTempChange = (val) => {
-        setInputTemp(val);
-        if (val === '' || isNaN(parseFloat(val))) {
-            setInputOutput('');
-            return;
-        }
+    // Helper: Calculate Output from Temp (Pure)
+    const calculateOutput = (tVal, tUnit, cat, typ) => {
+        if (tVal === '' || isNaN(parseFloat(tVal))) return '';
 
-        let t = parseFloat(val);
+        let t = parseFloat(tVal);
         // Convert F to C for calculation
-        if (tempUnit === 'F') {
+        if (tUnit === 'F') {
             t = (t - 32) * 5 / 9;
         }
 
-        const sensor = sensorData[safeCategory]?.types[safeType];
+        const sensor = sensorData[cat]?.types[typ];
         if (sensor && sensor.calc) {
-            setInputOutput(sensor.calc(t).toFixed(3));
+            return sensor.calc(t).toFixed(3);
         }
+        return '';
+    };
+
+    // Handle Input Temp Change
+    const handleTempChange = (val) => {
+        setInputTemp(val);
+        setInputOutput(calculateOutput(val, tempUnit, safeCategory, safeType));
     };
 
     // Handle Input Output Change
@@ -235,13 +236,9 @@ const TemperatureSensors = () => {
         setInputTemp(t.toFixed(2));
     };
 
-    // Recalculate when type/category/unit changes (keeping Temp as master)
+    // Recalculate Output when type/category/unit changes
     useEffect(() => {
-        if (inputTemp !== '') {
-            handleTempChange(inputTemp);
-        } else {
-            setInputOutput('');
-        }
+        setInputOutput(calculateOutput(inputTemp, tempUnit, safeCategory, safeType));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [category, type, tempUnit]);
 

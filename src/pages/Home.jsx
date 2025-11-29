@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     Activity,
@@ -90,7 +91,7 @@ const Home = () => {
                 <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-4 tracking-tight">
                     Ingeniería 360
                 </h1>
-                <p className="text-xl text-slate-600 max-w-2xl mx-auto font-light tracking-wide">
+                <p className="text-xl text-slate-400 max-w-2xl mx-auto font-light tracking-wide">
                     La Super App para especialistas de campo. Instrumentación, Mecánica, Electricidad y Control.
                 </p>
             </div>
@@ -100,38 +101,40 @@ const Home = () => {
                 {categories.map((category, index) => (
                     <div
                         key={index}
-                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border border-slate-200 flex flex-col"
+                        className="bg-slate-900/40 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 p-6 border border-white/5 flex flex-col group hover:-translate-y-1"
                     >
                         <div className="flex items-center mb-4">
                             <div
-                                className={`p-3 rounded-full bg-${category.color}-100 text-${category.color}-600 mr-4`}
+                                className={`p-3 rounded-xl bg-${category.color}-500/10 text-${category.color}-400 mr-4 ring-1 ring-${category.color}-500/20 group-hover:bg-${category.color}-500/20 transition-colors`}
                             >
-                                <category.icon size={24} strokeWidth={1.5} />
+                                <category.icon size={28} strokeWidth={1.5} />
                             </div>
-                            <h2 className="text-2xl font-semibold text-slate-800">
+                            <h2 className="text-2xl font-bold text-white tracking-tight">
                                 {category.title}
                             </h2>
                         </div>
-                        <p className="text-slate-600 mb-6 flex-grow">
+                        <p className="text-slate-400 mb-6 flex-grow leading-relaxed font-light">
                             {category.description}
                         </p>
-                        <div className="space-y-3">
+                        <div className="space-y-3 border-t border-white/5 pt-4">
                             {category.links.map((link, linkIndex) => (
-                                <a
+                                <Link
                                     key={linkIndex}
-                                    href={link.to}
-                                    className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group"
+                                    to={link.to}
+                                    className="flex items-center text-slate-300 hover:text-cyan-400 transition-colors group/link py-1"
                                 >
-                                    <span className="mr-2 text-blue-400 group-hover:text-blue-600 transition-colors">
-                                        &rarr;
+                                    <span className="mr-3 text-slate-600 group-hover/link:text-cyan-500 transition-colors text-sm">
+                                        ▶
                                     </span>
-                                    {link.label}
+                                    <span className="font-medium">
+                                        {link.label}
+                                    </span>
                                     {link.isNew && (
-                                        <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                        <span className="ml-auto px-2 py-0.5 bg-cyan-500/10 text-cyan-400 text-[10px] font-bold uppercase tracking-wider rounded-full border border-cyan-500/20 shadow-[0_0_10px_rgba(34,211,238,0.2)]">
                                             Nuevo
                                         </span>
                                     )}
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -139,38 +142,41 @@ const Home = () => {
             </div>
 
             {/* Feedback Section */}
-            <div className="bg-blue-50 rounded-xl p-8 text-center shadow-inner border border-blue-200">
-                <h2 className="text-3xl font-bold text-blue-800 mb-4">
-                    ¿Tienes una idea o necesitas una herramienta?
+            <div className="bg-slate-900/40 rounded-2xl p-8 text-center shadow-lg border border-white/5 backdrop-blur-sm relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none" />
+                <h2 className="text-3xl font-bold text-white mb-4 relative z-10">
+                    ¿Tienes una idea o necesitas una herramienta? 💡
                 </h2>
-                <p className="text-blue-700 mb-6 max-w-2xl mx-auto">
-                    Estamos construyendo la Super App para ti. Cuéntanos qué te gustaría ver o qué problema te gustaría resolver.
+                <p className="text-slate-400 mb-8 max-w-2xl mx-auto relative z-10">
+                    Estamos construyendo la Super App para ti. Cuéntanos qué te gustaría ver.
                 </p>
-                <FeedbackForm />
+                <div className="relative z-10">
+                    <FeedbackForm />
+                </div>
             </div>
 
             {/* Footer */}
-            <div className="mt-16 text-center text-slate-500 text-sm">
+            <div className="mt-16 text-center text-slate-600 text-sm font-mono">
                 <p className="mb-2">
                     Hecho con ❤️ por
                     <a
                         href="https://www.linkedin.com/in/felipe-andres-ruiz-perez/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 transition-colors ml-1"
+                        className="text-cyan-600 hover:text-cyan-400 transition-colors ml-1"
                     >
                         Felipe Ruiz
                     </a>
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                    <a href="/privacy-policy" className="hover:text-blue-600 transition-colors">
+                    <Link to="/privacy-policy" className="hover:text-cyan-400 transition-colors">
                         Política de Privacidad
-                    </a>
-                    <span className="text-slate-300">•</span>
-                    <a href="/terms-of-service" className="hover:text-blue-600 transition-colors">
+                    </Link>
+                    <span className="text-slate-700">•</span>
+                    <Link to="/terms-of-service" className="hover:text-cyan-400 transition-colors">
                         Términos de Servicio
-                    </a>
-                    <span className="text-slate-300">•</span>
+                    </Link>
+                    <span className="text-slate-700">•</span>
                     <span>v2.1.0 (Super App Beta)</span>
                 </div >
             </div >

@@ -159,7 +159,7 @@ const Vibration = () => {
                         <div className="space-y-6">
                             <div>
                                 <label className="block text-slate-400 mb-2 text-sm">Voltaje DC (V)</label>
-                                <div className={`relative rounded-xl border-2 transition-colors ${alertStatus?.type === 'danger' ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : alertStatus?.type === 'warning' ? 'border-yellow-500' : alertStatus?.type === 'success' ? 'border-emerald-500' : 'border-cyan-500'}`}>
+                                <div className={`relative rounded-xl border-2 transition-colors ${alertStatus?.type === 'danger' ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : alertStatus?.type === 'warning' ? 'border-yellow-500' : alertStatus?.type === 'success' ? 'border-emerald-500' : 'border-purple-500'}`}>
                                     <input
                                         type="number"
                                         value={voltage}

@@ -157,10 +157,10 @@ const Home = () => {
             <div className="bg-slate-900/40 rounded-2xl p-8 text-center shadow-lg border border-white/5 backdrop-blur-sm relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none" />
                 <h2 className="text-3xl font-bold text-white mb-4 relative z-10">
-                    ¿Tienes una idea o necesitas una herramienta? 💡
+                    ¿Qué herramienta te falta en campo? 👷‍♂️
                 </h2>
                 <p className="text-slate-400 mb-8 max-w-2xl mx-auto relative z-10">
-                    Estamos construyendo la Super App para ti. Cuéntanos qué te gustaría ver.
+                    Ayúdanos a mejorar. ¿Necesitas tablas de cables para termopares? ¿Cálculos de luminarias? ¿Separar señales analógicas/digitales? Cuéntanos qué necesitas en tu día a día y lo agregaremos.
                 </p>
                 <div className="relative z-10">
                     <FeedbackForm />

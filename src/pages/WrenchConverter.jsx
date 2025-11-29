@@ -108,9 +108,6 @@ const WrenchConverter = () => {
                 </div>
             </div>
 
-            {/* AdSense Banner */}
-            <AdBanner dataAdSlot="1234567890" />
-
             <div className="mt-8 max-w-4xl mx-auto p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">
                 <div className="text-cyan-400 shrink-0 mt-0.5">
                     <Info size={20} />
@@ -127,6 +124,9 @@ const WrenchConverter = () => {
                     </ul>
                 </div>
             </div>
+
+            {/* AdSense Banner (Moved to very bottom) */}
+            <AdBanner dataAdSlot="1234567890" />
 
             <div className="mt-8 text-center text-slate-500 text-sm max-w-2xl mx-auto">
                 <p className="mb-2">Tabla unificada de referencia para taller mecánico.</p>

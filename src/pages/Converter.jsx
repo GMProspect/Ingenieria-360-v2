@@ -256,24 +256,6 @@ const Converter = () => {
                     </div>
                 </div>
 
-                {/* AdSense Banner */}
-                <AdBanner dataAdSlot="1234567890" />
-
-                {/* Info Box (Moved to bottom) */}
-                <div className="mb-8 p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-start gap-3">
-                    <Info className="text-green-400 shrink-0 mt-0.5" size={20} />
-                    <div className="text-sm text-green-200 space-y-2">
-                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
-                        <p>
-                            Herramienta multipropósito para convertir unidades físicas comunes en ingeniería.
-                        </p>
-                        <ul className="list-disc list-inside space-y-1 text-green-300/90">
-                            <li><strong>Categorías:</strong> Selecciona arriba el tipo de magnitud (Presión, Temperatura, etc.).</li>
-                            <li><strong>Bidireccional:</strong> Escribe en cualquier lado o usa el botón de intercambio.</li>
-                        </ul>
-                    </div>
-                </div>
-
                 <SaveCalculationSection
                     label={label}
                     setLabel={setLabel}
@@ -283,6 +265,9 @@ const Converter = () => {
                     onClear={clearAll}
                     saving={saving}
                 />
+
+                {/* AdSense Banner (Moved to very bottom) */}
+                <AdBanner dataAdSlot="1234567890" />
 
             </div>
         </div>

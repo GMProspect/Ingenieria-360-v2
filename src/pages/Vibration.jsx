@@ -170,7 +170,22 @@ const Vibration = () => {
                             <div>
                                 <label className="block text-slate-400 mb-2 text-sm">GAP ({unit})</label>
                                 <div className="bg-slate-800/50 rounded-xl border border-slate-700 px-4 py-3 text-center">
-                                    <span className="text-2xl font-bold text-white">{distance.toFixed(2)}</span>
+                                    <input
+                                        type="number"
+                                        value={distance.toFixed(2)}
+                                        onChange={(e) => {
+                                            const d = parseFloat(e.target.value);
+                                            const s = parseFloat(sensitivity);
+                                            if (!isNaN(d) && !isNaN(s) && s !== 0) {
+                                                // V = (D * S) / 1000
+                                                // Maintain negative sign convention for proximity probes
+                                                const v = (d * s) / 1000;
+                                                setVoltage((-Math.abs(v)).toFixed(2));
+                                            }
+                                        }}
+                                        className="w-full bg-transparent text-2xl font-bold text-white text-center outline-none"
+                                        step="0.01"
+                                    />
                                 </div>
                             </div>
                         </div>

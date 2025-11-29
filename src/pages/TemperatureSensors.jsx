@@ -142,9 +142,7 @@ const TemperatureSensors = () => {
     const [type, setType] = useLocalStorage('temp_type', 'k', user?.id);
     const [wires, setWires] = useLocalStorage('temp_wires', '3', user?.id); // Default 3 wires for RTD
     const [housing, setHousing] = useLocalStorage('temp_housing', 'connector', user?.id); // 'connector' or 'head'
-    const [inputTemp, setInputTemp] = useState('');
-
-    const [tempUnit, setTempUnit] = useLocalStorage('temp_unit', 'C', user?.id); // 'C' or 'F'
+    const [inputOutput, setInputOutput] = useState('');
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -163,12 +161,50 @@ const TemperatureSensors = () => {
         if (type !== safeType) setType(safeType);
     }, [category, safeCategory, type, safeType, setCategory, setType]);
 
-    const outputVal = React.useMemo(() => {
-        if (inputTemp === '' || isNaN(parseFloat(inputTemp))) {
-            return '';
-        }
-        let t = parseFloat(inputTemp);
+    // Helper: Solve Temperature from Output (Binary Search for RTD, Linear for TC)
+    const solveTemp = (outVal) => {
+        const sensor = sensorData[safeCategory]?.types[safeType];
+        if (!sensor || !sensor.calc) return '';
 
+        if (safeCategory === 'tc') {
+            // Linear approximation inverse: T = V / Sensitivity
+            // Sensitivity is roughly constant in this simplified model
+            // We need to extract the factor from the calc function or use the sensitivity value
+            // Since calc is t => t * factor, factor = calc(1)
+            const factor = sensor.calc(1);
+            return (outVal / factor);
+        } else {
+            // RTD: Binary Search
+            // Range: -200 to 850
+            let low = -200;
+            let high = 850;
+            let mid = 0;
+            let calcR = 0;
+
+            // Optimization: Check bounds first
+            if (outVal < sensor.calc(low)) return low;
+            if (outVal > sensor.calc(high)) return high;
+
+            for (let i = 0; i < 20; i++) { // 20 iterations is enough for high precision
+                mid = (low + high) / 2;
+                calcR = sensor.calc(mid);
+                if (Math.abs(calcR - outVal) < 0.001) return mid;
+                if (calcR < outVal) low = mid;
+                else high = mid;
+            }
+            return mid;
+        }
+    };
+
+    // Handle Input Temp Change
+    const handleTempChange = (val) => {
+        setInputTemp(val);
+        if (val === '' || isNaN(parseFloat(val))) {
+            setInputOutput('');
+            return;
+        }
+
+        let t = parseFloat(val);
         // Convert F to C for calculation
         if (tempUnit === 'F') {
             t = (t - 32) * 5 / 9;
@@ -176,10 +212,36 @@ const TemperatureSensors = () => {
 
         const sensor = sensorData[safeCategory]?.types[safeType];
         if (sensor && sensor.calc) {
-            return sensor.calc(t).toFixed(3);
+            setInputOutput(sensor.calc(t).toFixed(3));
         }
-        return '';
-    }, [inputTemp, safeCategory, safeType, tempUnit]);
+    };
+
+    // Handle Input Output Change
+    const handleOutputChange = (val) => {
+        setInputOutput(val);
+        if (val === '' || isNaN(parseFloat(val))) {
+            setInputTemp('');
+            return;
+        }
+
+        const out = parseFloat(val);
+        let t = solveTemp(out);
+
+        // Convert C to F for display if needed
+        if (tempUnit === 'F') {
+            t = (t * 9 / 5) + 32;
+        }
+
+        setInputTemp(t.toFixed(2));
+    };
+
+    // Recalculate when type/category/unit changes (keeping Temp as master)
+    useEffect(() => {
+        if (inputTemp !== '') {
+            handleTempChange(inputTemp);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [category, type, tempUnit]);
 
     const currentSensor = sensorData[safeCategory].types[safeType];
 
@@ -332,7 +394,7 @@ const TemperatureSensors = () => {
                                 <input
                                     type="number"
                                     value={inputTemp}
-                                    onChange={(e) => setInputTemp(e.target.value)}
+                                    onChange={(e) => handleTempChange(e.target.value)}
                                     className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-red-500 transition-all shadow-inner"
                                     placeholder={`Ej: ${tempUnit === 'C' ? '100' : '212'}`}
                                 />
@@ -342,11 +404,17 @@ const TemperatureSensors = () => {
                                 <label className="block text-xs text-slate-500 mb-1">
                                     Salida Esperada ({safeCategory === 'rtd' ? 'Resistencia' : 'Voltaje'})
                                 </label>
-                                <div className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold shadow-inner flex items-center justify-between overflow-hidden">
-                                    <span className="truncate mr-2">{outputVal || '-'}</span>
-                                    <span className="text-xs text-slate-600 font-normal shrink-0">
+                                <div className="relative">
+                                    <input
+                                        type="number"
+                                        value={inputOutput}
+                                        onChange={(e) => handleOutputChange(e.target.value)}
+                                        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-red-400 font-mono text-xl font-bold outline-none focus:border-red-500 transition-all shadow-inner"
+                                        placeholder="-"
+                                    />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-600 font-normal pointer-events-none">
                                         {safeCategory === 'rtd' ? 'Ω' : 'mV'}
-                                    </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

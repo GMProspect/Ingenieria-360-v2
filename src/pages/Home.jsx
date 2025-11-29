@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Database, Zap, Activity, Gauge, RefreshCw, Wrench, Thermometer } from 'lucide-react';
 import HomeCraneIcon from '../components/HomeCraneIcon';
 import FeedbackForm from '../components/FeedbackForm';
 
 const Home = () => {
+    // Scroll to top on mount
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const tools = [
         { path: '/inventory', name: 'Inventario', icon: Database, desc: 'Gestión de activos y especificaciones dinámicas.', color: 'text-blue-400', bg: 'bg-blue-500/10', hover: 'group-hover:text-blue-300', border: 'hover:border-blue-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(59,130,246,0.1)]' },
         { path: '/ohms-law', name: 'Ley de Ohm', icon: Zap, desc: 'Cálculo de V, I, R con interfaz triangular.', color: 'text-yellow-400', bg: 'bg-yellow-500/10', hover: 'group-hover:text-yellow-300', border: 'hover:border-yellow-500/50', shadow: 'hover:shadow-[0_0_30px_rgba(234,179,8,0.1)]' },

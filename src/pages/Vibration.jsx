@@ -14,6 +14,11 @@ const Vibration = () => {
     const [sensitivity, setSensitivity] = useLocalStorage('vib_sens', '200', user?.id); // mV/mil or mV/um
     const [unit, setUnit] = useLocalStorage('vib_unit', 'mils', user?.id); // mils or um
 
+    // Scroll to top on mount
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const [label, setLabel] = useState('');
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);

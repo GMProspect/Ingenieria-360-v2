@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { History as HistoryIcon, Trash2, Search } from 'lucide-react';
 import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
-import BackButton from '../components/BackButton';
 
 const History = () => {
     const { user } = useAuth();
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+
+    // Scroll to top on mount
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     useEffect(() => {
         const fetchHistory = async () => {

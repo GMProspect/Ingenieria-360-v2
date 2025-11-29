@@ -114,12 +114,16 @@ const Vibration = () => {
                 {/* Info Box */}
                 <div className="mb-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-start gap-3">
                     <Info className="text-blue-400 shrink-0 mt-0.5" size={20} />
-                    <div className="text-sm text-blue-200">
-                        <p className="font-bold mb-1">API 670 Standard</p>
+                    <div className="text-sm text-blue-200 space-y-2">
+                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
                         <p>
-                            Para sondas típicas de 5mm/8mm, la sensibilidad estándar es <strong>200 mV/mil</strong> (7.87 mV/µm).
-                            El rango lineal suele ser de 10 a 90 mils (aprox -2V a -18V).
+                            Esta herramienta simula la curva de calibración de un sistema de <strong>Sonda de Proximidad</strong> (como Bently Nevada 3300 XL).
                         </p>
+                        <ul className="list-disc list-inside space-y-1 text-blue-300/90">
+                            <li><strong>API 670:</strong> Estándar mundial para protección de maquinaria (Turbinas, Compresores).</li>
+                            <li><strong>TK3:</strong> Instrumento físico usado para verificar esta curva en campo.</li>
+                            <li><strong>Objetivo:</strong> Verificar que la sonda mida la distancia correcta (GAP) al eje basándose en el voltaje DC.</li>
+                        </ul>
                     </div>
                 </div>
 

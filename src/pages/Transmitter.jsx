@@ -170,22 +170,6 @@ const Transmitter = () => {
 
             <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl max-w-3xl mx-auto">
 
-                {/* Info Box */}
-                <div className="mb-8 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-start gap-3">
-                    <Info className="text-cyan-400 shrink-0 mt-0.5" size={20} />
-                    <div className="text-sm text-cyan-200 space-y-2">
-                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
-                        <p>
-                            Esta herramienta convierte señales de instrumentación estándar (4-20mA) a valores de proceso (PV) y viceversa.
-                        </p>
-                        <ul className="list-disc list-inside space-y-1 text-cyan-300/90">
-                            <li><strong>4-20mA:</strong> Estándar industrial para transmisión de señales analógicas.</li>
-                            <li><strong>PV (Process Variable):</strong> Valor físico real (Presión, Temperatura, Nivel, etc.).</li>
-                            <li><strong>Span:</strong> La diferencia entre el valor máximo y mínimo del rango calibrado.</li>
-                        </ul>
-                    </div>
-                </div>
-
                 {/* 1. Calibration Section */}
                 <div className="mb-8">
                     <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
@@ -307,14 +291,30 @@ const Transmitter = () => {
                                     const { pv, ma } = calculateCheckpoint(pct);
                                     return (
                                         <tr key={pct} className="hover:bg-slate-900/50 transition-colors">
-                                            <td className="py-3 px-6 text-purple-400 font-bold">● {pct}%</td>
-                                            <td className="py-3 px-6 text-right text-white font-mono">{pv}</td>
-                                            <td className="py-3 px-6 text-right text-cyan-400 font-mono">{ma} mA</td>
+                                            <td className="py-3 px-6 text-purple-400 font-bold text-center">● {pct}%</td>
+                                            <td className="py-3 px-6 text-center text-white font-mono">{pv}</td>
+                                            <td className="py-3 px-6 text-center text-cyan-400 font-mono">{ma} mA</td>
                                         </tr>
                                     );
                                 })}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                {/* Info Box (Moved to bottom) */}
+                <div className="mb-8 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-start gap-3">
+                    <Info className="text-cyan-400 shrink-0 mt-0.5" size={20} />
+                    <div className="text-sm text-cyan-200 space-y-2">
+                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
+                        <p>
+                            Esta herramienta convierte señales de instrumentación estándar (4-20mA) a valores de proceso (PV) y viceversa.
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-cyan-300/90">
+                            <li><strong>4-20mA:</strong> Estándar industrial para transmisión de señales analógicas.</li>
+                            <li><strong>PV (Process Variable):</strong> Valor físico real (Presión, Temperatura, Nivel, etc.).</li>
+                            <li><strong>Span:</strong> La diferencia entre el valor máximo y mínimo del rango calibrado.</li>
+                        </ul>
                     </div>
                 </div>
 

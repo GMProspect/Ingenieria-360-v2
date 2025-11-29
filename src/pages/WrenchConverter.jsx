@@ -38,24 +38,6 @@ const WrenchConverter = () => {
 
             <div className="bg-slate-900/90 rounded-3xl border border-white/10 p-1 md:p-8 relative overflow-hidden shadow-2xl min-h-[800px] flex justify-center">
 
-                {/* Info Box (Overlay on top for desktop, stacked for mobile) */}
-                <div className="absolute top-4 left-4 right-4 z-20 md:relative md:top-0 md:left-0 md:right-0 md:mb-8 p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">
-                    <div className="text-cyan-400 shrink-0 mt-0.5">
-                        <Wrench size={20} />
-                    </div>
-                    <div className="text-sm text-slate-200 space-y-2">
-                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
-                        <p>
-                            Esta tabla unificada te ayuda a encontrar la llave correcta para cada tuerca métrica.
-                        </p>
-                        <ul className="list-disc list-inside space-y-1 text-slate-400">
-                            <li><strong>Tuerca (M):</strong> Diámetro nominal de la rosca (ej: M6, M8).</li>
-                            <li><strong>Llave (mm):</strong> Medida exacta de la llave métrica necesaria.</li>
-                            <li><strong>Llave ("):</strong> Equivalente más cercano en pulgadas (útil si no tienes llaves métricas).</li>
-                        </ul>
-                    </div>
-                </div>
-
                 {/* Background Texture */}
                 <div className="absolute inset-0 opacity-5 pointer-events-none"
                     style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
@@ -123,6 +105,23 @@ const WrenchConverter = () => {
                         ))}
                     </div>
 
+                </div>
+            </div>
+
+            <div className="mt-8 max-w-4xl mx-auto p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">
+                <div className="text-cyan-400 shrink-0 mt-0.5">
+                    <Info size={20} />
+                </div>
+                <div className="text-sm text-slate-200 space-y-2">
+                    <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
+                    <p>
+                        Esta tabla unificada te ayuda a encontrar la llave correcta para cada tuerca métrica.
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 text-slate-400">
+                        <li><strong>Tuerca (M):</strong> Diámetro nominal de la rosca (ej: M6, M8).</li>
+                        <li><strong>Llave (mm):</strong> Medida exacta de la llave métrica necesaria.</li>
+                        <li><strong>Llave ("):</strong> Equivalente más cercano en pulgadas (útil si no tienes llaves métricas).</li>
+                    </ul>
                 </div>
             </div>
 

@@ -138,21 +138,6 @@ const OhmsLaw = () => {
 
             <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
 
-                {/* Info Box */}
-                <div className="mb-8 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-start gap-3">
-                    <Info className="text-yellow-400 shrink-0 mt-0.5" size={20} />
-                    <div className="text-sm text-yellow-200 space-y-2">
-                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
-                        <p>
-                            Esta herramienta calcula automáticamente la relación entre Voltaje (V), Corriente (I) y Resistencia (R).
-                        </p>
-                        <ul className="list-disc list-inside space-y-1 text-yellow-300/90">
-                            <li><strong>V = I × R:</strong> Voltaje (Voltios) es igual a Corriente por Resistencia.</li>
-                            <li><strong>Triángulo:</strong> Tapa la variable que quieres calcular y verás la fórmula con las otras dos.</li>
-                        </ul>
-                    </div>
-                </div>
-
                 {/* Triangle Container - Exact dimensions from original project (440x380) */}
                 <div className="relative w-full max-w-[440px] mx-auto h-[300px] md:h-[380px] mb-12 flex justify-center items-center overflow-hidden">
 
@@ -221,6 +206,21 @@ const OhmsLaw = () => {
 
                 {/* AdSense Banner */}
                 <AdBanner dataAdSlot="1234567890" />
+
+                {/* Info Box (Moved to bottom) */}
+                <div className="mb-8 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-start gap-3">
+                    <Info className="text-yellow-400 shrink-0 mt-0.5" size={20} />
+                    <div className="text-sm text-yellow-200 space-y-2">
+                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
+                        <p>
+                            Esta herramienta calcula automáticamente la relación entre Voltaje (V), Corriente (I) y Resistencia (R).
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-yellow-300/90">
+                            <li><strong>V = I × R:</strong> Voltaje (Voltios) es igual a Corriente por Resistencia.</li>
+                            <li><strong>Triángulo:</strong> Tapa la variable que quieres calcular y verás la fórmula con las otras dos.</li>
+                        </ul>
+                    </div>
+                </div>
 
                 <SaveCalculationSection
                     label={label}

@@ -54,6 +54,7 @@ const Home = () => {
             color: 'yellow',
             links: [
                 { to: '/ohms-law', label: 'Ley de Ohm / Potencia', icon: Zap, color: 'text-yellow-400' },
+                { to: '#', label: 'Próximamente: Megóhmetro (Aislamiento)', icon: Activity, color: 'text-slate-500' },
             ]
         },
         {

@@ -144,6 +144,8 @@ const TemperatureSensors = () => {
     const [housing, setHousing] = useLocalStorage('temp_housing', 'connector', user?.id); // 'connector' or 'head'
     const [inputTemp, setInputTemp] = useState('');
 
+    const [tempUnit, setTempUnit] = useLocalStorage('temp_unit', 'C', user?.id); // 'C' or 'F'
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -165,13 +167,19 @@ const TemperatureSensors = () => {
         if (inputTemp === '' || isNaN(parseFloat(inputTemp))) {
             return '';
         }
-        const t = parseFloat(inputTemp);
+        let t = parseFloat(inputTemp);
+
+        // Convert F to C for calculation
+        if (tempUnit === 'F') {
+            t = (t - 32) * 5 / 9;
+        }
+
         const sensor = sensorData[safeCategory]?.types[safeType];
         if (sensor && sensor.calc) {
             return sensor.calc(t).toFixed(3);
         }
         return '';
-    }, [inputTemp, safeCategory, safeType]);
+    }, [inputTemp, safeCategory, safeType, tempUnit]);
 
     const currentSensor = sensorData[safeCategory].types[safeType];
 
@@ -304,13 +312,29 @@ const TemperatureSensors = () => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                             <div>
-                                <label className="block text-xs text-slate-500 mb-1">Temperatura de Entrada (°C)</label>
+                                <div className="flex justify-between items-center mb-1">
+                                    <label className="block text-xs text-slate-500">Temperatura de Entrada</label>
+                                    <div className="flex bg-slate-800 rounded-lg p-0.5">
+                                        <button
+                                            onClick={() => setTempUnit('C')}
+                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'C' ? 'bg-red-500 text-white' : 'text-slate-400 hover:text-white'}`}
+                                        >
+                                            °C
+                                        </button>
+                                        <button
+                                            onClick={() => setTempUnit('F')}
+                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'F' ? 'bg-red-500 text-white' : 'text-slate-400 hover:text-white'}`}
+                                        >
+                                            °F
+                                        </button>
+                                    </div>
+                                </div>
                                 <input
                                     type="number"
                                     value={inputTemp}
                                     onChange={(e) => setInputTemp(e.target.value)}
                                     className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-red-500 transition-all shadow-inner"
-                                    placeholder="Ej: 100"
+                                    placeholder={`Ej: ${tempUnit === 'C' ? '100' : '212'}`}
                                 />
                             </div>
 

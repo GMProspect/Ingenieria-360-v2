@@ -234,7 +234,7 @@ const ReferenceTableModal = ({ isOpen, onClose, sensor, category }) => {
 
 const TemperatureSensors = () => {
     const { user } = useAuth();
-    const [mode, setMode] = useState('source'); // 'source' (Input Temp -> Output Res/mV) or 'measure' (Input Res/mV -> Output Temp)
+    // Removed 'mode' state - now automatic
     const [category, setCategory] = useLocalStorage('temp_cat', 'tc', user?.id);
     const [type, setType] = useLocalStorage('temp_type', 'k', user?.id);
     const [wires, setWires] = useLocalStorage('temp_wires', '3', user?.id); // Default 3 wires for RTD
@@ -312,6 +312,7 @@ const TemperatureSensors = () => {
     // Handle Input Temp Change (Source Mode)
     const handleTempChange = (val) => {
         setInputTemp(val);
+        // Automatically calculate output
         setInputOutput(calculateOutput(val, tempUnit, safeCategory, safeType));
     };
 
@@ -319,7 +320,10 @@ const TemperatureSensors = () => {
     const handleOutputChange = (val) => {
         setInputOutput(val);
         if (val === '' || isNaN(parseFloat(val))) {
-            setInputTemp('');
+            setInputTemp(''); // Clear temp if output is invalid, but don't clear if it's just partial typing
+            // Actually, if it's empty string, clear temp. If it's partial number like "-", keep temp as is or clear?
+            // Safer to clear temp if invalid number
+            if (val === '') setInputTemp('');
             return;
         }
 
@@ -327,6 +331,8 @@ const TemperatureSensors = () => {
         let t = solveTemp(out);
 
         if (t === '' || typeof t !== 'number' || isNaN(t)) {
+            // If solveTemp fails (out of range), maybe show nothing or keep previous?
+            // Let's show nothing to indicate invalid range
             setInputTemp('');
             return;
         }
@@ -339,27 +345,12 @@ const TemperatureSensors = () => {
         setInputTemp(t.toFixed(2));
     };
 
-    // Recalculate Output when type/category/unit changes (Only in Source Mode)
+    // Recalculate Output when type/category/unit changes (Preserve Input Temp)
     useEffect(() => {
-        if (mode === 'source') {
-            setInputOutput(calculateOutput(inputTemp, tempUnit, safeCategory, safeType));
-        } else {
-            // In measure mode, if unit changes, we need to update the displayed temp
-            if (inputOutput) {
-                const out = parseFloat(inputOutput);
-                if (!isNaN(out)) {
-                    let t = solveTemp(out);
-                    if (t !== '' && typeof t === 'number' && !isNaN(t)) {
-                        if (tempUnit === 'F') t = (t * 9 / 5) + 32;
-                        setInputTemp(t.toFixed(2));
-                    } else {
-                        setInputTemp('');
-                    }
-                }
-            }
-        }
+        // When settings change, we assume the user wants to keep the Temperature and see the new Output
+        setInputOutput(calculateOutput(inputTemp, tempUnit, safeCategory, safeType));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [category, type, tempUnit, mode]);
+    }, [category, type, tempUnit]);
 
     const currentSensor = sensorData[safeCategory].types[safeType];
 
@@ -484,53 +475,36 @@ const TemperatureSensors = () => {
                     {/* Simulator (Top Right) */}
                     <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-lg relative group order-1">
                         <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-                            <div className={`absolute inset-0 bg-gradient-to-br ${mode === 'source' ? 'from-red-500/5' : 'from-green-500/5'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}></div>
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
 
                         <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 relative z-10">
-                            <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${mode === 'source' ? 'text-red-400' : 'text-green-400'}`}>
+                            <h3 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 text-blue-400">
                                 <Zap size={16} />
-                                {mode === 'source' ? 'Modo Fuente (Simular)' : 'Modo Medición (Leer)'}
+                                Conversor Bidireccional
                             </h3>
-
-                            {/* Mode Toggle */}
-                            <div className="flex bg-slate-950 rounded-lg p-1 border border-slate-800">
-                                <button
-                                    onClick={() => setMode('source')}
-                                    className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${mode === 'source'
-                                        ? 'bg-red-500 text-white shadow-lg'
-                                        : 'text-slate-500 hover:text-slate-300'}`}
-                                >
-                                    Simular (Source)
-                                </button>
-                                <button
-                                    onClick={() => setMode('measure')}
-                                    className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${mode === 'measure'
-                                        ? 'bg-green-500 text-white shadow-lg'
-                                        : 'text-slate-500 hover:text-slate-300'}`}
-                                >
-                                    Medir (Measure)
-                                </button>
+                            <div className="text-[10px] text-slate-500 font-mono bg-slate-950 px-2 py-1 rounded border border-slate-800">
+                                AUTO-DETECT
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                             {/* Temperature Input */}
-                            <div className={`transition-opacity duration-300 ${mode === 'measure' ? 'opacity-100' : 'opacity-100'}`}>
+                            <div className="transition-opacity duration-300">
                                 <div className="flex justify-between items-center mb-1">
-                                    <label className={`block text-xs font-bold ${mode === 'source' ? 'text-red-400' : 'text-slate-500'}`}>
-                                        {mode === 'source' ? 'Temperatura a Simular' : 'Temperatura Leída'}
+                                    <label className="block text-xs font-bold text-slate-400">
+                                        Temperatura
                                     </label>
                                     <div className="flex bg-slate-800 rounded-lg p-0.5">
                                         <button
                                             onClick={() => setTempUnit('C')}
-                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'C' ? (mode === 'source' ? 'bg-red-500 text-white' : 'bg-green-500 text-white') : 'text-slate-400 hover:text-white'}`}
+                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'C' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white'}`}
                                         >
                                             °C
                                         </button>
                                         <button
                                             onClick={() => setTempUnit('F')}
-                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'F' ? (mode === 'source' ? 'bg-red-500 text-white' : 'bg-green-500 text-white') : 'text-slate-400 hover:text-white'}`}
+                                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${tempUnit === 'F' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white'}`}
                                         >
                                             °F
                                         </button>
@@ -540,31 +514,23 @@ const TemperatureSensors = () => {
                                     type="number"
                                     value={inputTemp}
                                     onChange={(e) => handleTempChange(e.target.value)}
-                                    disabled={mode === 'measure'}
-                                    className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-lg outline-none transition-all shadow-inner ${mode === 'source'
-                                        ? 'border-slate-700 text-white focus:border-red-500'
-                                        : 'border-transparent text-green-400 font-bold bg-slate-900/50 cursor-not-allowed'
-                                        }`}
-                                    placeholder={mode === 'source' ? `Ej: ${tempUnit === 'C' ? '100' : '212'}` : 'Calculando...'}
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 font-mono text-lg text-white outline-none focus:border-blue-500 transition-all shadow-inner"
+                                    placeholder={`Ej: ${tempUnit === 'C' ? '100' : '212'}`}
                                 />
                             </div>
 
                             {/* Output Input */}
-                            <div className={`transition-opacity duration-300 ${mode === 'source' ? 'opacity-100' : 'opacity-100'}`}>
-                                <label className={`block text-xs font-bold mb-1 ${mode === 'measure' ? 'text-green-400' : 'text-slate-500'}`}>
-                                    {mode === 'measure' ? `Valor Medido (${safeCategory === 'rtd' ? 'Ω' : 'mV'})` : `Salida Esperada (${safeCategory === 'rtd' ? 'Ω' : 'mV'})`}
+                            <div className="transition-opacity duration-300">
+                                <label className="block text-xs font-bold mb-1 text-slate-400">
+                                    Salida ({safeCategory === 'rtd' ? 'Resistencia' : 'Voltaje'})
                                 </label>
                                 <div className="relative">
                                     <input
                                         type="number"
                                         value={inputOutput}
                                         onChange={(e) => handleOutputChange(e.target.value)}
-                                        disabled={mode === 'source'}
-                                        className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-xl outline-none transition-all shadow-inner ${mode === 'measure'
-                                            ? 'border-slate-700 text-white focus:border-green-500'
-                                            : 'border-transparent text-red-400 font-bold bg-slate-900/50 cursor-not-allowed'
-                                            }`}
-                                        placeholder={mode === 'measure' ? 'Ej: 138.5' : 'Calculando...'}
+                                        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 font-mono text-xl text-white outline-none focus:border-blue-500 transition-all shadow-inner"
+                                        placeholder="Ej: 138.5"
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-600 font-normal pointer-events-none">
                                         {safeCategory === 'rtd' ? 'Ω' : 'mV'}

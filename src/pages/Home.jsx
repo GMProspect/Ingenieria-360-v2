@@ -73,76 +73,8 @@ const Home = () => {
             description: 'Rondas de operación, inventario, historial y reportes.',
             icon: ClipboardList,
             color: 'gray',
-            links: [
-                { to: '/inventory', label: 'Inventario de Equipos' },
-                { to: '/history', label: 'Historial de Cálculos' },
-                { to: '/converter', label: 'Conversor de Unidades' }
-            ]
-        }
-    ];
-
-    return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            {/* Header Section */}
-            <div className="text-center mb-16 animate-fade-in-down">
-                <div className="flex justify-center mb-6">
-                    <HomeCraneIcon size={120} className="drop-shadow-[0_0_25px_rgba(234,179,8,0.4)]" />
-                </div>
-                <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-4 tracking-tight">
-                    Ingeniería 360
-                </h1>
-                <p className="text-xl text-slate-400 max-w-2xl mx-auto font-light tracking-wide">
-                    La Super App para especialistas de campo. Instrumentación, Mecánica, Electricidad y Control.
-                </p>
-            </div>
-
-            {/* Categories Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                {categories.map((category, index) => (
-                    <div
-                        key={index}
-                        className="bg-slate-900/40 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 p-6 border border-white/5 flex flex-col group hover:-translate-y-1"
-                    >
-                        <div className="flex items-center mb-4">
-                            <div
-                                className={`p-3 rounded-xl bg-${category.color}-500/10 text-${category.color}-400 mr-4 ring-1 ring-${category.color}-500/20 group-hover:bg-${category.color}-500/20 transition-colors`}
-                            >
-                                <category.icon size={28} strokeWidth={1.5} />
-                            </div>
-                            <h2 className="text-2xl font-bold text-white tracking-tight">
-                                {category.title}
-                            </h2>
-                        </div>
-                        <p className="text-slate-400 mb-6 flex-grow leading-relaxed font-light">
-                            {category.description}
-                        </p>
-                        <div className="space-y-3 border-t border-white/5 pt-4">
-                            {category.links.map((link, linkIndex) => (
-                                <Link
-                                    key={linkIndex}
-                                    to={link.to}
-                                    className="flex items-center text-slate-300 hover:text-cyan-400 transition-colors group/link py-1"
-                                >
-                                    <span className="mr-3 text-slate-600 group-hover/link:text-cyan-500 transition-colors text-sm">
-                                        ▶
-                                    </span>
-                                    <span className="font-medium">
-                                        {link.label}
-                                    </span>
-                                    {link.isNew && (
-                                        <span className="ml-auto px-2 py-0.5 bg-cyan-500/10 text-cyan-400 text-[10px] font-bold uppercase tracking-wider rounded-full border border-cyan-500/20 shadow-[0_0_10px_rgba(34,211,238,0.2)]">
-                                            Nuevo
-                                        </span>
-                                    )}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Feedback Section */}
-            <div className="bg-slate-900/40 rounded-2xl p-8 text-center shadow-lg border border-white/5 backdrop-blur-sm relative overflow-hidden">
+            {/* Feedback Section */ }
+        < div className = "bg-slate-900/40 rounded-2xl p-8 text-center shadow-lg border border-white/5 backdrop-blur-sm relative overflow-hidden" >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none" />
                 <h2 className="text-3xl font-bold text-white mb-4 relative z-10">
                     ¿Tienes una idea o necesitas una herramienta? 💡
@@ -153,10 +85,10 @@ const Home = () => {
                 <div className="relative z-10">
                     <FeedbackForm />
                 </div>
-            </div>
+            </div >
 
-            {/* Footer */}
-            <div className="mt-16 text-center text-slate-600 text-sm font-mono">
+    {/* Footer */ }
+    < div className = "mt-16 text-center text-slate-600 text-sm font-mono" >
                 <p className="mb-2">
                     Hecho con ❤️ por
                     <a

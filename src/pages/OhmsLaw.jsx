@@ -19,6 +19,11 @@ const OhmsLaw = () => {
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
 
+    // Scroll to top on mount
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const handleInputChange = (e, field) => {
         const val = e.target.value;
 

@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
                     });
                 } catch (error) {
                     console.error('Google Sign-In Error:', error);
+                    alert('Error: ' + JSON.stringify(error));
                     throw error;
                 }
             } else {

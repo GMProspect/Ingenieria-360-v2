@@ -8,6 +8,7 @@ import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
 import useLocalStorage from '../hooks/useLocalStorage';
 import AdBanner from '../components/AdBanner';
+import RecentHistory from '../components/RecentHistory';
 
 const Megohmetro = () => {
     const { t } = useTranslation();
@@ -348,6 +349,21 @@ const Megohmetro = () => {
                 onSave={handleSave}
                 onClear={clearAll}
                 saving={saving}
+            />
+
+            <RecentHistory
+                toolName="Megóhmetro"
+                onLoadData={(item) => {
+                    if (confirm(`¿Cargar datos de ${item.label}?`)) {
+                        setResistance(item.data.resistance || '');
+                        setUnit(item.data.unit || 'MΩ');
+                        setVoltageRating(item.data.voltageRating || 'low');
+                        setLabel(item.label || '');
+                        setDescription(item.description || '');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }}
+                refreshTrigger={saving} // Refresh when saving status changes (goes back to false after save)
             />
 
             <AdBanner dataAdSlot="9876543210" />

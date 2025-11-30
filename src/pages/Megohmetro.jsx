@@ -119,8 +119,7 @@ const Megohmetro = () => {
             }]);
             if (error) throw error;
             alert('Evaluación guardada correctamente.');
-            setLabel('');
-            setDescription('');
+            // Form data persists for continuous editing
         } catch (error) {
             console.error('Error saving:', error);
             alert('Error al guardar.');

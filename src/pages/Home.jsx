@@ -57,16 +57,7 @@ const Home = () => {
                 { to: '/megohmetro', label: 'Megóhmetro (Aislamiento)', icon: Activity, color: 'text-purple-400', isNew: true },
             ]
         },
-        {
-            title: 'Generación de Energía',
-            description: 'Sistemas de Excitación, PSS, Estabilidad y Ciclos Termodinámicos.',
-            icon: Cpu,
-            color: 'purple',
-            links: [
-                { to: '#', label: 'Próximamente: Modelos PSS', icon: Cpu, color: 'text-slate-500' },
-                { to: '#', label: 'Próximamente: Curvas de Saturación', icon: Activity, color: 'text-slate-500' }
-            ]
-        },
+
         {
             title: 'Gestión y Operaciones',
             description: 'Rondas de operación, inventario, historial y reportes.',

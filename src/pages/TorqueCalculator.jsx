@@ -15,7 +15,57 @@ const TorqueCalculator = () => {
     // Dummy state for SaveModal compatibility (Torque Calculator doesn't have save logic yet, but we'll add the UI)
     const [label, setLabel] = useState('');
     const [description, setDescription] = useState('');
-    const [saving, setSaving] = useState(false);
+    const { user } = useAuth();
+    const { isOnline, addToQueue } = useSync();
+
+    const handleSave = async () => {
+        if (!label.trim()) {
+            alert('Por favor ingresa una etiqueta.');
+            return;
+        }
+        if (!user) {
+            alert('Debes iniciar sesión para guardar.');
+            return;
+        }
+        setSaving(true);
+        try {
+            const payload = {
+                tool_name: 'Calculadora de Torque',
+                label: label,
+                description: description,
+                user_id: user.id,
+                data: {
+                    diameter,
+                    grade,
+                    lubrication,
+                    torque_ftlb: torque.ftlb,
+                    torque_nm: torque.nm
+                }
+            };
+
+            if (!isOnline) {
+                addToQueue({
+                    type: 'INSERT',
+                    table: 'history',
+                    payload: payload
+                });
+                alert('Sin conexión. Guardado en cola para sincronizar cuando recuperes internet.');
+            } else {
+                const { error } = await supabase.from('history').insert([payload]);
+                if (error) throw error;
+                alert('Cálculo guardado correctamente.');
+            }
+
+            setLabel('');
+            setDescription('');
+            setIsSaveModalOpen(false);
+        } catch (error) {
+            console.error('Error saving:', error);
+            alert('Error al guardar.');
+        } finally {
+            setSaving(false);
+        }
+    };
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -250,16 +300,12 @@ const TorqueCalculator = () => {
                 setLabel={setLabel}
                 description={description}
                 setDescription={setDescription}
-                onSave={() => {
-                    alert('La función de guardar para Torque estará disponible pronto.');
-                    setIsSaveModalOpen(false);
-                }}
+                onSave={handleSave}
                 onClear={() => {
                     setLabel('');
                     setDescription('');
                 }}
                 saving={saving}
-                saveButtonText="Guardar (Próximamente)"
             />
         </div>
     );

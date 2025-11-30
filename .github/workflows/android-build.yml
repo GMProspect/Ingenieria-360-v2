@@ -40,6 +40,11 @@ jobs:
       - name: Build APK
         run: cd android && sudo apt-get install -y dos2unix && dos2unix gradlew && chmod +x gradlew && ./gradlew assembleDebug
 
+      - name: Print Signing SHA-1
+        run: |
+          cd android
+          ./gradlew signingReport
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

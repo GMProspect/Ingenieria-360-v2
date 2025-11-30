@@ -1,5 +1,16 @@
 {
   "appId": "com.ingenieria360.app",
   "appName": "Ingeniería 360",
-  "webDir": "dist"
+  "webDir": "dist",
+  "plugins": {
+    "GoogleAuth": {
+      "scopes": [
+        "profile",
+        "email"
+      ],
+      "serverClientId": "REEMPLAZAR_CON_WEB_CLIENT_ID.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true,
+      "androidClientId": "REEMPLAZAR_CON_ANDROID_CLIENT_ID.apps.googleusercontent.com"
+    }
+  }
 }

@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../supabase';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { Capacitor } from '@capacitor/core';
 
 const AuthContext = createContext({});
 
@@ -31,12 +33,31 @@ export const AuthProvider = ({ children }) => {
     const value = {
         signUp: (data) => supabase.auth.signUp(data),
         signIn: (data) => supabase.auth.signInWithPassword(data),
-        signInWithGoogle: () => supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: window.location.origin // Dynamically use current origin (localhost or vercel)
+        signInWithGoogle: async () => {
+            if (Capacitor.isNativePlatform()) {
+                // Native Flow (Android/iOS)
+                try {
+                    const googleUser = await GoogleAuth.signIn();
+                    const { idToken } = googleUser.authentication;
+
+                    return supabase.auth.signInWithIdToken({
+                        provider: 'google',
+                        token: idToken,
+                    });
+                } catch (error) {
+                    console.error('Google Sign-In Error:', error);
+                    throw error;
+                }
+            } else {
+                // Web Flow
+                return supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
             }
-        }),
+        },
         signOut: () => supabase.auth.signOut(),
         user,
     };

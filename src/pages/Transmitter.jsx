@@ -313,7 +313,7 @@ const Transmitter = () => {
                                             className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all pl-12"
                                             placeholder="4.00"
                                         />
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 font-bold text-sm">mA</div>
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 font-bold text-sm pointer-events-none">mA</div>
                                     </div>
                                 </div>
 
@@ -331,7 +331,7 @@ const Transmitter = () => {
                                             className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all pl-12"
                                             placeholder="0.00"
                                         />
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm">PV</div>
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm pointer-events-none">PV</div>
                                     </div>
                                 </div>
                             </div>

@@ -369,43 +369,43 @@ const Vibration = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div>
                             <label className="block text-xs text-slate-500 mb-1 font-bold uppercase">Velocidad (RMS)</label>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                                 <input
                                     type="number"
                                     value={velocity}
                                     onChange={(e) => setVelocity(e.target.value)}
-                                    className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-xl font-bold outline-none focus:border-pink-500 transition-colors"
+                                    className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-white text-lg font-bold outline-none focus:border-pink-500 transition-colors"
                                     placeholder="0.00"
                                 />
-                                <span className="text-slate-500 font-bold">mm/s</span>
+                                <span className="text-slate-500 font-bold text-xs shrink-0">mm/s</span>
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-xs text-slate-500 mb-1 font-bold uppercase">Aceleración (Peak)</label>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                                 <input
                                     type="number"
                                     value={acceleration}
                                     onChange={(e) => setAcceleration(e.target.value)}
-                                    className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-xl font-bold outline-none focus:border-pink-500 transition-colors"
+                                    className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-white text-lg font-bold outline-none focus:border-pink-500 transition-colors"
                                     placeholder="0.00"
                                 />
-                                <span className="text-slate-500 font-bold">g</span>
+                                <span className="text-slate-500 font-bold text-xs shrink-0">g</span>
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-xs text-slate-500 mb-1 font-bold uppercase">Desplazamiento (p-p)</label>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                                 <input
                                     type="number"
                                     value={displacement}
                                     onChange={(e) => setDisplacement(e.target.value)}
-                                    className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-xl font-bold outline-none focus:border-pink-500 transition-colors"
+                                    className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-white text-lg font-bold outline-none focus:border-pink-500 transition-colors"
                                     placeholder="0"
                                 />
-                                <span className="text-slate-500 font-bold">µm</span>
+                                <span className="text-slate-500 font-bold text-xs shrink-0">µm</span>
                             </div>
                         </div>
                     </div>

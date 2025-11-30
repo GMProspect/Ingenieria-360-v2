@@ -8,9 +8,9 @@
         "profile",
         "email"
       ],
-      "serverClientId": "REEMPLAZAR_CON_WEB_CLIENT_ID.apps.googleusercontent.com",
+      "serverClientId": "470166444106-m7gbe9hj3r93ciudqq5hgf4m7denor0o.apps.googleusercontent.com",
       "forceCodeForRefreshToken": true,
-      "androidClientId": "REEMPLAZAR_CON_ANDROID_CLIENT_ID.apps.googleusercontent.com"
+      "androidClientId": "470166444106-qpgluvfp74m4j1gllcn5fg7g96belrq2.apps.googleusercontent.com"
     }
   }
 }

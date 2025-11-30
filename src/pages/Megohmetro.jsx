@@ -45,12 +45,12 @@ const Megohmetro = () => {
         const isHighVoltage = ['mv', 'hv'].includes(rating);
 
         if (isLowVoltage) {
-            // Low Voltage (< 1kV): IEEE 43 Min is 1 MΩ + kV. ~1.5 MΩ.
-            // We use 2 MΩ as a hard stop, and 50 MΩ as a "Clean/Dry" target.
-            minAcceptable = 2;
+            // Low Voltage (< 1kV): IEEE 43-2013 Table 4 recommends minimum 5 MΩ.
+            // Previous standards were 1 MΩ + kV, but modern insulation requires higher values.
+            minAcceptable = 5;
             warningThreshold = 50;
         } else if (isHighVoltage) {
-            // High Voltage (> 1kV): IEEE 43 Min is 100 MΩ for form-wound coils.
+            // High Voltage (> 1kV): IEEE 43-2013 recommends 100 MΩ.
             minAcceptable = 100;
             warningThreshold = 500; // Good practice target
         }

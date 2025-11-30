@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/Auth';
+import { SyncProvider } from './contexts/SyncContext';
 import AuthGuard from './components/AuthGuard';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -36,39 +37,41 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
+      <SyncProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
 
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
 
-          <Route path="/*" element={
-            <AuthGuard>
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/inventory" element={<Inventory />} />
-                  <Route path="/torque" element={<TorqueCalculator />} />
-                  <Route path="/ohms-law" element={<OhmsLaw />} />
-                  <Route path="/vibration" element={<Vibration />} />
-                  <Route path="/transmitter" element={<Transmitter />} />
-                  <Route path="/temperature-sensors" element={<TemperatureSensors />} />
-                  <Route path="/converter" element={<Converter />} />
-                  <Route path="/wrench-converter" element={<WrenchConverter />} />
-                  <Route path="/megohmetro" element={<Megohmetro />} />
-                  <Route path="/history" element={<History />} />
-                  <Route path="/feedback" element={
-                    <AdminGuard>
-                      <FeedbackList />
-                    </AdminGuard>
-                  } />
-                </Routes>
-              </Layout>
-            </AuthGuard>
-          } />
-        </Routes>
-      </Router>
+            <Route path="/*" element={
+              <AuthGuard>
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/inventory" element={<Inventory />} />
+                    <Route path="/torque" element={<TorqueCalculator />} />
+                    <Route path="/ohms-law" element={<OhmsLaw />} />
+                    <Route path="/vibration" element={<Vibration />} />
+                    <Route path="/transmitter" element={<Transmitter />} />
+                    <Route path="/temperature-sensors" element={<TemperatureSensors />} />
+                    <Route path="/converter" element={<Converter />} />
+                    <Route path="/wrench-converter" element={<WrenchConverter />} />
+                    <Route path="/megohmetro" element={<Megohmetro />} />
+                    <Route path="/history" element={<History />} />
+                    <Route path="/feedback" element={
+                      <AdminGuard>
+                        <FeedbackList />
+                      </AdminGuard>
+                    } />
+                  </Routes>
+                </Layout>
+              </AuthGuard>
+            } />
+          </Routes>
+        </Router>
+      </SyncProvider>
     </AuthProvider>
   );
 }

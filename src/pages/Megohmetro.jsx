@@ -6,6 +6,7 @@ import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
+import { useSync } from '../contexts/SyncContext';
 import useLocalStorage from '../hooks/useLocalStorage';
 import AdBanner from '../components/AdBanner';
 import RecentHistory from '../components/RecentHistory';
@@ -97,6 +98,8 @@ const Megohmetro = () => {
 
     const result = evaluateInsulation(resistance, unit, voltageRating);
 
+    const { isOnline, addToQueue } = useSync();
+
     const handleSave = async () => {
         if (!label.trim()) {
             alert('Por favor ingresa una etiqueta.');
@@ -108,7 +111,7 @@ const Megohmetro = () => {
         }
         setSaving(true);
         try {
-            const { error } = await supabase.from('history').insert([{
+            const payload = {
                 tool_name: 'Megóhmetro',
                 label: label,
                 description: description,
@@ -119,7 +122,21 @@ const Megohmetro = () => {
                     voltageRating,
                     result: result?.status
                 }
-            }]);
+            };
+
+            if (!isOnline) {
+                addToQueue({
+                    type: 'INSERT',
+                    table: 'history',
+                    payload: payload
+                });
+                alert('Sin conexión. Guardado en cola para sincronizar cuando recuperes internet.');
+                setIsSessionActive(true);
+                setSaving(false);
+                return;
+            }
+
+            const { error } = await supabase.from('history').insert([payload]);
             if (error) throw error;
             alert('Evaluación guardada correctamente.');
             setIsSessionActive(true);

@@ -3,6 +3,7 @@ import { Gauge, ArrowRightLeft, Info, Settings } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/Auth';
+import { useSync } from '../contexts/SyncContext';
 import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
@@ -120,6 +121,8 @@ const Transmitter = () => {
         setIsSessionActive(false);
     };
 
+    const { isOnline, addToQueue } = useSync();
+
     const handleSave = async () => {
         if (!label.trim()) {
             alert('Por favor ingresa una etiqueta.');
@@ -131,7 +134,7 @@ const Transmitter = () => {
         }
         setSaving(true);
         try {
-            const { error } = await supabase.from('history').insert([{
+            const payload = {
                 tool_name: 'Transmisor 4-20mA',
                 label: label,
                 description: description,
@@ -143,7 +146,21 @@ const Transmitter = () => {
                     input_ma: inputMa,
                     input_pv: inputPv
                 }
-            }]);
+            };
+
+            if (!isOnline) {
+                addToQueue({
+                    type: 'INSERT',
+                    table: 'history',
+                    payload: payload
+                });
+                alert('Sin conexión. Guardado en cola para sincronizar cuando recuperes internet.');
+                setIsSessionActive(true);
+                setSaving(false);
+                return;
+            }
+
+            const { error } = await supabase.from('history').insert([payload]);
             if (error) throw error;
             alert('Cálculo guardado correctamente.');
             setIsSessionActive(true);

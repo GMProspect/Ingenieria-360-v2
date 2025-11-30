@@ -3,6 +3,7 @@ import { Activity, Info, AlertTriangle, ArrowRightLeft, Settings } from 'lucide-
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/Auth';
+import { useSync } from '../contexts/SyncContext';
 import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
@@ -126,6 +127,8 @@ const Vibration = () => {
         setIsSessionActive(false);
     };
 
+    const { isOnline, addToQueue } = useSync();
+
     const handleSave = async () => {
         if (!label.trim()) {
             alert('Por favor ingresa una etiqueta.');
@@ -137,7 +140,7 @@ const Vibration = () => {
         }
         setSaving(true);
         try {
-            const { error } = await supabase.from('history').insert([{
+            const payload = {
                 tool_name: 'Vibración',
                 label: label,
                 description: description,
@@ -154,7 +157,21 @@ const Vibration = () => {
                     isoClass,
                     result: result?.status
                 }
-            }]);
+            };
+
+            if (!isOnline) {
+                addToQueue({
+                    type: 'INSERT',
+                    table: 'history',
+                    payload: payload
+                });
+                alert('Sin conexión. Guardado en cola para sincronizar cuando recuperes internet.');
+                setIsSessionActive(true);
+                setSaving(false);
+                return;
+            }
+
+            const { error } = await supabase.from('history').insert([payload]);
             if (error) throw error;
             alert('Evaluación guardada correctamente.');
             setIsSessionActive(true);

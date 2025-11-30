@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Database, Plus, Search, Trash2, Edit, Wrench } from 'lucide-react';
 import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
+import { useSync } from '../contexts/SyncContext';
 import BackButton from '../components/BackButton';
 import InventoryModal from '../components/inventory/InventoryModal';
 import ItemDetailsModal from '../components/inventory/ItemDetailsModal';
@@ -122,6 +123,8 @@ const Inventory = () => {
         }
     };
 
+    const { isOnline, addToQueue } = useSync();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!user) return;
@@ -137,6 +140,29 @@ const Inventory = () => {
                 user_id: user.id // Assign to user
             };
 
+            if (!isOnline) {
+                // Offline Logic
+                if (currentItem) {
+                    addToQueue({
+                        type: 'UPDATE',
+                        table: 'equipos',
+                        payload: { ...payload, id: currentItem.id }
+                    });
+                    alert('Sin conexión. Cambio guardado en cola para sincronizar cuando recuperes internet.');
+                } else {
+                    addToQueue({
+                        type: 'INSERT',
+                        table: 'equipos',
+                        payload: payload
+                    });
+                    alert('Sin conexión. Equipo guardado en cola para sincronizar cuando recuperes internet.');
+                }
+                handleCloseModal();
+                // Optimistic update could be added here, but for now we just close
+                return;
+            }
+
+            // Online Logic
             if (currentItem) {
                 // Update
                 const { error } = await supabase
@@ -169,6 +195,18 @@ const Inventory = () => {
     const confirmDelete = async () => {
         if (!itemToDelete) return;
         try {
+            if (!isOnline) {
+                addToQueue({
+                    type: 'DELETE',
+                    table: 'equipos',
+                    payload: { id: itemToDelete.id }
+                });
+                alert('Sin conexión. Eliminación en cola para sincronizar cuando recuperes internet.');
+                setItemToDelete(null);
+                setIsDeleteModalOpen(false);
+                return;
+            }
+
             const { error } = await supabase
                 .from('equipos')
                 .delete()
@@ -180,6 +218,7 @@ const Inventory = () => {
             console.error('Error deleting item:', error);
         } finally {
             setItemToDelete(null);
+            setIsDeleteModalOpen(false);
         }
     };
 

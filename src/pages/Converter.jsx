@@ -3,6 +3,7 @@ import { RefreshCw, ArrowRightLeft, Gauge, Thermometer, Ruler, Scale, Beaker, In
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/Auth';
+import { useSync } from '../contexts/SyncContext';
 import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
@@ -134,6 +135,8 @@ const Converter = () => {
         setDescription('');
     };
 
+    const { isOnline, addToQueue } = useSync();
+
     const handleSave = async () => {
         if (!label.trim()) {
             alert('Por favor ingresa una etiqueta.');
@@ -145,7 +148,7 @@ const Converter = () => {
         }
         setSaving(true);
         try {
-            const { error } = await supabase.from('history').insert([{
+            const payload = {
                 tool_name: 'Conversor Universal',
                 label: label,
                 description: description,
@@ -153,7 +156,22 @@ const Converter = () => {
                 data: {
                     category, from: fromUnit, to: toUnit, input: inputValue, result
                 }
-            }]);
+            };
+
+            if (!isOnline) {
+                addToQueue({
+                    type: 'INSERT',
+                    table: 'history',
+                    payload: payload
+                });
+                alert('Sin conexión. Guardado en cola para sincronizar cuando recuperes internet.');
+                setLabel('');
+                setDescription('');
+                setSaving(false);
+                return;
+            }
+
+            const { error } = await supabase.from('history').insert([payload]);
             if (error) throw error;
             alert('Cálculo guardado correctamente.');
             setLabel('');

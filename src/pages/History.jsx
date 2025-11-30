@@ -1,4 +1,3 @@
-```javascript
 import React, { useState, useEffect } from 'react';
 import { History as HistoryIcon, Trash2, Search, Info, LineChart, Edit2, X, Save } from 'lucide-react';
 import TrendChart from '../components/TrendChart';
@@ -83,8 +82,8 @@ const History = () => {
             if (error) throw error;
 
             // Update local state
-            setHistory(history.map(item => 
-                item.id === editingItem.id 
+            setHistory(history.map(item =>
+                item.id === editingItem.id
                     ? { ...item, label: editLabel, description: editDescription }
                     : item
             ));
@@ -124,6 +123,109 @@ const History = () => {
         if (timeRange === 'month') return diffDays <= 30;
         if (timeRange === 'week') return diffDays <= 7;
 
+        return true;
+    }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // Keep newest first for table, chart reverses it
+
+    // Filter for List View
+    const filteredHistory = history.filter(item => {
+        const searchLower = searchTerm.toLowerCase();
+        const matchesSearch = (
+            item.label?.toLowerCase().includes(searchLower) ||
+            item.tool_name?.toLowerCase().includes(searchLower) ||
+            item.description?.toLowerCase().includes(searchLower)
+        );
+        const matchesTool = selectedTool ? item.tool_name === selectedTool : true;
+        return matchesSearch && matchesTool;
+    });
+
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const formatData = (data) => {
+        return Object.entries(data).map(([key, value]) => {
+            if (key === 'result' || key === 'voltageRating') return null;
+            return (
+                <div key={key} className="text-xs">
+                    <span className="text-slate-500 capitalize">{key}: </span>
+                    <span className="text-slate-300 font-mono">{value}</span>
+                </div>
+            );
+        });
+    };
+
+    return (
+        <div className="max-w-6xl mx-auto p-6 relative">
+            <BackButton />
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                    <div className="p-3 bg-purple-500/20 rounded-xl text-purple-400">
+                        <HistoryIcon size={32} />
+                    </div>
+                    <div>
+                        <h1 className="text-3xl font-bold text-white">Historial de Cálculos</h1>
+                        <p className="text-slate-400">Registro de todas las operaciones guardadas</p>
+                    </div>
+                </div>
+
+                {/* View Toggle */}
+                <div className="bg-slate-900 p-1 rounded-xl border border-slate-800 flex">
+                    <button
+                        onClick={() => setViewMode('list')}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'list' ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        Lista
+                    </button>
+                    <button
+                        onClick={() => setViewMode('trend')}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'trend' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        Tendencias 📈
+                    </button>
+                </div>
+            </div>
+
+            <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl">
+
+                {viewMode === 'list' ? (
+                    <>
+                        <div className="flex flex-col md:flex-row gap-4 mb-6">
+                            {/* Search Bar */}
+                            <div className="relative flex-1">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
+                                <input
+                                    type="text"
+                                    placeholder="Buscar por etiqueta, descripción..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-12 pr-4 py-3 text-white focus:border-purple-500 outline-none transition-colors"
+                                />
+                            </div>
+
+                            {/* Tool Filter Dropdown */}
+                            <div className="w-full md:w-64">
+                                <select
+                                    value={selectedTool}
+                                    onChange={(e) => setSelectedTool(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-purple-500 outline-none"
+                                >
+                                    <option value="">Todas las Herramientas</option>
+                                    {uniqueTools.map(tool => (
+                                        <option key={tool} value={tool}>{tool}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {loading ? (
+                            <div className="text-center py-12 text-slate-500">Cargando historial...</div>
+                        ) : filteredHistory.length === 0 ? (
                             <div className="text-center py-12 text-slate-500">No hay registros guardados.</div>
                         ) : (
                             <div className="overflow-x-auto">
@@ -319,4 +421,3 @@ const History = () => {
 };
 
 export default History;
-```

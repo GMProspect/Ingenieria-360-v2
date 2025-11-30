@@ -11,7 +11,7 @@ const BackButton = () => {
             className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors mb-6 group"
         >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium">Volver al Inicio</span>
+            <span className="font-medium">Volver</span>
         </button>
     );
 };

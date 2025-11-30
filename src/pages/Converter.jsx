@@ -7,6 +7,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import AdBanner from '../components/AdBanner';
+import SaveModal from '../components/SaveModal';
 
 const Converter = () => {
     const { user } = useAuth();
@@ -19,6 +20,7 @@ const Converter = () => {
     const [label, setLabel] = useState('');
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
     const categories = {
         pressure: {
@@ -189,6 +191,7 @@ const Converter = () => {
                 iconColorClass="text-green-400"
                 iconBgClass="bg-green-500/20"
                 onReset={clearAll}
+                onSave={() => setIsSaveModalOpen(true)}
             />
 
             {/* Category Selector */}
@@ -293,6 +296,18 @@ const Converter = () => {
 
             {/* AdSense Banner (Moved to very bottom) */}
             <AdBanner dataAdSlot="1234567890" />
+
+            <SaveModal
+                isOpen={isSaveModalOpen}
+                onClose={() => setIsSaveModalOpen(false)}
+                label={label}
+                setLabel={setLabel}
+                description={description}
+                setDescription={setDescription}
+                onSave={handleSave}
+                onClear={clearAll}
+                saving={saving}
+            />
 
         </div>
     );

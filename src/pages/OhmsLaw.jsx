@@ -8,6 +8,7 @@ import SaveCalculationSection from '../components/SaveCalculationSection';
 import ToolHeader from '../components/ToolHeader';
 import AdBanner from '../components/AdBanner';
 import RecentHistory from '../components/RecentHistory';
+import SaveModal from '../components/SaveModal';
 
 const OhmsLaw = () => {
     const { user } = useAuth();
@@ -20,6 +21,7 @@ const OhmsLaw = () => {
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
     const [isSessionActive, setIsSessionActive] = useState(false);
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
     // Scroll to top on mount
     React.useEffect(() => {
@@ -140,6 +142,7 @@ const OhmsLaw = () => {
                 iconColorClass="text-yellow-400"
                 iconBgClass="bg-yellow-500/20"
                 onReset={clearAll}
+                onSave={() => setIsSaveModalOpen(true)}
             />
 
             <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
@@ -176,7 +179,7 @@ const OhmsLaw = () => {
                                 value={voltage}
                                 onChange={(e) => handleInputChange(e, 'voltage')}
                                 placeholder="?"
-                                className="w-[100px] bg-slate-950/80 border-2 border-yellow-500/50 rounded-xl px-2 py-2 text-center text-xl font-bold text-white focus:outline-none focus:border-yellow-400 focus:shadow-[0_0_20px_rgba(250,204,21,0.4)] transition-all placeholder-slate-600"
+                                className="w-[90px] md:w-[100px] bg-slate-950/80 border-2 border-yellow-500/50 rounded-xl px-2 py-2 text-center text-lg md:text-xl font-bold text-white focus:outline-none focus:border-yellow-400 focus:shadow-[0_0_20px_rgba(250,204,21,0.4)] transition-all placeholder-slate-600"
                             />
                         </div>
 
@@ -190,7 +193,7 @@ const OhmsLaw = () => {
                                 value={resistance}
                                 onChange={(e) => handleInputChange(e, 'resistance')}
                                 placeholder="?"
-                                className="w-[100px] bg-slate-950/80 border-2 border-purple-500/50 rounded-xl px-2 py-2 text-center text-xl font-bold text-white focus:outline-none focus:border-purple-400 focus:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all placeholder-slate-600"
+                                className="w-[90px] md:w-[100px] bg-slate-950/80 border-2 border-purple-500/50 rounded-xl px-2 py-2 text-center text-lg md:text-xl font-bold text-white focus:outline-none focus:border-purple-400 focus:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all placeholder-slate-600"
                             />
                         </div>
 
@@ -204,7 +207,7 @@ const OhmsLaw = () => {
                                 value={current}
                                 onChange={(e) => handleInputChange(e, 'current')}
                                 placeholder="?"
-                                className="w-[100px] bg-slate-950/80 border-2 border-cyan-500/50 rounded-xl px-2 py-2 text-center text-xl font-bold text-white focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all placeholder-slate-600"
+                                className="w-[90px] md:w-[100px] bg-slate-950/80 border-2 border-cyan-500/50 rounded-xl px-2 py-2 text-center text-lg md:text-xl font-bold text-white focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all placeholder-slate-600"
                             />
                         </div>
                     </div>
@@ -239,6 +242,19 @@ const OhmsLaw = () => {
 
                 {/* AdSense Banner (Moved to very bottom) */}
                 <AdBanner dataAdSlot="1234567890" />
+
+                <SaveModal
+                    isOpen={isSaveModalOpen}
+                    onClose={() => setIsSaveModalOpen(false)}
+                    label={label}
+                    setLabel={setLabel}
+                    description={description}
+                    setDescription={setDescription}
+                    onSave={handleSave}
+                    onClear={clearAll}
+                    saving={saving}
+                    isSessionActive={isSessionActive}
+                />
 
             </div>
         </div>

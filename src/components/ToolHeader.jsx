@@ -1,5 +1,5 @@
 import React from 'react';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Save } from 'lucide-react';
 
 const ToolHeader = ({ title, subtitle, icon: Icon, iconColorClass = "text-cyan-400", iconBgClass = "bg-cyan-500/20", onReset }) => {
     return (
@@ -14,13 +14,22 @@ const ToolHeader = ({ title, subtitle, icon: Icon, iconColorClass = "text-cyan-4
                 </div>
             </div>
 
+            {onSave && (
+                <button
+                    onClick={onSave}
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400 rounded-lg transition-all border border-slate-700 hover:border-cyan-500/50 mr-2"
+                >
+                    <Save size={18} />
+                    <span className="font-bold text-sm hidden sm:inline">Guardar</span>
+                </button>
+            )}
             {onReset && (
                 <button
                     onClick={onReset}
                     className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-lg transition-all border border-slate-700 hover:border-red-500/50"
                 >
                     <RotateCcw size={18} />
-                    <span className="font-bold text-sm">Reiniciar</span>
+                    <span className="font-bold text-sm hidden sm:inline">Reiniciar</span>
                 </button>
             )}
         </div>

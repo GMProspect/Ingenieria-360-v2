@@ -8,6 +8,7 @@ import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import AdBanner from '../components/AdBanner';
 import RecentHistory from '../components/RecentHistory';
+import SaveModal from '../components/SaveModal';
 
 const Vibration = () => {
     const { user } = useAuth();
@@ -25,6 +26,7 @@ const Vibration = () => {
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
     const [isSessionActive, setIsSessionActive] = useState(false);
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
     const [gapInput, setGapInput] = useState('');
     const [velocity, setVelocity] = useState('');
@@ -175,6 +177,7 @@ const Vibration = () => {
                 iconColorClass="text-pink-400"
                 iconBgClass="bg-pink-500/20"
                 onReset={clearAll}
+                onSave={() => setIsSaveModalOpen(true)}
             />
 
             <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
@@ -433,6 +436,19 @@ const Vibration = () => {
                 />
 
                 <AdBanner dataAdSlot="1234567890" />
+
+                <SaveModal
+                    isOpen={isSaveModalOpen}
+                    onClose={() => setIsSaveModalOpen(false)}
+                    label={label}
+                    setLabel={setLabel}
+                    description={description}
+                    setDescription={setDescription}
+                    onSave={handleSave}
+                    onClear={clearAll}
+                    saving={saving}
+                    isSessionActive={isSessionActive}
+                />
             </div>
         </div>
     );

@@ -305,6 +305,17 @@ const Vibration = () => {
                     </div>
                 )}
 
+                <SaveCalculationSection
+                    label={label}
+                    setLabel={setLabel}
+                    description={description}
+                    setDescription={setDescription}
+                    onSave={handleSave}
+                    onClear={clearAll}
+                    saving={saving}
+                    isSessionActive={isSessionActive}
+                />
+
                 {/* ISO 10816-3 Section */}
                 <div className="mb-8">
                     <h3 className="text-pink-400 font-bold text-sm uppercase tracking-wider mb-4 border-b border-pink-500/30 pb-2 flex items-center gap-2">
@@ -399,16 +410,7 @@ const Vibration = () => {
                     )}
                 </div>
 
-                <SaveCalculationSection
-                    label={label}
-                    setLabel={setLabel}
-                    description={description}
-                    setDescription={setDescription}
-                    onSave={handleSave}
-                    onClear={clearAll}
-                    saving={saving}
-                    isSessionActive={isSessionActive}
-                />
+
 
                 <RecentHistory
                     toolName="Sonda de Vibración"

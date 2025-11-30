@@ -312,6 +312,17 @@ const Megohmetro = () => {
                 </div>
             </div>
 
+            <SaveCalculationSection
+                label={label}
+                setLabel={setLabel}
+                description={description}
+                setDescription={setDescription}
+                onSave={handleSave}
+                onClear={clearAll}
+                saving={saving}
+                isSessionActive={isSessionActive}
+            />
+
             {/* Safety Tips */}
             <div className="bg-blue-900/20 border border-blue-500/30 rounded-2xl p-6 mb-8">
                 <h4 className="text-blue-400 font-bold mb-4 flex items-center">
@@ -342,16 +353,7 @@ const Megohmetro = () => {
                 </ul>
             </div>
 
-            <SaveCalculationSection
-                label={label}
-                setLabel={setLabel}
-                description={description}
-                setDescription={setDescription}
-                onSave={handleSave}
-                onClear={clearAll}
-                saving={saving}
-                isSessionActive={isSessionActive}
-            />
+
 
             <RecentHistory
                 toolName="Megóhmetro"

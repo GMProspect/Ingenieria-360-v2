@@ -353,80 +353,84 @@ const Transmitter = () => {
                     )}
                 </div>
 
-                {/* 3. Checkpoints Table */}
-                <div className="mb-8">
-                    <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
-                        Puntos de Calibración (Check Points)
-                    </h3>
-                    <div className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                        <table className="w-full text-sm">
-                            <tbody className="divide-y divide-slate-800">
-                                {checkpoints.map((pct) => {
-                                    const { pv, ma } = calculateCheckpoint(pct);
-                                    return (
-                                        <tr key={pct} className="hover:bg-slate-900/50 transition-colors">
-                                            <td className="py-3 px-6 text-purple-400 font-bold text-center">● {pct}%</td>
-                                            <td className="py-3 px-6 text-center text-white font-mono">{pv}</td>
-                                            <td className="py-3 px-6 text-center text-cyan-400 font-mono">{ma} mA</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <SaveCalculationSection
-                    label={label}
-                    setLabel={setLabel}
-                    description={description}
-                    setDescription={setDescription}
-                    onSave={handleSave}
-                    onClear={clearAll}
-                    saving={saving}
-                    isSessionActive={isSessionActive}
-                />
-
-                <RecentHistory
-                    toolName="Transmisor 4-20mA"
-                    onLoadData={(item) => {
-                        if (confirm(`¿Cargar datos de ${item.label}?`)) {
-                            setRangeLow(item.data.range_low || '0');
-                            setRangeHigh(item.data.range_high || '100');
-                            setUnit(item.data.unit || 'PSI');
-                            setInputMa(item.data.input_ma || '');
-                            setInputPv(item.data.input_pv || '');
-                            setLabel(item.label || '');
-                            setDescription(item.description || '');
-                            setIsSessionActive(true);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }
-                    }}
-                    refreshTrigger={saving}
-                />
-
-                <div className="mt-8 mb-8 p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">
-                    <div className="text-cyan-400 shrink-0 mt-0.5">
-                        <Info size={20} />
-                    </div>
-                    <div className="text-sm text-slate-200 space-y-2">
-                        <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
-                        <p>
-                            Esta herramienta convierte señales de instrumentación industrial (4-20 mA) a variables de proceso (PV) y viceversa.
-                        </p>
-                        <ul className="list-disc list-inside space-y-1 text-slate-400">
-                            <li><strong>4-20 mA:</strong> Estándar de transmisión de señal analógica. 4mA es el 0% y 20mA es el 100%.</li>
-                            <li><strong>PV (Process Variable):</strong> El valor real medido (ej: 0-100 PSI, -50 a 150 °C).</li>
-                            <li><strong>Rango Invertido:</strong> Soportado. Útil para válvulas "Falla Abierta" o niveles inversos.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                {/* AdSense Banner (Moved to very bottom) */}
-                <AdBanner dataAdSlot="1234567890" />
-
             </div>
+
+            <SaveCalculationSection
+                label={label}
+                setLabel={setLabel}
+                description={description}
+                setDescription={setDescription}
+                onSave={handleSave}
+                onClear={clearAll}
+                saving={saving}
+                isSessionActive={isSessionActive}
+            />
+
+            {/* 3. Checkpoints Table */}
+            <div className="mb-8">
+                <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
+                    Puntos de Calibración (Check Points)
+                </h3>
+                <div className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                    <table className="w-full text-sm">
+                        <tbody className="divide-y divide-slate-800">
+                            {checkpoints.map((pct) => {
+                                const { pv, ma } = calculateCheckpoint(pct);
+                                return (
+                                    <tr key={pct} className="hover:bg-slate-900/50 transition-colors">
+                                        <td className="py-3 px-6 text-purple-400 font-bold text-center">● {pct}%</td>
+                                        <td className="py-3 px-6 text-center text-white font-mono">{pv}</td>
+                                        <td className="py-3 px-6 text-center text-cyan-400 font-mono">{ma} mA</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <RecentHistory
+                toolName="Transmisor 4-20mA"
+                onLoadData={(item) => {
+                    if (confirm(`¿Cargar datos de ${item.label}?`)) {
+                        setRangeLow(item.data.range_low || '0');
+                        setRangeHigh(item.data.range_high || '100');
+                        setUnit(item.data.unit || 'PSI');
+                        setInputMa(item.data.input_ma || '');
+                        setInputPv(item.data.input_pv || '');
+                        setLabel(item.label || '');
+                        setDescription(item.description || '');
+                        setIsSessionActive(true);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }}
+                refreshTrigger={saving}
+            />
+
+            <div className="mt-8 mb-8 p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">
+                <div className="text-cyan-400 shrink-0 mt-0.5">
+                    <Info size={20} />
+                </div>
+                <div className="text-sm text-slate-200 space-y-2">
+                    <p className="font-bold text-lg mb-2">¿Qué es esto?</p>
+                    <p>
+                        Esta herramienta convierte señales de instrumentación industrial (4-20 mA) a variables de proceso (PV) y viceversa.
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 text-slate-400">
+                        <li><strong>4-20 mA:</strong> Estándar de transmisión de señal analógica. 4mA es el 0% y 20mA es el 100%.</li>
+                        <li><strong>PV (Process Variable):</strong> El valor real medido (ej: 0-100 PSI, -50 a 150 °C).</li>
+                        <li><strong>Rango Invertido:</strong> Soportado. Útil para válvulas "Falla Abierta" o niveles inversos.</li>
+                    </ul>
+                </div>
+            </div>
+
+            {/* AdSense Banner (Moved to very bottom) */}
+            <AdBanner dataAdSlot="1234567890" />
+
         </div>
+        </div >
     );
 };
 

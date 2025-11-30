@@ -97,7 +97,7 @@ const RecentHistory = ({ toolName, onLoadData, refreshTrigger }) => {
                             </div>
                         </div>
 
-                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex gap-2">
                             <Link
                                 to={`/history?tool=${encodeURIComponent(toolName)}&tag=${encodeURIComponent(item.label)}`}
                                 className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:bg-purple-500/10 hover:text-purple-400 transition-all"

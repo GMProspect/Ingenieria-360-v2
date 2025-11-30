@@ -145,7 +145,7 @@ const OhmsLaw = () => {
             <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
 
                 {/* Triangle Container - Exact dimensions from original project (440x380) */}
-                <div className="relative w-full max-w-[440px] mx-auto h-[300px] md:h-[380px] mb-12 flex justify-center items-center overflow-hidden">
+                <div className="relative w-full max-w-[440px] mx-auto h-[300px] md:h-[380px] mb-6 flex justify-center items-center overflow-hidden">
 
                     {/* Scaled Wrapper for Mobile */}
                     <div className="transform scale-[0.65] sm:scale-[0.8] md:scale-100 origin-center w-[440px] h-[380px] relative flex justify-center items-center">

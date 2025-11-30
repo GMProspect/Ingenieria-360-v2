@@ -5,13 +5,22 @@ import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
 import BackButton from '../components/BackButton';
 
+import { useSearchParams } from 'react-router-dom';
+
 const History = () => {
     const { user } = useAuth();
+    const [searchParams] = useSearchParams();
+
+    // Initial state from URL params or defaults
+    const initialTool = searchParams.get('tool') || 'Megóhmetro';
+    const initialTag = searchParams.get('tag') || '';
+    const initialView = initialTag ? 'trend' : 'list';
+
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [viewMode, setViewMode] = useState('list'); // 'list' or 'trend'
-    const [selectedTag, setSelectedTag] = useState('');
-    const [selectedTool, setSelectedTool] = useState('Megóhmetro');
+    const [viewMode, setViewMode] = useState(initialView); // 'list' or 'trend'
+    const [selectedTag, setSelectedTag] = useState(initialTag);
+    const [selectedTool, setSelectedTool] = useState(initialTool);
 
     // Extract unique tags for dropdown
     const uniqueTags = [...new Set(history.map(item => item.label))].filter(Boolean).sort();

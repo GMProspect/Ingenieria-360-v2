@@ -192,6 +192,17 @@ const Megohmetro = () => {
                 onReset={clearAll}
             />
 
+            {/* Contextual History Link */}
+            <div className="flex justify-end mb-4">
+                <a
+                    href={`/history?tool=Megóhmetro&tag=${encodeURIComponent(label)}`}
+                    className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors"
+                >
+                    <Activity size={14} />
+                    Ver Historial de este Equipo
+                </a>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-stretch">
 
                 {/* Visual Section - CENTERED/LEFT */}

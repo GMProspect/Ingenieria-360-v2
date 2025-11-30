@@ -1,5 +1,6 @@
+```javascript
 import React, { useState, useEffect } from 'react';
-import { History as HistoryIcon, Trash2, Search, Info } from 'lucide-react';
+import { History as HistoryIcon, Trash2, Search, Info, LineChart, Edit2, X, Save } from 'lucide-react';
 import TrendChart from '../components/TrendChart';
 import { supabase } from '../supabase';
 import { useAuth } from '../contexts/Auth';
@@ -22,6 +23,11 @@ const History = () => {
     const [selectedTool, setSelectedTool] = useState(initialTool);
     const [timeRange, setTimeRange] = useState('all'); // 'all', 'year', '6months', 'month', 'week'
     const [searchTerm, setSearchTerm] = useState('');
+
+    // Edit Modal State
+    const [editingItem, setEditingItem] = useState(null);
+    const [editLabel, setEditLabel] = useState('');
+    const [editDescription, setEditDescription] = useState('');
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -58,6 +64,42 @@ const History = () => {
             console.error('Error deleting:', error);
             alert('Error al eliminar');
         }
+    };
+
+    const openEditModal = (item) => {
+        setEditingItem(item);
+        setEditLabel(item.label);
+        setEditDescription(item.description || '');
+    };
+
+    const handleUpdate = async () => {
+        if (!editingItem) return;
+        try {
+            const { error } = await supabase
+                .from('history')
+                .update({ label: editLabel, description: editDescription })
+                .eq('id', editingItem.id);
+
+            if (error) throw error;
+
+            // Update local state
+            setHistory(history.map(item => 
+                item.id === editingItem.id 
+                    ? { ...item, label: editLabel, description: editDescription }
+                    : item
+            ));
+            setEditingItem(null);
+        } catch (error) {
+            console.error('Error updating:', error);
+            alert('Error al actualizar');
+        }
+    };
+
+    const handleViewTrend = (item) => {
+        setSelectedTool(item.tool_name);
+        setSelectedTag(item.label);
+        setViewMode('trend');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Extract unique tags for dropdown
@@ -118,7 +160,7 @@ const History = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="max-w-6xl mx-auto p-6 relative">
             <BackButton />
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
@@ -135,13 +177,13 @@ const History = () => {
                 <div className="bg-slate-900 p-1 rounded-xl border border-slate-800 flex">
                     <button
                         onClick={() => setViewMode('list')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'list' ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                        className={`px - 4 py - 2 rounded - lg text - sm font - bold transition - all ${ viewMode === 'list' ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300' } `}
                     >
                         Lista
                     </button>
                     <button
                         onClick={() => setViewMode('trend')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'trend' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                        className={`px - 4 py - 2 rounded - lg text - sm font - bold transition - all ${ viewMode === 'trend' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'text-slate-500 hover:text-slate-300' } `}
                     >
                         Tendencias 📈
                     </button>
@@ -203,13 +245,29 @@ const History = () => {
                                                     </div>
                                                 </td>
                                                 <td className="p-4 text-right">
-                                                    <button
-                                                        onClick={() => handleDelete(item.id)}
-                                                        className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors active:scale-95"
-                                                        title="Eliminar registro"
-                                                    >
-                                                        <Trash2 size={18} />
-                                                    </button>
+                                                    <div className="flex items-center justify-end gap-2">
+                                                        <button
+                                                            onClick={() => handleViewTrend(item)}
+                                                            className="p-2 text-slate-500 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors active:scale-95"
+                                                            title="Ver Tendencia"
+                                                        >
+                                                            <LineChart size={18} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => openEditModal(item)}
+                                                            className="p-2 text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors active:scale-95"
+                                                            title="Editar Etiqueta"
+                                                        >
+                                                            <Edit2 size={18} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDelete(item.id)}
+                                                            className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors active:scale-95"
+                                                            title="Eliminar registro"
+                                                        >
+                                                            <Trash2 size={18} />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -285,8 +343,65 @@ const History = () => {
                     </div>
                 )}
             </div>
+
+            {/* Edit Modal */}
+            {editingItem && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-fade-in-up">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                <Edit2 size={20} className="text-cyan-400" />
+                                Editar Registro
+                            </h3>
+                            <button onClick={() => setEditingItem(null)} className="text-slate-500 hover:text-white">
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">Tag / Equipo</label>
+                                <input
+                                    type="text"
+                                    value={editLabel}
+                                    onChange={(e) => setEditLabel(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none focus:border-cyan-500"
+                                />
+                                <p className="text-[10px] text-slate-500 mt-1">
+                                    * Corregir el Tag agrupará este registro correctamente en las tendencias.
+                                </p>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">Descripción</label>
+                                <textarea
+                                    value={editDescription}
+                                    onChange={(e) => setEditDescription(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none focus:border-cyan-500 h-24 resize-none"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-8">
+                            <button
+                                onClick={() => setEditingItem(null)}
+                                className="flex-1 py-3 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition-colors"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleUpdate}
+                                className="flex-1 py-3 rounded-xl bg-cyan-600 text-white font-bold hover:bg-cyan-500 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <Save size={18} />
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
 export default History;
+```

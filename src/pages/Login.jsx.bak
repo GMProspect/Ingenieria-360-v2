@@ -26,14 +26,15 @@ const Login = () => {
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
             <div className="max-w-md w-full bg-slate-900/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm shadow-2xl text-center">
+
                 <div className="mb-8">
                     <div className="flex justify-center mb-6">
                         <CraneIcon size={80} className="text-cyan-500 drop-shadow-[0_0_15px_rgba(34,211,238,0.6)]" />
                     </div>
                     <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-3">
-                        Ingeniería 360
+                        IngenierÃ­a 360
                     </h1>
-                    <p className="text-slate-400 text-lg">Tu Entorno Técnico Inteligente</p>
+                    <p className="text-slate-400 text-lg">Tu Entorno TÃ©cnico Inteligente</p>
                 </div>
 
                 {error && (
@@ -43,7 +44,7 @@ const Login = () => {
                 )}
 
                 <div className="space-y-4">
-                    <p className="text-slate-300 mb-4">Inicia sesión para continuar</p>
+                    <p className="text-slate-300 mb-4">Inicia sesiÃ³n para continuar</p>
 
                     <button
                         type="button"
@@ -63,11 +64,11 @@ const Login = () => {
                 <div className="mt-8 text-xs text-slate-500">
                     Al continuar, aceptas nuestros{' '}
                     <a href="/terms-of-service" className="text-cyan-500 hover:text-cyan-400 hover:underline transition-colors">
-                        términos y condiciones
+                        tÃ©rminos y condiciones
                     </a>
                     {' '}y{' '}
                     <a href="/privacy-policy" className="text-cyan-500 hover:text-cyan-400 hover:underline transition-colors">
-                        política de privacidad
+                        polÃ­tica de privacidad
                     </a>.
                 </div>
             </div>

@@ -4,6 +4,9 @@ import ToolHeader from '../components/ToolHeader';
 import BackButton from '../components/BackButton';
 import AdBanner from '../components/AdBanner';
 import SaveModal from '../components/SaveModal';
+import { supabase } from '../supabase';
+import { useAuth } from '../contexts/Auth';
+import { useSync } from '../contexts/SyncContext';
 import EducationalSection from '../components/EducationalSection';
 
 const TorqueCalculator = () => {

@@ -8,7 +8,7 @@ import InventoryModal from '../components/inventory/InventoryModal';
 import ItemDetailsModal from '../components/inventory/ItemDetailsModal';
 import TagList from '../components/inventory/TagList';
 import ConfirmationModal from '../components/ConfirmationModal';
-import AdBanner from '../components/AdBanner';
+
 
 const Inventory = () => {
     const { user } = useAuth();
@@ -445,7 +445,7 @@ const Inventory = () => {
                 confirmText="Eliminar"
                 type="danger"
             />
-            <AdBanner dataAdSlot="1234567890" />
+
         </div>
     );
 };

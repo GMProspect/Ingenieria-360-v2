@@ -162,6 +162,41 @@ const WrenchConverter = () => {
                 </div>
             </EducationalSection>
 
+            <EducationalSection title="Teoría Avanzada: Selección y Seguridad">
+                <h4 className="text-white font-bold mb-2">Métrico vs Imperial (Pulgadas)</h4>
+                <p className="mb-4 text-sm">
+                    Aunque algunas llaves parecen intercambiables (como la de 1/2" y 13mm), sus dimensiones exactas difieren ligeramente.
+                    Usar la llave incorrecta concentra la fuerza en las esquinas de la tuerca en lugar de en los flancos (caras planas),
+                    lo que aumenta drásticamente el riesgo de "barrer" o redondear la cabeza del perno.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700">
+                        <h5 className="text-cyan-400 font-bold text-sm mb-1">Ejemplo Clásico: 1/2" vs 13mm</h5>
+                        <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
+                            <li><strong>1/2":</strong> 12.70 mm</li>
+                            <li><strong>13mm:</strong> 13.00 mm</li>
+                            <li><strong className="text-red-400">Riesgo:</strong> La llave de 13mm queda holgada (0.3mm de juego) en una tuerca de 1/2", dañando las esquinas al aplicar torque.</li>
+                        </ul>
+                    </div>
+                    <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700">
+                        <h5 className="text-purple-400 font-bold text-sm mb-1">Identificación de Roscas</h5>
+                        <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
+                            <li><strong>Métrico (M):</strong> Se especifica por Diámetro x Paso (ej. M10 x 1.5). El paso es la distancia entre crestas en mm.</li>
+                            <li><strong>Imperial (UNC/UNF):</strong> Se especifica por Diámetro - Hilos por Pulgada (ej. 1/2" - 13).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-lg flex gap-3 items-start">
+                    <Info className="text-yellow-500 shrink-0 mt-0.5" size={18} />
+                    <div className="text-xs text-yellow-200/80">
+                        <strong>Tip de Seguridad:</strong> Nunca uses extensiones ("cheater bars") en llaves fijas.
+                        Están diseñadas para resistir la fuerza de una mano humana promedio. Si necesitas más palanca, usa un torquímetro o una llave de golpe.
+                    </div>
+                </div>
+            </EducationalSection>
+
             {/* AdSense Banner (Moved to very bottom) */}
             <AdBanner dataAdSlot="1234567890" />
 

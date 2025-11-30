@@ -1,18 +1,4 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/Auth';
-import { SyncProvider } from './contexts/SyncContext';
-import AuthGuard from './components/AuthGuard';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import Inventory from './pages/Inventory';
-import OhmsLaw from './pages/OhmsLaw';
-import Vibration from './pages/Vibration';
-import Transmitter from './pages/Transmitter';
-import Converter from './pages/Converter';
-import TemperatureSensors from './pages/TemperatureSensors';
-import WrenchConverter from './pages/WrenchConverter';
-import TorqueCalculator from './pages/TorqueCalculator';
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/Auth';

@@ -3,12 +3,18 @@ import { Wrench, Info, Settings, AlertTriangle } from 'lucide-react';
 import ToolHeader from '../components/ToolHeader';
 import BackButton from '../components/BackButton';
 import AdBanner from '../components/AdBanner';
+import SaveModal from '../components/SaveModal';
 
 const TorqueCalculator = () => {
     const [diameter, setDiameter] = useState('0.75'); // 3/4"
     const [grade, setGrade] = useState('B7');
     const [lubrication, setLubrication] = useState('moly');
     const [torque, setTorque] = useState({ ftlb: 0, nm: 0 });
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+    // Dummy state for SaveModal compatibility (Torque Calculator doesn't have save logic yet, but we'll add the UI)
+    const [label, setLabel] = useState('');
+    const [description, setDescription] = useState('');
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -80,6 +86,7 @@ const TorqueCalculator = () => {
                 icon={Wrench}
                 iconColorClass="text-orange-400"
                 iconBgClass="bg-orange-500/20"
+                onSave={() => setIsSaveModalOpen(true)}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -205,6 +212,25 @@ const TorqueCalculator = () => {
             </div>
 
             <AdBanner dataAdSlot="9876543210" />
+
+            <SaveModal
+                isOpen={isSaveModalOpen}
+                onClose={() => setIsSaveModalOpen(false)}
+                label={label}
+                setLabel={setLabel}
+                description={description}
+                setDescription={setDescription}
+                onSave={() => {
+                    alert('La función de guardar para Torque estará disponible pronto.');
+                    setIsSaveModalOpen(false);
+                }}
+                onClear={() => {
+                    setLabel('');
+                    setDescription('');
+                }}
+                saving={saving}
+                saveButtonText="Guardar (Próximamente)"
+            />
         </div>
     );
 };

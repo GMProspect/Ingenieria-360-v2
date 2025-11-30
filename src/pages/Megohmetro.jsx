@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/Auth';
 import useLocalStorage from '../hooks/useLocalStorage';
 import AdBanner from '../components/AdBanner';
 import RecentHistory from '../components/RecentHistory';
+import SaveModal from '../components/SaveModal';
 
 const Megohmetro = () => {
     const { t } = useTranslation();
@@ -23,6 +24,7 @@ const Megohmetro = () => {
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
     const [isSessionActive, setIsSessionActive] = useState(false);
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
     // Scroll to top
     React.useEffect(() => {
@@ -192,6 +194,7 @@ const Megohmetro = () => {
                 iconColorClass="text-purple-400"
                 iconBgClass="bg-purple-500/20"
                 onReset={clearAll}
+                onSave={() => setIsSaveModalOpen(true)}
             />
 
             {/* Contextual History Link */}
@@ -372,6 +375,19 @@ const Megohmetro = () => {
             />
 
             <AdBanner dataAdSlot="9876543210" />
+
+            <SaveModal
+                isOpen={isSaveModalOpen}
+                onClose={() => setIsSaveModalOpen(false)}
+                label={label}
+                setLabel={setLabel}
+                description={description}
+                setDescription={setDescription}
+                onSave={handleSave}
+                onClear={clearAll}
+                saving={saving}
+                isSessionActive={isSessionActive}
+            />
         </div>
     );
 };

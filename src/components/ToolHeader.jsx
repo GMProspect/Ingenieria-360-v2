@@ -1,7 +1,7 @@
 import React from 'react';
 import { RotateCcw, Save } from 'lucide-react';
 
-const ToolHeader = ({ title, subtitle, icon: Icon, iconColorClass = "text-cyan-400", iconBgClass = "bg-cyan-500/20", onReset }) => {
+const ToolHeader = ({ title, subtitle, icon: Icon, iconColorClass = "text-cyan-400", iconBgClass = "bg-cyan-500/20", onReset, onSave }) => {
     return (
         <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">

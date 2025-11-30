@@ -40,10 +40,22 @@ jobs:
       - name: Build APK
         run: cd android && sudo apt-get install -y dos2unix && dos2unix gradlew && chmod +x gradlew && ./gradlew assembleDebug
 
-      - name: Print Signing SHA-1
+      - name: Generate and Print Keystore Info
         run: |
           cd android
-          ./gradlew signingReport
+          # Generate a new keystore
+          keytool -genkey -v -keystore release.keystore -alias androidreleasekey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Ingenieria360, OU=Engineering, O=Ingenieria360, L=City, S=State, C=US"
+          
+          echo "--- SHA-1 FINGERPRINT ---"
+          keytool -list -v -keystore release.keystore -alias androidreleasekey -storepass android -keypass android | grep "SHA1:"
+          echo "-------------------------"
+          
+          echo "--- KEYSTORE BASE64 (COPY THIS) ---"
+          base64 -w 0 release.keystore
+          echo ""
+          echo "-----------------------------------"
+
+
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

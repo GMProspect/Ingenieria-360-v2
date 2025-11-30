@@ -4,4 +4,5 @@
     <string name="title_activity_main">Ingeniería 360</string>
     <string name="package_name">com.ingenieria360.app</string>
     <string name="custom_url_scheme">com.ingenieria360.app</string>
+    <string name="server_client_id">470166444106-m7gbe9hj3r93ciudqq5hgf4m7denor0o.apps.googleusercontent.com</string>
 </resources>

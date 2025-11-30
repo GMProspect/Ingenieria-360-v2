@@ -7,7 +7,7 @@ const BackButton = () => {
 
     return (
         <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors mb-6 group"
         >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />

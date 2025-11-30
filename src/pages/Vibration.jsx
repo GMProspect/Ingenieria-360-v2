@@ -7,6 +7,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import AdBanner from '../components/AdBanner';
+import RecentHistory from '../components/RecentHistory';
 
 const Vibration = () => {
     const { user } = useAuth();
@@ -114,8 +115,7 @@ const Vibration = () => {
             }]);
             if (error) throw error;
             alert('Cálculo guardado correctamente.');
-            setLabel('');
-            setDescription('');
+            // Form data persists
         } catch (error) {
             console.error('Error saving:', error);
             alert('Error al guardar.');
@@ -273,6 +273,21 @@ const Vibration = () => {
                     onSave={handleSave}
                     onClear={clearAll}
                     saving={saving}
+                />
+
+                <RecentHistory
+                    toolName="Sonda de Vibración"
+                    onLoadData={(item) => {
+                        if (confirm(`¿Cargar datos de ${item.label}?`)) {
+                            setVoltage(item.data.voltage || '-10.0');
+                            setSensitivity(item.data.sensitivity || '200');
+                            setUnit(item.data.unit || 'mils');
+                            setLabel(item.label || '');
+                            setDescription(item.description || '');
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    }}
+                    refreshTrigger={saving}
                 />
             </div>
 

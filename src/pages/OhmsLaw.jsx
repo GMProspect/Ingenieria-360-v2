@@ -7,6 +7,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import ToolHeader from '../components/ToolHeader';
 import AdBanner from '../components/AdBanner';
+import RecentHistory from '../components/RecentHistory';
 
 const OhmsLaw = () => {
     const { user } = useAuth();
@@ -117,8 +118,7 @@ const OhmsLaw = () => {
             }]);
             if (error) throw error;
             alert('Cálculo guardado correctamente.');
-            setLabel('');
-            setDescription('');
+            // Form data persists
         } catch (error) {
             console.error('Error saving:', error);
             alert('Error al guardar.');
@@ -216,6 +216,21 @@ const OhmsLaw = () => {
                     onSave={handleSave}
                     onClear={clearAll}
                     saving={saving}
+                />
+
+                <RecentHistory
+                    toolName="Ley de Ohm"
+                    onLoadData={(item) => {
+                        if (confirm(`¿Cargar datos de ${item.label}?`)) {
+                            setVoltage(item.data.voltage || '');
+                            setCurrent(item.data.current || '');
+                            setResistance(item.data.resistance || '');
+                            setLabel(item.label || '');
+                            setDescription(item.description || '');
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    }}
+                    refreshTrigger={saving}
                 />
 
                 {/* AdSense Banner (Moved to very bottom) */}

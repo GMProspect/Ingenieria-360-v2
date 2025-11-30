@@ -8,6 +8,7 @@ import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import AdBanner from '../components/AdBanner';
 import TransmitterVisual from '../components/TransmitterVisual';
+import RecentHistory from '../components/RecentHistory';
 
 const Transmitter = () => {
     const { user } = useAuth();
@@ -142,8 +143,7 @@ const Transmitter = () => {
             }]);
             if (error) throw error;
             alert('Cálculo guardado correctamente.');
-            setLabel('');
-            setDescription('');
+            // Form data persists
         } catch (error) {
             console.error('Error saving:', error);
             alert(`Error al guardar: ${JSON.stringify(error, null, 2)}`);
@@ -383,6 +383,23 @@ const Transmitter = () => {
                     onSave={handleSave}
                     onClear={clearAll}
                     saving={saving}
+                />
+
+                <RecentHistory
+                    toolName="Transmisor 4-20mA"
+                    onLoadData={(item) => {
+                        if (confirm(`¿Cargar datos de ${item.label}?`)) {
+                            setRangeLow(item.data.range_low || '0');
+                            setRangeHigh(item.data.range_high || '100');
+                            setUnit(item.data.unit || 'PSI');
+                            setInputMa(item.data.input_ma || '');
+                            setInputPv(item.data.input_pv || '');
+                            setLabel(item.label || '');
+                            setDescription(item.description || '');
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    }}
+                    refreshTrigger={saving}
                 />
 
                 <div className="mt-8 mb-8 p-4 bg-slate-800/80 border border-white/10 rounded-xl flex items-start gap-3 backdrop-blur-md">

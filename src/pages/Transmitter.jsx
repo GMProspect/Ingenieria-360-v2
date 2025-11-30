@@ -206,7 +206,7 @@ const Transmitter = () => {
                     </h3>
                     <div className="grid grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label className="block text-xs text-slate-500 mb-1">Valor a 4mA (Mínimo)</label>
+                            <label className="block text-xs text-slate-500 mb-1 h-8 flex items-end pb-1">Valor a 4mA (Mínimo)</label>
                             <input
                                 type="number"
                                 value={rangeLow}
@@ -215,7 +215,7 @@ const Transmitter = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs text-slate-500 mb-1">Valor a 20mA (Máximo)</label>
+                            <label className="block text-xs text-slate-500 mb-1 h-8 flex items-end pb-1">Valor a 20mA (Máximo)</label>
                             <input
                                 type="number"
                                 value={rangeHigh}
@@ -224,7 +224,7 @@ const Transmitter = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs text-slate-500 mb-1">Unidad</label>
+                            <label className="block text-xs text-slate-500 mb-1 h-8 flex items-end pb-1">Unidad</label>
                             <select
                                 value={unit}
                                 onChange={(e) => setUnit(e.target.value)}

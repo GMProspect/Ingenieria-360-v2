@@ -10,6 +10,7 @@ import ToolHeader from '../components/ToolHeader';
 import AdBanner from '../components/AdBanner';
 import RecentHistory from '../components/RecentHistory';
 import SaveModal from '../components/SaveModal';
+import EducationalSection from '../components/EducationalSection';
 
 const OhmsLaw = () => {
     const { user } = useAuth();
@@ -256,6 +257,33 @@ const OhmsLaw = () => {
                     }}
                     refreshTrigger={saving}
                 />
+
+                <EducationalSection title="Teoría: Ley de Ohm y Potencia">
+                    <h4 className="text-white font-bold mb-2">Conceptos Fundamentales</h4>
+                    <p className="mb-4 text-sm">
+                        La Ley de Ohm describe la relación fundamental entre voltaje, corriente y resistencia en un circuito eléctrico.
+                    </p>
+                    <ul className="list-disc list-inside mb-4 text-sm space-y-1">
+                        <li><strong className="text-yellow-400">Voltaje (V):</strong> La fuerza que empuja los electrones (Presión).</li>
+                        <li><strong className="text-cyan-400">Corriente (I):</strong> El flujo de electrones (Caudal).</li>
+                        <li><strong className="text-purple-400">Resistencia (R):</strong> La oposición al flujo (Restricción).</li>
+                    </ul>
+
+                    <h4 className="text-white font-bold mb-2">Fórmulas Clave</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 text-center font-mono text-xs">
+                        <div className="bg-slate-950/50 p-2 rounded border border-slate-700">V = I × R</div>
+                        <div className="bg-slate-950/50 p-2 rounded border border-slate-700">I = V / R</div>
+                        <div className="bg-slate-950/50 p-2 rounded border border-slate-700">R = V / I</div>
+                    </div>
+
+                    <h4 className="text-white font-bold mb-2">Potencia Eléctrica (P)</h4>
+                    <p className="mb-2 text-sm">
+                        Es la velocidad a la que se consume la energía. Se mide en Watts (W).
+                    </p>
+                    <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700 font-mono text-xs mb-4 text-center">
+                        P = V × I
+                    </div>
+                </EducationalSection>
 
                 {/* AdSense Banner (Moved to very bottom) */}
                 <AdBanner dataAdSlot="1234567890" />

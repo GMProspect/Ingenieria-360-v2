@@ -10,6 +10,7 @@ import SaveCalculationSection from '../components/SaveCalculationSection';
 import AdBanner from '../components/AdBanner';
 import RecentHistory from '../components/RecentHistory';
 import SaveModal from '../components/SaveModal';
+import EducationalSection from '../components/EducationalSection';
 
 const Vibration = () => {
     const { user } = useAuth();
@@ -451,6 +452,27 @@ const Vibration = () => {
                     }}
                     refreshTrigger={saving}
                 />
+
+                <EducationalSection title="Teoría: Análisis de Vibración (API 670 / ISO 10816)">
+                    <h4 className="text-white font-bold mb-2">Sondas de Proximidad (Eddy Current)</h4>
+                    <p className="mb-4 text-sm">
+                        Miden la vibración relativa del eje respecto a la carcasa (Desplazamiento).
+                        Funcionan generando un campo magnético que induce corrientes parásitas en el eje.
+                    </p>
+                    <ul className="list-disc list-inside mb-4 text-sm space-y-1">
+                        <li><strong className="text-pink-400">GAP (Voltaje DC):</strong> Distancia promedio entre la sonda y el eje. Debe estar entre -2V y -18V.</li>
+                        <li><strong className="text-cyan-400">Vibración (Voltaje AC):</strong> La oscilación dinámica del eje.</li>
+                    </ul>
+
+                    <h4 className="text-white font-bold mb-2">Norma ISO 10816-3</h4>
+                    <p className="mb-4 text-sm">
+                        Evalúa la severidad de la vibración en máquinas rotativas midiendo la <strong>Velocidad RMS</strong> en la carcasa (no en el eje).
+                    </p>
+                    <div className="grid grid-cols-2 gap-2 text-xs font-mono mb-4 text-center">
+                        <div className="bg-green-500/10 border border-green-500/30 p-2 rounded">Zona A/B: Operación Segura</div>
+                        <div className="bg-red-500/10 border border-red-500/30 p-2 rounded">Zona C/D: Alarma / Parada</div>
+                    </div>
+                </EducationalSection>
 
                 <AdBanner dataAdSlot="1234567890" />
 

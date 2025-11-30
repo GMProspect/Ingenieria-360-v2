@@ -4,6 +4,7 @@ import ToolHeader from '../components/ToolHeader';
 import BackButton from '../components/BackButton';
 import AdBanner from '../components/AdBanner';
 import SaveModal from '../components/SaveModal';
+import EducationalSection from '../components/EducationalSection';
 
 const TorqueCalculator = () => {
     const [diameter, setDiameter] = useState('0.75'); // 3/4"
@@ -210,6 +211,35 @@ const TorqueCalculator = () => {
                     </div>
                 </div>
             </div>
+
+            <EducationalSection title="Teoría: Torque y Tensión de Pernos">
+                <h4 className="text-white font-bold mb-2">¿Qué es el Torque?</h4>
+                <p className="mb-4 text-sm">
+                    El torque no es la tensión final del perno, sino la fuerza rotacional aplicada para lograr esa tensión.
+                    El objetivo real es estirar el perno para que actúe como un resorte fuerte (fuerza de clampeo).
+                </p>
+
+                <h4 className="text-white font-bold mb-2">El Factor K (Nut Factor)</h4>
+                <p className="mb-2 text-sm">
+                    Es la variable más crítica. Representa la fricción entre la tuerca, el perno y la arandela.
+                </p>
+                <ul className="list-disc list-inside mb-4 text-sm space-y-1">
+                    <li><strong className="text-red-400">Seco (K=0.20):</strong> Alta fricción. Requiere más torque para lograr la misma tensión.</li>
+                    <li><strong className="text-blue-400">Moly (K=0.12):</strong> Baja fricción. Logra la misma tensión con mucho menos torque.</li>
+                </ul>
+                <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700 font-mono text-xs mb-4 text-center">
+                    T = K × D × F
+                </div>
+                <p className="text-xs text-slate-400 mb-4">
+                    Donde: T = Torque, K = Factor de Fricción, D = Diámetro, F = Carga Objetivo.
+                </p>
+
+                <h4 className="text-white font-bold mb-2">Grados de Pernos (ASTM)</h4>
+                <ul className="list-disc list-inside text-sm space-y-1">
+                    <li><strong className="text-orange-400">B7:</strong> Acero aleado tratado térmicamente. El estándar para alta presión/temperatura.</li>
+                    <li><strong className="text-slate-400">B8:</strong> Acero inoxidable (AISI 304). Menor resistencia, usado por corrosión.</li>
+                </ul>
+            </EducationalSection>
 
             <AdBanner dataAdSlot="9876543210" />
 

@@ -153,6 +153,59 @@ const Home = () => {
                 ))}
             </div>
 
+            {/* About Section (SEO & AdSense Rich Content) */}
+            <div className="mb-16 bg-slate-900/30 rounded-2xl p-8 border border-white/5 backdrop-blur-sm">
+                <h3 className="text-2xl font-bold text-white mb-4">Sobre Ingeniería 360</h3>
+                <div className="prose prose-invert prose-sm max-w-none text-slate-400 space-y-4">
+                    <p>
+                        <strong>Ingeniería 360</strong> es la herramienta definitiva para ingenieros de campo, técnicos de mantenimiento y operadores de planta.
+                        Nuestra misión es simplificar los cálculos complejos y poner la teoría técnica al alcance de tu mano, sin necesidad de conexión a internet.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                        <div>
+                            <h4 className="text-white font-bold mb-2 flex items-center gap-2">
+                                <Zap size={18} className="text-yellow-400" />
+                                Electricidad y Potencia
+                            </h4>
+                            <p>
+                                Realiza cálculos de Ley de Ohm, potencia trifásica y resistencia de aislamiento (Megóhmetro) según normas IEEE 43-2013.
+                                Ideal para diagnósticos rápidos en tableros y motores.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 className="text-white font-bold mb-2 flex items-center gap-2">
+                                <Activity size={18} className="text-cyan-400" />
+                                Instrumentación Industrial
+                            </h4>
+                            <p>
+                                Simula lazos de corriente 4-20mA, convierte unidades de ingeniería y consulta tablas de termopares (Tipos J, K, T, E) y RTDs (Pt100).
+                                Todo basado en estándares ISA y API.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 className="text-white font-bold mb-2 flex items-center gap-2">
+                                <Wrench size={18} className="text-orange-400" />
+                                Mecánica de Precisión
+                            </h4>
+                            <p>
+                                Calcula el torque de apriete para pernos B7/B8 considerando el factor de fricción (K).
+                                Encuentra la llave correcta para cada tuerca con nuestro conversor métrico/imperial unificado.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 className="text-white font-bold mb-2 flex items-center gap-2">
+                                <Database size={18} className="text-blue-400" />
+                                Gestión de Activos
+                            </h4>
+                            <p>
+                                Lleva el control de tu inventario de herramientas y repuestos directamente en tu bolsillo.
+                                Sincronización en la nube para que nunca pierdas tus datos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Feedback Section */}
             <div className="bg-slate-900/40 rounded-2xl p-8 text-center shadow-lg border border-white/5 backdrop-blur-sm relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none" />

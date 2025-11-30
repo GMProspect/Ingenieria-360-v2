@@ -11,6 +11,7 @@ import AdBanner from '../components/AdBanner';
 import TransmitterVisual from '../components/TransmitterVisual';
 import RecentHistory from '../components/RecentHistory';
 import SaveModal from '../components/SaveModal';
+import EducationalSection from '../components/EducationalSection';
 
 const Transmitter = () => {
     const { user } = useAuth();
@@ -448,6 +449,35 @@ const Transmitter = () => {
 
             {/* AdSense Banner (Moved to very bottom) */}
             <AdBanner dataAdSlot="1234567890" />
+
+            <EducationalSection title="Teoría: Lazos de Corriente 4-20 mA">
+                <h4 className="text-white font-bold mb-2">¿Por qué usamos 4-20 mA?</h4>
+                <p className="mb-4 text-sm">
+                    El estándar de 4-20 mA es el más utilizado en la industria para transmitir señales analógicas.
+                    A diferencia de las señales de voltaje (0-10V), la corriente no se atenúa con la distancia (resistencia del cable),
+                    lo que permite transmisiones largas sin pérdida de precisión.
+                </p>
+
+                <h4 className="text-white font-bold mb-2">El "Cero Vivo" (Live Zero)</h4>
+                <p className="mb-4 text-sm">
+                    El rango comienza en 4 mA (0%) y no en 0 mA. Esto permite detectar fallas:
+                </p>
+                <ul className="list-disc list-inside mb-4 text-sm space-y-1">
+                    <li><strong className="text-red-400">0 mA:</strong> Indica cable cortado o falla de energía.</li>
+                    <li><strong className="text-green-400">4 mA:</strong> Indica que el proceso está en 0% pero el sensor funciona.</li>
+                </ul>
+
+                <h4 className="text-white font-bold mb-2">Fórmula de Conversión</h4>
+                <p className="mb-2 text-sm">
+                    La relación es lineal y se calcula con la ecuación de la recta:
+                </p>
+                <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700 font-mono text-xs mb-4">
+                    mA = 4 + [(PV - LRV) / (URV - LRV)] × 16
+                </div>
+                <p className="text-xs text-slate-400">
+                    Donde: PV = Variable de Proceso, LRV = Valor Rango Bajo (4mA), URV = Valor Rango Alto (20mA).
+                </p>
+            </EducationalSection>
 
             <SaveModal
                 isOpen={isSaveModalOpen}

@@ -6,6 +6,7 @@ import AdBanner from '../components/AdBanner';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useAuth } from '../contexts/Auth';
 import SensorVisual from '../components/SensorVisual';
+import EducationalSection from '../components/EducationalSection';
 
 const sensorData = {
     rtd: {
@@ -682,6 +683,41 @@ const TemperatureSensors = () => {
                     </div>
                 </div>
             </div>
+
+            <EducationalSection title="Teoría: Sensores de Temperatura">
+                <h4 className="text-white font-bold mb-2">RTD vs Termocupla</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700">
+                        <h5 className="text-blue-400 font-bold text-sm mb-1">RTD (Pt100)</h5>
+                        <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
+                            <li>Mayor precisión y estabilidad.</li>
+                            <li>Rango limitado (-200 a 850°C).</li>
+                            <li>Requiere fuente de corriente.</li>
+                            <li>Ideal para procesos críticos.</li>
+                        </ul>
+                    </div>
+                    <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700">
+                        <h5 className="text-red-400 font-bold text-sm mb-1">Termocupla (TC)</h5>
+                        <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
+                            <li>Respuesta rápida y robustez.</li>
+                            <li>Rango amplio (-270 a 1800°C).</li>
+                            <li>Genera su propio voltaje (mV).</li>
+                            <li>Ideal para hornos y vibración.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4 className="text-white font-bold mb-2">Efecto Seebeck (Termocuplas)</h4>
+                <p className="mb-4 text-sm">
+                    Cuando se unen dos metales diferentes y hay una diferencia de temperatura entre la unión caliente (medición) y la fría (instrumento), se genera un voltaje proporcional a la temperatura.
+                </p>
+
+                <h4 className="text-white font-bold mb-2">Coeficiente Alpha (RTDs)</h4>
+                <p className="mb-2 text-sm">
+                    Define la pureza del platino. El estándar IEC 60751 usa <strong>α = 0.00385</strong>.
+                    Si usas un sensor americano antiguo (α = 0.00392) con un instrumento moderno, tendrás error en la medición.
+                </p>
+            </EducationalSection>
 
             <AdBanner dataAdSlot="1234567890" />
 

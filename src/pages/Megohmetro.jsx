@@ -11,6 +11,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import AdBanner from '../components/AdBanner';
 import RecentHistory from '../components/RecentHistory';
 import SaveModal from '../components/SaveModal';
+import EducationalSection from '../components/EducationalSection';
 
 const Megohmetro = () => {
     const { t } = useTranslation();
@@ -392,6 +393,38 @@ const Megohmetro = () => {
             />
 
             <AdBanner dataAdSlot="9876543210" />
+
+            <EducationalSection title="Teoría: Resistencia de Aislamiento (IEEE 43-2013)">
+                <h4 className="text-white font-bold mb-2">¿Qué es la Resistencia de Aislamiento?</h4>
+                <p className="mb-4 text-sm">
+                    Es la resistencia eléctrica que ofrece el material aislante de un motor o generador al paso de la corriente.
+                    Con el tiempo, factores como la humedad, el polvo, el calor y el envejecimiento degradan este aislamiento,
+                    aumentando el riesgo de cortocircuitos y fallas a tierra.
+                </p>
+
+                <h4 className="text-white font-bold mb-2">Normativa IEEE 43-2013</h4>
+                <p className="mb-4 text-sm">
+                    Esta norma establece los criterios mínimos para evaluar el aislamiento en máquinas rotativas.
+                    Los valores mínimos recomendados (corregidos a 40°C) son:
+                </p>
+                <ul className="list-disc list-inside mb-4 text-sm space-y-1">
+                    <li><strong className="text-blue-400">5 MΩ:</strong> Para motores con voltaje nominal menor a 1000 V (ej. 480V, 220V).</li>
+                    <li><strong className="text-blue-400">100 MΩ:</strong> Para motores con voltaje nominal mayor a 1000 V (Media/Alta Tensión).</li>
+                </ul>
+
+                <h4 className="text-white font-bold mb-2">Índice de Polarización (PI)</h4>
+                <p className="mb-2 text-sm">
+                    Es la relación entre la resistencia a los 10 minutos y la resistencia a 1 minuto.
+                    Ayuda a determinar si el aislamiento está sucio o envejecido.
+                </p>
+                <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700 font-mono text-xs mb-4">
+                    PI = R(10 min) / R(1 min)
+                </div>
+                <ul className="list-disc list-inside text-sm space-y-1">
+                    <li><strong className="text-red-400">PI &lt; 2.0:</strong> Aislamiento cuestionable (posible suciedad/humedad).</li>
+                    <li><strong className="text-green-400">PI &gt; 2.0:</strong> Aislamiento aceptable (Clase B, F, H).</li>
+                </ul>
+            </EducationalSection>
 
             <SaveModal
                 isOpen={isSaveModalOpen}

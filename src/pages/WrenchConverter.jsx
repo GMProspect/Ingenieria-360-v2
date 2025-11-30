@@ -3,6 +3,7 @@ import { Wrench, Info } from 'lucide-react';
 import ToolHeader from '../components/ToolHeader';
 import BackButton from '../components/BackButton';
 import AdBanner from '../components/AdBanner';
+import EducationalSection from '../components/EducationalSection';
 
 const WrenchConverter = () => {
     const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -137,6 +138,29 @@ const WrenchConverter = () => {
                     </ul>
                 </div>
             </div>
+
+            <EducationalSection title="Teoría: Medidas de Llaves y Tuercas">
+                <h4 className="text-white font-bold mb-2">Métrico vs Imperial (SAE)</h4>
+                <p className="mb-4 text-sm">
+                    Aunque algunas llaves parecen intercambiables (ej. 19mm y 3/4"), usar la incorrecta puede dañar la cabeza del perno ("redondearlo"), especialmente en tuercas atascadas.
+                </p>
+
+                <h4 className="text-white font-bold mb-2">Equivalencias Seguras</h4>
+                <ul className="list-disc list-inside mb-4 text-sm space-y-1">
+                    <li><strong className="text-green-400">Exactas:</strong> 5/16" ≈ 8mm (7.94mm), 7/16" ≈ 11mm (11.11mm).</li>
+                    <li><strong className="text-yellow-400">Aceptables:</strong> 3/4" (19.05mm) en tuerca 19mm.</li>
+                    <li><strong className="text-red-400">Peligrosas:</strong> 1/2" (12.7mm) en tuerca 13mm (Muy holgada).</li>
+                </ul>
+
+                <h4 className="text-white font-bold mb-2">Nomenclatura de Tuercas</h4>
+                <p className="mb-2 text-sm">
+                    El tamaño "M" (ej. M8) se refiere al diámetro de la rosca, no al tamaño de la llave.
+                    La norma ISO define qué llave usa cada rosca, pero existen variantes (DIN, JIS).
+                </p>
+                <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700 font-mono text-xs mb-4 text-center">
+                    M8 (Rosca) ≠ 13mm (Llave)
+                </div>
+            </EducationalSection>
 
             {/* AdSense Banner (Moved to very bottom) */}
             <AdBanner dataAdSlot="1234567890" />

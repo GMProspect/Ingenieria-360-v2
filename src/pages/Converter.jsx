@@ -9,6 +9,7 @@ import ToolHeader from '../components/ToolHeader';
 import SaveCalculationSection from '../components/SaveCalculationSection';
 import AdBanner from '../components/AdBanner';
 import SaveModal from '../components/SaveModal';
+import EducationalSection from '../components/EducationalSection';
 
 const Converter = () => {
     const { user } = useAuth();
@@ -311,6 +312,37 @@ const Converter = () => {
                     </ul>
                 </div>
             </div>
+
+            <EducationalSection title="Teoría: Sistemas de Unidades">
+                <h4 className="text-white font-bold mb-2">Sistema Internacional (SI) vs Imperial</h4>
+                <p className="mb-4 text-sm">
+                    La ingeniería moderna tiende al Sistema Internacional (Metros, Kilogramos, Pascales), pero la industria del petróleo y gas (Oil & Gas) sigue dominada por el sistema Imperial (Pies, Libras, PSI).
+                </p>
+
+                <h4 className="text-white font-bold mb-2">Factores de Conversión Clave</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700">
+                        <h5 className="text-green-400 font-bold text-sm mb-1">Presión</h5>
+                        <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
+                            <li>1 Bar ≈ 14.5 PSI</li>
+                            <li>1 Atm ≈ 1.013 Bar</li>
+                        </ul>
+                    </div>
+                    <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700">
+                        <h5 className="text-green-400 font-bold text-sm mb-1">Longitud</h5>
+                        <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
+                            <li>1 Pulgada = 25.4 mm (Exacto)</li>
+                            <li>1 Pie = 30.48 cm</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4 className="text-white font-bold mb-2">Temperatura Absoluta</h4>
+                <p className="mb-2 text-sm">
+                    En termodinámica se usa Kelvin (K). 0°C equivale a 273.15 K.
+                    El "Cero Absoluto" (0 K) es la temperatura teórica donde cesa todo movimiento molecular.
+                </p>
+            </EducationalSection>
 
             {/* AdSense Banner (Moved to very bottom) */}
             <AdBanner dataAdSlot="1234567890" />

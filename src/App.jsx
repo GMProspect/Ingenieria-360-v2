@@ -20,7 +20,20 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import AdminGuard from './components/AdminGuard';
 
+import { App as CapacitorApp } from '@capacitor/app';
+import { useEffect } from 'react';
+
 function App() {
+  useEffect(() => {
+    CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+      if (canGoBack) {
+        window.history.back();
+      } else {
+        CapacitorApp.exitApp();
+      }
+    });
+  }, []);
+
   return (
     <AuthProvider>
       <Router>

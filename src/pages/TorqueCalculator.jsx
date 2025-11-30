@@ -18,6 +18,7 @@ const TorqueCalculator = () => {
     // Dummy state for SaveModal compatibility (Torque Calculator doesn't have save logic yet, but we'll add the UI)
     const [label, setLabel] = useState('');
     const [description, setDescription] = useState('');
+    const [saving, setSaving] = useState(false);
     const { user } = useAuth();
     const { isOnline, addToQueue } = useSync();
 

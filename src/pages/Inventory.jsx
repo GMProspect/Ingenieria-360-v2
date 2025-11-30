@@ -12,6 +12,12 @@ import AdBanner from '../components/AdBanner';
 
 const Inventory = () => {
     const { user } = useAuth();
+
+    // Scroll to top on mount
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');

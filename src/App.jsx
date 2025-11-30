@@ -13,12 +13,29 @@ import Converter from './pages/Converter';
 import TemperatureSensors from './pages/TemperatureSensors';
 import WrenchConverter from './pages/WrenchConverter';
 import TorqueCalculator from './pages/TorqueCalculator';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/Auth';
+import { SyncProvider } from './contexts/SyncContext';
+import AuthGuard from './components/AuthGuard';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Inventory from './pages/Inventory';
+import OhmsLaw from './pages/OhmsLaw';
+import Vibration from './pages/Vibration';
+import Transmitter from './pages/Transmitter';
+import Converter from './pages/Converter';
+import TemperatureSensors from './pages/TemperatureSensors';
+import WrenchConverter from './pages/WrenchConverter';
+import TorqueCalculator from './pages/TorqueCalculator';
 import Megohmetro from './pages/Megohmetro';
 import Login from './pages/Login';
 import History from './pages/History';
 import FeedbackList from './pages/FeedbackList';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import PSSModels from './pages/PSSModels';
+import SaturationCurves from './pages/SaturationCurves';
 import AdminGuard from './components/AdminGuard';
 
 import { App as CapacitorApp } from '@capacitor/app';
@@ -60,6 +77,8 @@ function App() {
                     <Route path="/wrench-converter" element={<WrenchConverter />} />
                     <Route path="/megohmetro" element={<Megohmetro />} />
                     <Route path="/history" element={<History />} />
+                    <Route path="/pss-models" element={<PSSModels />} />
+                    <Route path="/saturation-curves" element={<SaturationCurves />} />
                     <Route path="/feedback" element={
                       <AdminGuard>
                         <FeedbackList />

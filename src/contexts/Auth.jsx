@@ -12,6 +12,10 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (Capacitor.isNativePlatform()) {
+            GoogleAuth.initialize();
+        }
+
         // Check active session
         const getSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();

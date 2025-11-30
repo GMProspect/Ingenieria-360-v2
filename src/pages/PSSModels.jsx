@@ -10,8 +10,8 @@ const BlockDiagramPSS1A = () => (
         <div className="absolute right-2 top-2 text-[10px] text-slate-500 animate-pulse md:hidden">
             ← Desliza →
         </div>
-        <div className="flex flex-col items-center p-4 bg-white/5 rounded-xl overflow-x-auto custom-scrollbar">
-            <div className="flex items-center min-w-[600px] gap-2">
+        <div className="flex flex-col p-4 bg-white/5 rounded-xl overflow-x-auto custom-scrollbar">
+            <div className="flex items-center min-w-[600px] gap-2 mx-auto md:mx-0">
                 {/* Input */}
                 <div className="flex flex-col items-center shrink-0">
                     <span className="text-xs text-slate-400 mb-1">Velocidad (ω)</span>
@@ -64,7 +64,7 @@ const BlockDiagramPSS1A = () => (
                 </div>
                 <span className="text-xs font-bold text-white">Vpss</span>
             </div>
-            <p className="mt-4 text-xs text-slate-500 italic">Diagrama de Bloques Simplificado IEEE PSS1A</p>
+            <p className="mt-4 text-xs text-slate-500 italic text-center w-full min-w-[600px]">Diagrama de Bloques Simplificado IEEE PSS1A</p>
         </div>
     </div>
 );
@@ -74,8 +74,8 @@ const BlockDiagramPSS4B = () => (
         <div className="absolute right-2 top-2 text-[10px] text-slate-500 animate-pulse md:hidden">
             ← Desliza →
         </div>
-        <div className="flex flex-col items-center p-6 bg-white/5 rounded-xl overflow-x-auto custom-scrollbar">
-            <div className="flex items-center min-w-[700px] gap-4">
+        <div className="flex flex-col p-6 bg-white/5 rounded-xl overflow-x-auto custom-scrollbar">
+            <div className="flex items-center min-w-[700px] gap-4 mx-auto md:mx-0">
                 {/* Input */}
                 <div className="flex flex-col items-center shrink-0">
                     <span className="text-xs text-slate-400 mb-1">Velocidad (ω)</span>
@@ -142,7 +142,7 @@ const BlockDiagramPSS4B = () => (
                     </div>
                 </div>
             </div>
-            <p className="mt-8 text-xs text-slate-500 italic text-center">
+            <p className="mt-8 text-xs text-slate-500 italic text-center w-full min-w-[700px]">
                 El PSS4B procesa 3 bandas de frecuencia en paralelo para cubrir todo el espectro de oscilaciones.
             </p>
         </div>

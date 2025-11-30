@@ -211,7 +211,7 @@ const Transmitter = () => {
                                 type="number"
                                 value={rangeLow}
                                 onChange={(e) => setRangeLow(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
+                                className="w-full h-[42px] bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
                             />
                         </div>
                         <div>
@@ -220,7 +220,7 @@ const Transmitter = () => {
                                 type="number"
                                 value={rangeHigh}
                                 onChange={(e) => setRangeHigh(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
+                                className="w-full h-[42px] bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
                             />
                         </div>
                         <div>
@@ -228,7 +228,7 @@ const Transmitter = () => {
                             <select
                                 value={unit}
                                 onChange={(e) => setUnit(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none appearance-none"
+                                className="w-full h-[42px] bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none appearance-none"
                             >
                                 <optgroup label="Presión">
                                     <option value="PSI">PSI</option>
@@ -310,10 +310,10 @@ const Transmitter = () => {
                                             type="number"
                                             value={inputMa}
                                             onChange={(e) => handleMaChange(e.target.value)}
-                                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all pl-12"
+                                            className="w-full h-[50px] bg-slate-950 border border-slate-700 rounded-lg pl-4 pr-12 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all"
                                             placeholder="4.00"
                                         />
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 font-bold text-sm pointer-events-none">mA</div>
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-cyan-500 font-bold text-sm pointer-events-none">mA</div>
                                     </div>
                                 </div>
 
@@ -328,10 +328,10 @@ const Transmitter = () => {
                                             type="number"
                                             value={inputPv}
                                             onChange={(e) => handlePvChange(e.target.value)}
-                                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all pl-12"
+                                            className="w-full h-[50px] bg-slate-950 border border-slate-700 rounded-lg pl-4 pr-12 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all"
                                             placeholder="0.00"
                                         />
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm pointer-events-none">PV</div>
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm pointer-events-none">PV</div>
                                     </div>
                                 </div>
                             </div>

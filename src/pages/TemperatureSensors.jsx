@@ -400,7 +400,7 @@ const TemperatureSensors = () => {
                                 <button
                                     key={key}
                                     onClick={() => setType(key)}
-                                    className={`p-2 rounded-lg text-sm font-bold transition-colors ${safeType === key
+                                    className={`p-2 rounded-lg text-sm font-bold transition-colors whitespace-normal leading-tight h-auto min-h-[40px] flex items-center justify-center text-center ${safeType === key
                                         ? 'bg-red-500 text-white'
                                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                         }`}
@@ -538,7 +538,7 @@ const TemperatureSensors = () => {
                                         type="number"
                                         value={inputOutput}
                                         onChange={(e) => handleOutputChange(e.target.value)}
-                                        className={`w-full bg-slate-950 border rounded-lg px-4 py-3 font-mono text-xl outline-none transition-all shadow-inner ${mode === 'measure'
+                                        className={`w-full bg-slate-950 border rounded-lg pl-4 pr-12 py-3 font-mono text-xl outline-none transition-all shadow-inner ${mode === 'measure'
                                             ? 'border-green-500/50 text-white shadow-[0_0_10px_rgba(34,197,94,0.1)]'
                                             : 'border-slate-700 text-slate-400'
                                             }`}

@@ -430,7 +430,7 @@ const Transmitter = () => {
             <AdBanner dataAdSlot="1234567890" />
 
         </div>
-        </div >
+
     );
 };
 

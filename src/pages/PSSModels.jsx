@@ -5,149 +5,169 @@ import BackButton from '../components/BackButton';
 import AdBanner from '../components/AdBanner';
 import EducationalSection from '../components/EducationalSection';
 
-const BlockDiagramPSS1A = () => (
-    <div className="relative">
-        <div className="absolute right-2 top-2 text-[10px] text-slate-500 animate-pulse md:hidden">
-            ← Desliza →
-        </div>
-        <div className="flex flex-col p-4 bg-white/5 rounded-xl overflow-x-auto custom-scrollbar">
-            <div className="flex items-center min-w-[600px] gap-2 mx-auto md:mx-0">
-                {/* Input */}
-                <div className="flex flex-col items-center shrink-0">
-                    <span className="text-xs text-slate-400 mb-1">Velocidad (ω)</span>
-                    <div className="w-16 h-10 border-2 border-slate-600 rounded flex items-center justify-center bg-slate-900 text-xs font-bold">
-                        Filtro
-                    </div>
-                </div>
-                <div className="w-8 h-0.5 bg-slate-600"></div>
-                {/* Washout */}
-                <div className="flex flex-col items-center shrink-0">
-                    <span className="text-xs text-slate-400 mb-1">Washout</span>
-                    <div className="w-20 h-12 border-2 border-blue-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-mono text-blue-300 text-center">
-                        sTw<br />1+sTw
-                    </div>
-                </div>
-                <div className="w-8 h-0.5 bg-slate-600"></div>
-                {/* Gain */}
-                <div className="flex flex-col items-center shrink-0">
-                    <span className="text-xs text-slate-400 mb-1">Ganancia</span>
-                    <div className="w-12 h-10 border-2 border-green-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-green-400">
-                        Ks
-                    </div>
-                </div>
-                <div className="w-8 h-0.5 bg-slate-600"></div>
-                {/* Lead-Lag 1 */}
-                <div className="flex flex-col items-center shrink-0">
-                    <span className="text-xs text-slate-400 mb-1">Comp. Fase 1</span>
-                    <div className="w-24 h-12 border-2 border-purple-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-mono text-purple-300 text-center">
-                        1+sT1<br />1+sT2
-                    </div>
-                </div>
-                <div className="w-8 h-0.5 bg-slate-600"></div>
-                {/* Lead-Lag 2 */}
-                <div className="flex flex-col items-center shrink-0">
-                    <span className="text-xs text-slate-400 mb-1">Comp. Fase 2</span>
-                    <div className="w-24 h-12 border-2 border-purple-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-mono text-purple-300 text-center">
-                        1+sT3<br />1+sT4
-                    </div>
-                </div>
-                <div className="w-8 h-0.5 bg-slate-600"></div>
-                {/* Limiter */}
-                <div className="flex flex-col items-center shrink-0">
-                    <span className="text-xs text-slate-400 mb-1">Límite</span>
-                    <div className="w-12 h-10 border-2 border-red-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-red-400">
-                        ±Vs
-                    </div>
-                </div>
-                <div className="w-8 h-0.5 bg-slate-600 relative">
-                    <div className="absolute -right-1 -top-1 w-2 h-2 border-t-2 border-r-2 border-slate-600 rotate-45"></div>
-                </div>
-                <span className="text-xs font-bold text-white">Vpss</span>
-            </div>
-            <p className="mt-4 text-xs text-slate-500 italic text-center w-full min-w-[600px]">Diagrama de Bloques Simplificado IEEE PSS1A</p>
-        </div>
-    </div>
-);
+const BlockDiagramPSS1A = ({ t1, t2, t3, t4 }) => {
+    const [showHint, setShowHint] = useState(true);
 
-const BlockDiagramPSS4B = () => (
-    <div className="relative">
-        <div className="absolute right-2 top-2 text-[10px] text-slate-500 animate-pulse md:hidden">
-            ← Desliza →
-        </div>
-        <div className="flex flex-col p-6 bg-white/5 rounded-xl overflow-x-auto custom-scrollbar">
-            <div className="flex items-center min-w-[700px] gap-4 mx-auto md:mx-0">
-                {/* Input */}
-                <div className="flex flex-col items-center shrink-0">
-                    <span className="text-xs text-slate-400 mb-1">Velocidad (ω)</span>
-                    <div className="w-12 h-12 border-2 border-slate-600 rounded-full flex items-center justify-center bg-slate-900 text-xs font-bold">
-                        ω
-                    </div>
+    return (
+        <div className="relative">
+            {showHint && (
+                <div className="absolute right-2 top-2 text-[10px] text-slate-500 animate-pulse md:hidden pointer-events-none">
+                    ← Desliza →
                 </div>
-
-                {/* Splitter */}
-                <div className="flex flex-col gap-8 relative px-4 border-l-2 border-slate-600 h-[200px] justify-center">
-                    {/* Top Branch (High Freq) */}
-                    <div className="absolute top-0 left-0 w-4 h-0.5 bg-slate-600"></div>
-                    <div className="flex items-center gap-2 absolute top-[-14px] left-4">
-                        <div className="w-24 h-10 border border-red-500/50 rounded flex flex-col items-center justify-center bg-slate-900 text-[10px] text-red-300">
-                            <span className="font-bold">Banda Alta</span>
-                            <span>(High)</span>
-                        </div>
-                        <div className="w-8 h-0.5 bg-slate-600"></div>
-                        <div className="w-12 h-10 border border-green-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-green-400">
-                            K_H
+            )}
+            <div
+                className="flex flex-col p-4 bg-white/5 rounded-xl overflow-x-auto custom-scrollbar"
+                onScroll={() => setShowHint(false)}
+            >
+                <div className="flex items-center min-w-[600px] gap-2 mx-auto md:mx-0">
+                    {/* Input */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <span className="text-xs text-slate-400 mb-1">Velocidad (ω)</span>
+                        <div className="w-16 h-10 border-2 border-slate-600 rounded flex items-center justify-center bg-slate-900 text-xs font-bold">
+                            Filtro
                         </div>
                     </div>
-
-                    {/* Middle Branch (Intermediate Freq) */}
-                    <div className="absolute top-1/2 left-0 w-4 h-0.5 bg-slate-600"></div>
-                    <div className="flex items-center gap-2 absolute top-[calc(50%-20px)] left-4">
-                        <div className="w-24 h-10 border border-yellow-500/50 rounded flex flex-col items-center justify-center bg-slate-900 text-[10px] text-yellow-300">
-                            <span className="font-bold">Banda Media</span>
-                            <span>(Interm.)</span>
-                        </div>
-                        <div className="w-8 h-0.5 bg-slate-600"></div>
-                        <div className="w-12 h-10 border border-green-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-green-400">
-                            K_I
+                    <div className="w-8 h-0.5 bg-slate-600"></div>
+                    {/* Washout */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <span className="text-xs text-slate-400 mb-1">Washout</span>
+                        <div className="w-20 h-12 border-2 border-blue-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-mono text-blue-300 text-center">
+                            sTw<br />1+sTw
                         </div>
                     </div>
-
-                    {/* Bottom Branch (Low Freq) */}
-                    <div className="absolute bottom-0 left-0 w-4 h-0.5 bg-slate-600"></div>
-                    <div className="flex items-center gap-2 absolute bottom-[-14px] left-4">
-                        <div className="w-24 h-10 border border-blue-500/50 rounded flex flex-col items-center justify-center bg-slate-900 text-[10px] text-blue-300">
-                            <span className="font-bold">Banda Baja</span>
-                            <span>(Low)</span>
-                        </div>
-                        <div className="w-8 h-0.5 bg-slate-600"></div>
-                        <div className="w-12 h-10 border border-green-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-green-400">
-                            K_L
+                    <div className="w-8 h-0.5 bg-slate-600"></div>
+                    {/* Gain */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <span className="text-xs text-slate-400 mb-1">Ganancia</span>
+                        <div className="w-12 h-10 border-2 border-green-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-green-400">
+                            Ks
                         </div>
                     </div>
-                </div>
-
-                {/* Summation */}
-                <div className="flex flex-col items-center shrink-0 ml-[220px]">
-                    <div className="w-10 h-10 border-2 border-slate-500 rounded-full flex items-center justify-center bg-slate-800 text-lg font-bold">
-                        Σ
+                    <div className="w-8 h-0.5 bg-slate-600"></div>
+                    {/* Lead-Lag 1 */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <span className="text-xs text-slate-400 mb-1">Comp. Fase 1</span>
+                        <div className="w-24 h-12 border-2 border-purple-500/50 rounded flex flex-col items-center justify-center bg-slate-900 text-[10px] font-mono text-purple-300 text-center leading-tight">
+                            <div>1+s({t1})</div>
+                            <div className="border-t border-purple-500/30">1+s({t2})</div>
+                        </div>
                     </div>
-                </div>
-                <div className="w-8 h-0.5 bg-slate-600"></div>
-
-                {/* Output */}
-                <div className="flex flex-col items-center shrink-0">
-                    <span className="text-xs text-slate-400 mb-1">Salida</span>
-                    <div className="w-16 h-10 border-2 border-purple-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-purple-400">
-                        Vpss
+                    <div className="w-8 h-0.5 bg-slate-600"></div>
+                    {/* Lead-Lag 2 */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <span className="text-xs text-slate-400 mb-1">Comp. Fase 2</span>
+                        <div className="w-24 h-12 border-2 border-purple-500/50 rounded flex items-center justify-center bg-slate-900 text-[10px] font-mono text-purple-300 text-center leading-tight">
+                            <div>1+s({t3})</div>
+                            <div className="border-t border-purple-500/30">1+s({t4})</div>
+                        </div>
                     </div>
+                    <div className="w-8 h-0.5 bg-slate-600"></div>
+                    {/* Limiter */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <span className="text-xs text-slate-400 mb-1">Límite</span>
+                        <div className="w-12 h-10 border-2 border-red-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-red-400">
+                            ±Vs
+                        </div>
+                    </div>
+                    <div className="w-8 h-0.5 bg-slate-600 relative">
+                        <div className="absolute -right-1 -top-1 w-2 h-2 border-t-2 border-r-2 border-slate-600 rotate-45"></div>
+                    </div>
+                    <span className="text-xs font-bold text-white">Vpss</span>
                 </div>
             </div>
-            <p className="mt-8 text-xs text-slate-500 italic text-center w-full min-w-[700px]">
+            <p className="mt-2 text-xs text-slate-500 italic text-center">Diagrama de Bloques Simplificado IEEE PSS1A</p>
+        </div>
+    );
+};
+
+const BlockDiagramPSS4B = ({ kL, kI, kH }) => {
+    const [showHint, setShowHint] = useState(true);
+
+    return (
+        <div className="relative">
+            {showHint && (
+                <div className="absolute right-2 top-2 text-[10px] text-slate-500 animate-pulse md:hidden pointer-events-none">
+                    ← Desliza →
+                </div>
+            )}
+            <div
+                className="flex flex-col p-6 bg-white/5 rounded-xl overflow-x-auto custom-scrollbar"
+                onScroll={() => setShowHint(false)}
+            >
+                <div className="flex items-center min-w-[700px] gap-4 mx-auto md:mx-0">
+                    {/* Input */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <span className="text-xs text-slate-400 mb-1">Velocidad (ω)</span>
+                        <div className="w-12 h-12 border-2 border-slate-600 rounded-full flex items-center justify-center bg-slate-900 text-xs font-bold">
+                            ω
+                        </div>
+                    </div>
+
+                    {/* Splitter */}
+                    <div className="flex flex-col gap-8 relative px-4 border-l-2 border-slate-600 h-[200px] justify-center">
+                        {/* Top Branch (High Freq) */}
+                        <div className="absolute top-0 left-0 w-4 h-0.5 bg-slate-600"></div>
+                        <div className="flex items-center gap-2 absolute top-[-14px] left-4">
+                            <div className="w-24 h-10 border border-red-500/50 rounded flex flex-col items-center justify-center bg-slate-900 text-[10px] text-red-300">
+                                <span className="font-bold">Banda Alta</span>
+                                <span>(High)</span>
+                            </div>
+                            <div className="w-8 h-0.5 bg-slate-600"></div>
+                            <div className="w-16 h-10 border border-green-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-green-400">
+                                K_H={kH}
+                            </div>
+                        </div>
+
+                        {/* Middle Branch (Intermediate Freq) */}
+                        <div className="absolute top-1/2 left-0 w-4 h-0.5 bg-slate-600"></div>
+                        <div className="flex items-center gap-2 absolute top-[calc(50%-20px)] left-4">
+                            <div className="w-24 h-10 border border-yellow-500/50 rounded flex flex-col items-center justify-center bg-slate-900 text-[10px] text-yellow-300">
+                                <span className="font-bold">Banda Media</span>
+                                <span>(Interm.)</span>
+                            </div>
+                            <div className="w-8 h-0.5 bg-slate-600"></div>
+                            <div className="w-16 h-10 border border-green-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-green-400">
+                                K_I={kI}
+                            </div>
+                        </div>
+
+                        {/* Bottom Branch (Low Freq) */}
+                        <div className="absolute bottom-0 left-0 w-4 h-0.5 bg-slate-600"></div>
+                        <div className="flex items-center gap-2 absolute bottom-[-14px] left-4">
+                            <div className="w-24 h-10 border border-blue-500/50 rounded flex flex-col items-center justify-center bg-slate-900 text-[10px] text-blue-300">
+                                <span className="font-bold">Banda Baja</span>
+                                <span>(Low)</span>
+                            </div>
+                            <div className="w-8 h-0.5 bg-slate-600"></div>
+                            <div className="w-16 h-10 border border-green-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-green-400">
+                                K_L={kL}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Summation */}
+                    <div className="flex flex-col items-center shrink-0 ml-[220px]">
+                        <div className="w-10 h-10 border-2 border-slate-500 rounded-full flex items-center justify-center bg-slate-800 text-lg font-bold">
+                            Σ
+                        </div>
+                    </div>
+                    <div className="w-8 h-0.5 bg-slate-600"></div>
+
+                    {/* Output */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <span className="text-xs text-slate-400 mb-1">Salida</span>
+                        <div className="w-16 h-10 border-2 border-purple-500/50 rounded flex items-center justify-center bg-slate-900 text-xs font-bold text-purple-400">
+                            Vpss
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p className="mt-2 text-xs text-slate-500 italic text-center">
                 El PSS4B procesa 3 bandas de frecuencia en paralelo para cubrir todo el espectro de oscilaciones.
             </p>
         </div>
-    </div>
-);
+    );
+};
 
 const PSSModels = () => {
     const [activeModel, setActiveModel] = useState('pss1a'); // 'pss1a' or 'pss4b'
@@ -187,16 +207,15 @@ const PSSModels = () => {
 
     return (
         <div className="min-h-screen bg-slate-950 pb-20">
-            <ToolHeader
-                title="Modelos PSS (IEEE)"
-                description="Estabilizadores de Sistemas de Potencia"
-                icon={Activity}
-                iconColorClass="text-purple-400"
-                iconBgClass="bg-purple-500/20"
-            />
-
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <BackButton />
+                <ToolHeader
+                    title="Modelos PSS (IEEE)"
+                    description="Estabilizadores de Sistemas de Potencia"
+                    icon={Activity}
+                    iconColorClass="text-purple-400"
+                    iconBgClass="bg-purple-500/20"
+                />
 
                 {/* Model Selector Tabs */}
                 <div className="flex p-1 bg-slate-900/80 rounded-xl mb-8 border border-white/10">
@@ -304,7 +323,7 @@ const PSSModels = () => {
                         <div className="mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
                             <h3 className="text-lg font-bold text-white mb-4">Diagrama de Bloques (PSS1A)</h3>
                             <div className="bg-slate-900/50 p-1 rounded-2xl border border-white/5">
-                                <BlockDiagramPSS1A />
+                                <BlockDiagramPSS1A t1={t1} t2={t2} t3={t3} t4={t4} />
                             </div>
                         </div>
                     </>
@@ -362,7 +381,7 @@ const PSSModels = () => {
                         <div className="mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
                             <h3 className="text-lg font-bold text-white mb-4">Diagrama Multi-Banda (PSS4B)</h3>
                             <div className="bg-slate-900/50 p-1 rounded-2xl border border-white/5">
-                                <BlockDiagramPSS4B />
+                                <BlockDiagramPSS4B kL={kL} kI={kI} kH={kH} />
                             </div>
                         </div>
                     </>

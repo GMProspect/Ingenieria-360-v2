@@ -252,18 +252,18 @@ const Megohmetro = () => {
                             <label className="block text-slate-400 mb-2 text-sm font-medium">
                                 Resistencia Medida (1 min)
                             </label>
-                            <div className="flex gap-2">
+                            <div className="flex flex-wrap sm:flex-nowrap gap-2">
                                 <input
                                     type="number"
                                     value={resistance}
                                     onChange={(e) => setResistance(e.target.value)}
                                     placeholder="0.0"
-                                    className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                                    className="flex-1 min-w-[120px] bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                                 />
                                 <select
                                     value={unit}
                                     onChange={(e) => setUnit(e.target.value)}
-                                    className="w-24 bg-slate-950 border border-slate-700 rounded-xl px-2 py-3 text-white text-lg font-bold focus:outline-none focus:border-purple-500 transition-all text-center cursor-pointer"
+                                    className="w-24 sm:w-auto bg-slate-950 border border-slate-700 rounded-xl px-2 py-3 text-white text-lg font-bold focus:outline-none focus:border-purple-500 transition-all text-center cursor-pointer"
                                 >
                                     <option value="MΩ">MΩ</option>
                                     <option value="GΩ">GΩ</option>

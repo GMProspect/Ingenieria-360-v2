@@ -22,6 +22,7 @@ const Megohmetro = () => {
     const [label, setLabel] = useState('');
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
+    const [isSessionActive, setIsSessionActive] = useState(false);
 
     // Scroll to top
     React.useEffect(() => {
@@ -119,7 +120,7 @@ const Megohmetro = () => {
             }]);
             if (error) throw error;
             alert('Evaluación guardada correctamente.');
-            // Form data persists for continuous editing
+            setIsSessionActive(true);
         } catch (error) {
             console.error('Error saving:', error);
             alert('Error al guardar.');
@@ -132,6 +133,7 @@ const Megohmetro = () => {
         setResistance('');
         setLabel('');
         setDescription('');
+        setIsSessionActive(false);
     };
 
     // Motor Visual Component
@@ -348,6 +350,7 @@ const Megohmetro = () => {
                 onSave={handleSave}
                 onClear={clearAll}
                 saving={saving}
+                isSessionActive={isSessionActive}
             />
 
             <RecentHistory
@@ -359,10 +362,11 @@ const Megohmetro = () => {
                         setVoltageRating(item.data.voltageRating || 'low');
                         setLabel(item.label || '');
                         setDescription(item.description || '');
+                        setIsSessionActive(true);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                 }}
-                refreshTrigger={saving} // Refresh when saving status changes (goes back to false after save)
+                refreshTrigger={saving}
             />
 
             <AdBanner dataAdSlot="9876543210" />

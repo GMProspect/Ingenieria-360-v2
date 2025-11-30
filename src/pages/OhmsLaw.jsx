@@ -19,6 +19,7 @@ const OhmsLaw = () => {
     const [label, setLabel] = useState('');
     const [description, setDescription] = useState('');
     const [saving, setSaving] = useState(false);
+    const [isSessionActive, setIsSessionActive] = useState(false);
 
     // Scroll to top on mount
     React.useEffect(() => {
@@ -94,6 +95,7 @@ const OhmsLaw = () => {
         setResistance('');
         setLabel('');
         setDescription('');
+        setIsSessionActive(false);
     };
 
     const handleSave = async () => {
@@ -118,7 +120,7 @@ const OhmsLaw = () => {
             }]);
             if (error) throw error;
             alert('Cálculo guardado correctamente.');
-            // Form data persists
+            setIsSessionActive(true);
         } catch (error) {
             console.error('Error saving:', error);
             alert('Error al guardar.');
@@ -216,6 +218,7 @@ const OhmsLaw = () => {
                     onSave={handleSave}
                     onClear={clearAll}
                     saving={saving}
+                    isSessionActive={isSessionActive}
                 />
 
                 <RecentHistory
@@ -227,6 +230,7 @@ const OhmsLaw = () => {
                             setResistance(item.data.resistance || '');
                             setLabel(item.label || '');
                             setDescription(item.description || '');
+                            setIsSessionActive(true);
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                         }
                     }}

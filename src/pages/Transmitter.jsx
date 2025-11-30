@@ -100,200 +100,8 @@ const Transmitter = () => {
 
     // Validation: Check mA diagnostic status
     const getMaDiagnostic = () => {
-        const ma = parseFloat(inputMa);
-        if (isNaN(ma) || inputMa === '') return null;
-
-        if (ma < 3.8) return { type: 'error', message: '⚠️ Error Crítico: Cortocircuito o falla de alimentación (< 3.8 mA)' };
-        if (ma < 4) return { type: 'warning', message: '⚠️ Underrange: Sensor fuera de rango bajo (3.8 - 4.0 mA)' };
-        if (ma > 23) return { type: 'error', message: '⚠️ Error Crítico: Cable abierto o saturación (> 23 mA)' };
-        if (ma > 20) return { type: 'warning', message: '⚠️ Overrange: Sensor fuera de rango alto (20 - 23 mA)' };
-        return { type: 'ok', message: '✅ Rango normal (4-20 mA)' };
-    };
-
-    const clearAll = () => {
-        setInputMa('');
-        setInputPv('');
-        setLabel('');
-        setDescription('');
-    };
-
-    const handleSave = async () => {
-        if (!label.trim()) {
-            alert('Por favor ingresa una etiqueta.');
-            return;
-        }
-        if (!user) {
-            alert('Debes iniciar sesión para guardar.');
-            return;
-        }
-        setSaving(true);
-        try {
-            const { error } = await supabase.from('history').insert([{
-                tool_name: 'Transmisor 4-20mA',
-                label: label,
-                description: description,
-                user_id: user.id,
-                data: {
-                    range_low: rangeLow,
-                    range_high: rangeHigh,
-                    unit,
-                    input_ma: inputMa,
-                    input_pv: inputPv
-                }
-            }]);
-            if (error) throw error;
-            alert('Cálculo guardado correctamente.');
-            // Form data persists
-        } catch (error) {
-            console.error('Error saving:', error);
-            alert(`Error al guardar: ${JSON.stringify(error, null, 2)}`);
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    // Checkpoints Calculation
-    const checkpoints = [0, 25, 50, 75, 100];
-    const calculateCheckpoint = (percent) => {
-        const low = parseFloat(rangeLow);
-        const high = parseFloat(rangeHigh);
-        if (isNaN(low) || isNaN(high)) return { pv: '-', ma: '-' };
-
-        const ma = 4 + (percent / 100) * 16;
-        const pv = low + (percent / 100) * (high - low);
-        return { pv: pv.toFixed(2), ma: ma.toFixed(2) };
-    };
-
-    return (
-        <div className="max-w-5xl mx-auto p-6">
-            <BackButton />
-            <ToolHeader
-                title="Transmisor 4-20mA"
-                subtitle="Conversión Bidireccional de Señal Analógica"
-                icon={Gauge}
-                iconColorClass="text-purple-400"
-                iconBgClass="bg-purple-500/20"
-                onReset={clearAll}
-            />
-
-            <div className="bg-slate-900/50 p-8 rounded-2xl border border-white/5 backdrop-blur-sm shadow-xl relative">
-                {/* 1. Calibration Section */}
-                <div className="mb-8">
-                    <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
-                        Calibración del Instrumento
-                    </h3>
-                    <div className="grid grid-cols-3 gap-4 mb-4">
-                        <div>
-                            <label className="block text-xs text-slate-500 mb-1">Valor a 4mA (Mínimo)</label>
-                            <input
-                                type="number"
-                                value={rangeLow}
-                                onChange={(e) => setRangeLow(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs text-slate-500 mb-1">Valor a 20mA (Máximo)</label>
-                            <input
-                                type="number"
-                                value={rangeHigh}
-                                onChange={(e) => setRangeHigh(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs text-slate-500 mb-1">Unidad</label>
-                            <select
-                                value={unit}
-                                onChange={(e) => setUnit(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none appearance-none"
-                            >
-                                <optgroup label="Presión">
-                                    <option value="PSI">PSI</option>
-                                    <option value="Bar">Bar</option>
-                                    <option value="kPa">kPa</option>
-                                    <option value="MPa">MPa</option>
-                                    <option value="inH2O">inH2O</option>
-                                    <option value="mmHg">mmHg</option>
-                                    <option value="atm">atm</option>
-                                </optgroup>
-                                <optgroup label="Temperatura">
-                                    <option value="°C">°C</option>
-                                    <option value="°F">°F</option>
-                                    <option value="K">K</option>
-                                </optgroup>
-                                <optgroup label="Nivel / Distancia">
-                                    <option value="%">%</option>
-                                    <option value="m">Metros (m)</option>
-                                    <option value="cm">Centímetros (cm)</option>
-                                    <option value="mm">Milímetros (mm)</option>
-                                    <option value="ft">Pies (ft)</option>
-                                    <option value="in">Pulgadas (in)</option>
-                                </optgroup>
-                                <optgroup label="Flujo">
-                                    <option value="GPM">GPM</option>
-                                    <option value="L/min">L/min</option>
-                                    <option value="m³/h">m³/h</option>
-                                    <option value="CFM">CFM</option>
-                                </optgroup>
-                                <optgroup label="Peso">
-                                    <option value="kg">kg</option>
-                                    <option value="lb">lb</option>
-                                    <option value="g">g</option>
-                                </optgroup>
-                                <optgroup label="Eléctrico">
-                                    <option value="V">Voltios (V)</option>
-                                    <option value="mV">Milivoltios (mV)</option>
-                                    <option value="A">Amperios (A)</option>
-                                    <option value="mA">Miliamperios (mA)</option>
-                                    <option value="Hz">Hertz (Hz)</option>
-                                </optgroup>
-                                <optgroup label="Otros">
-                                    <option value="RPM">RPM</option>
-                                    <option value="pH">pH</option>
-                                    <option value="% HR">% Humedad</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="text-center text-xs text-slate-400">
-                        Alcance (Span): <span className="text-purple-400 font-bold">{span.toFixed(2)}</span>
-                    </div>
-                </div>
-
-                {/* 2. Real Time Conversion & Visual */}
-                <div className="mb-8">
-                    <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
-                        Conversión en Tiempo Real
-                    </h3>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                        {/* Left: Visual Representation */}
-                        <div className="order-2 md:order-1 bg-slate-950/30 rounded-xl p-4 border border-white/5">
-                            <TransmitterVisual
-                                pv={inputPv}
-                                unit={unit}
-                                ma={inputMa}
-                                percent={getPercentage()}
-                            />
-                        </div>
-
-                        {/* Right: Inputs */}
-                        <div className="order-1 md:order-2">
-                            <div className="flex flex-col gap-6">
-                                <div>
-                                    <label className="block text-xs text-slate-500 mb-1">Señal de Salida (mA)</label>
-                                    <div className="relative">
-                                        <input
-                                            type="number"
-                                            value={inputMa}
-                                            onChange={(e) => handleMaChange(e.target.value)}
-                                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-lg outline-none focus:border-cyan-500 focus:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all pl-12"
-                                            placeholder="4.00"
-                                        />
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 font-bold text-sm">mA</div>
-                                    </div>
-                                </div>
+                                    </div >
+                                </div >
 
                                 <div className="flex items-center justify-center text-slate-600">
                                     <ArrowRightLeft size={24} className="rotate-90 md:rotate-0" />
@@ -312,10 +120,10 @@ const Transmitter = () => {
                                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm">PV</div>
                                     </div>
                                 </div>
-                            </div>
+                            </div >
 
-                            {/* Progress Bar */}
-                            <div className="mt-6 relative h-4 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+    {/* Progress Bar */ }
+    < div className = "mt-6 relative h-4 bg-slate-950 rounded-full overflow-hidden border border-slate-800" >
                                 <div
                                     className="absolute top-0 left-0 h-full bg-gradient-to-r from-cyan-900 to-cyan-500 transition-all duration-300"
                                     style={{ width: `${getPercentage()}%` }}
@@ -323,37 +131,41 @@ const Transmitter = () => {
                                 <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
                                     {getPercentage().toFixed(1)}%
                                 </div>
-                            </div>
-                        </div>
-                    </div>
+                            </div >
+                        </div >
+                    </div >
 
-                    {/* Validation Warnings */}
-                    {isRangeInverted() && (
-                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg animate-pulse">
-                            <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
-                                ⚠️ <span>Rango Invertido: El mínimo ({rangeLow}) es mayor o igual al máximo ({rangeHigh})</span>
-                            </p>
-                        </div>
-                    )}
+    {/* Validation Warnings */ }
+{
+    isRangeInverted() && (
+        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg animate-pulse">
+            <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
+                ⚠️ <span>Rango Invertido: El mínimo ({rangeLow}) es mayor o igual al máximo ({rangeHigh})</span>
+            </p>
+        </div>
+    )
+}
 
-                    {getMaDiagnostic() && getMaDiagnostic().type !== 'ok' && (
-                        <div className={`mt-4 p-3 rounded-lg border flex items-center gap-2 ${getMaDiagnostic().type === 'error'
-                            ? 'bg-red-500/10 border-red-500/30'
-                            : 'bg-yellow-500/10 border-yellow-500/30'
-                            }`}>
-                            <span className="text-lg">⚠️</span>
-                            <p className={`text-sm font-semibold ${getMaDiagnostic().type === 'error'
-                                ? 'text-red-400'
-                                : 'text-yellow-400'
-                                }`}>
-                                {getMaDiagnostic().message}
-                            </p>
-                        </div>
-                    )}
-                </div>
+{
+    getMaDiagnostic() && getMaDiagnostic().type !== 'ok' && (
+        <div className={`mt-4 p-3 rounded-lg border flex items-center gap-2 ${getMaDiagnostic().type === 'error'
+            ? 'bg-red-500/10 border-red-500/30'
+            : 'bg-yellow-500/10 border-yellow-500/30'
+            }`}>
+            <span className="text-lg">⚠️</span>
+            <p className={`text-sm font-semibold ${getMaDiagnostic().type === 'error'
+                ? 'text-red-400'
+                : 'text-yellow-400'
+                }`}>
+                {getMaDiagnostic().message}
+            </p>
+        </div>
+    )
+}
+                </div >
 
-                {/* 3. Checkpoints Table */}
-                <div className="mb-8">
+    {/* 3. Checkpoints Table */ }
+    < div className = "mb-8" >
                     <h3 className="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-4 border-b border-cyan-500/30 pb-2">
                         Puntos de Calibración (Check Points)
                     </h3>
@@ -373,7 +185,7 @@ const Transmitter = () => {
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div >
 
                 <SaveCalculationSection
                     label={label}
@@ -419,11 +231,11 @@ const Transmitter = () => {
                     </div>
                 </div>
 
-                {/* AdSense Banner (Moved to very bottom) */}
-                <AdBanner dataAdSlot="1234567890" />
+{/* AdSense Banner (Moved to very bottom) */ }
+<AdBanner dataAdSlot="1234567890" />
 
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

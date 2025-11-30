@@ -11,7 +11,8 @@ const SaveCalculationSection = ({
     onSave,
     onClear,
     saving,
-    saveButtonText = 'Guardar Cálculo'
+    saveButtonText = 'Guardar Cálculo',
+    isSessionActive = false
 }) => {
     const { user } = useAuth();
     const [suggestions, setSuggestions] = useState([]);
@@ -55,6 +56,47 @@ const SaveCalculationSection = ({
         tag.toLowerCase().includes(label.toLowerCase())
     );
 
+    // --- ACTIVE SESSION VIEW ---
+    if (isSessionActive) {
+        return (
+            <div className="mt-8 bg-slate-900/80 rounded-xl border border-purple-500/30 p-6 animate-fade-in relative overflow-hidden">
+                {/* Background Glow */}
+                <div className="absolute top-0 right-0 p-20 bg-purple-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+
+                <div className="flex items-center justify-between mb-6 relative z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400">
+                            <RotateCcw size={20} className="animate-pulse-slow" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-white text-lg">{label}</h3>
+                            <p className="text-slate-400 text-xs">Sesión Activa • {description || 'Sin descripción'}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 relative z-10">
+                    <button
+                        onClick={onClear}
+                        className="flex-1 py-3 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition-all font-bold flex items-center justify-center gap-2 border border-slate-700"
+                    >
+                        <RotateCcw size={18} />
+                        Nuevo / Limpiar
+                    </button>
+                    <button
+                        onClick={onSave}
+                        disabled={saving}
+                        className="flex-[2] py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-lg shadow-purple-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <Save size={18} />
+                        {saving ? 'Guardando...' : 'Guardar Medición'}
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // --- STANDARD VIEW ---
     return (
         <div className="mt-12 bg-slate-950 rounded-xl border border-slate-800 p-6">
             <div className="flex items-center gap-2 mb-4 text-slate-400 border-b border-slate-800 pb-2">
